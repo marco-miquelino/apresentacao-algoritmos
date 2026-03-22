@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolução de Algoritmos - UFRJ</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --primary-color: #0056b3;
+            --card-bg: #ffffff;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        h1 { margin: 0; font-size: 2.5em; }
+        h2 { color: var(--primary-color); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        .problem-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .explanation {
+            background-color: #e9f5ff;
+            padding: 15px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 15px;
+        }
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.05em;
+        }
+        .keyword { color: #c678dd; }
+        .function { color: #61afef; }
+        .string { color: #98c379; }
+        .comment { color: #5c6370; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Soluções de Algoritmos</h1>
+        <p>Análise de Eficiência e Complexidade Linear O(n)</p>
+    </header>
+
+    <div class="problem-card">
+        <h2>1. O Problema da Celebridade</h2>
+        <div class="explanation">
+            <strong>Lógica O(n):</strong> Utilizamos uma abordagem de eliminação. Assumimos que a primeira pessoa é a candidata. Iteramos pela multidão: se o candidato atual conhece a próxima pessoa, ele não pode ser a celebridade, então a próxima pessoa se torna o novo candidato. Ao final de uma passagem, temos um único candidato válido que deve ser verificado em uma segunda passagem.
+        </div>
+        <pre><code><span class="keyword">def</span> <span class="function">encontrar_celebridade</span>(matriz_conhecimento, n):
+    candidato = <span class="string">0</span>
+    
+    <span class="comment"># Fase 1: Eliminação para achar o candidato potencial em O(n)</span>
+    <span class="keyword">for</span> pessoa <span class="keyword">in</span> <span class="function">range</span>(1, n):
+        <span class="keyword">if</span> matriz_conhecimento[candidato][pessoa] == <span class="keyword">True</span>:
+            <span class="comment"># O candidato conhece alguém, logo não é celebridade.</span>
+            candidato = pessoa
+
+    <span class="comment"># Fase 2: Verificar se o candidato restante é realmente a celebridade em O(n)</span>
+    <span class="keyword">for</span> pessoa <span class="keyword">in</span> <span class="function">range</span>(n):
+        <span class="keyword">if</span> pessoa != candidato:
+            <span class="comment"># Regra: Candidato não pode conhecer ninguém e todos devem conhecê-lo</span>
+            <span class="keyword">if</span> matriz_conhecimento[candidato][pessoa] <span class="keyword">or not</span> matriz_conhecimento[pessoa][candidato]:
+                <span class="keyword">return</span> <span class="string">-1</span> <span class="comment"># Não há celebridade</span>
+                
+    <span class="keyword">return</span> candidato</code></pre>
+    </div>
+
+    <div class="problem-card">
+        <h2>2. Eleição por Maioria Absoluta</h2>
+        <div class="explanation">
+            <strong>Lógica O(n):</strong> Para encontrar o elemento majoritário usando tempo linear e espaço constante, usamos o <em>Algoritmo de Votação de Boyer-Moore</em>. Mantemos um contador: se o voto for igual ao do candidato atual, incrementamos; se for diferente, decrementamos. Se o contador zerar, o voto atual vira o novo candidato.
+        </div>
+        <pre><code><span class="keyword">def</span> <span class="function">vencedor_maioria_absoluta</span>(votos):
+    candidato_atual = <span class="keyword">None</span>
+    saldo_votos = <span class="string">0</span>
+
+    <span class="comment"># Fase 1: Descobrir o candidato mais provável (Boyer-Moore) em O(n)</span>
+    <span class="keyword">for</span> voto <span class="keyword">in</span> votos:
+        <span class="keyword">if</span> saldo_votos == <span class="string">0</span>:
+            candidato_atual = voto
+            saldo_votos = <span class="string">1</span>
+        <span class="keyword">elif</span> voto == candidato_atual:
+            saldo_votos += <span class="string">1</span>
+        <span class="keyword">else</span>:
+            saldo_votos -= <span class="string">1</span>
+
+    <span class="comment"># Fase 2: Validar se o candidato realmente tem mais de 50% em O(n)</span>
+    votos_totais = <span class="function">len</span>(votos)
+    contagem_real = <span class="function">sum</span>(<span class="string">1</span> <span class="keyword">for</span> v <span class="keyword">in</span> votos <span class="keyword">if</span> v == candidato_atual)
+
+    <span class="keyword">if</span> contagem_real > votos_totais // <span class="string">2</span>:
+        <span class="keyword">return</span> candidato_atual
+    <span class="keyword">return</span> <span class="keyword">None</span> <span class="comment"># Ninguém obteve maioria absoluta</span></code></pre>
+    </div>
+
+    <div class="problem-card">
+        <h2>3. Busca na Agenda Telefônica</h2>
+        <div class="explanation">
+            <strong>Lógica O(n) vs O(1):</strong> Em estruturas de dados modernas (como Dicionários/Hash Tables), a busca é $O(1)$. No entanto, se a agenda for uma lista não ordenada, precisamos de uma busca linear O(n). Abaixo, a representação linear.
+        </div>
+        <pre><code><span class="keyword">def</span> <span class="function">buscar_amigo_agenda</span>(agenda_lista, nome_buscado):
+    <span class="comment"># Busca Linear O(n) iterando sobre a lista de contatos</span>
+    <span class="keyword">for</span> contato <span class="keyword">in</span> agenda_lista:
+        <span class="keyword">if</span> contato[<span class="string">'nome'</span>] == nome_buscado:
+            <span class="keyword">return</span> contato[<span class="string">'telefone'</span>]
+            
+    <span class="keyword">return</span> <span class="string">"Contato não encontrado"</span>
+    
+<span class="comment"># Nota teórica: Se usássemos Python dict (Hash Table):</span>
+<span class="comment"># telefone = agenda_dicionario.get(nome_buscado) -> O(1)</span></code></pre>
+    </div>
+
+    <div class="problem-card">
+        <h2>4. Troca de Mensagem Segura e Anônima</h2>
+        <div class="explanation">
+            <strong>Lógica:</strong> Este é um problema de Criptografia Assimétrica (Chaves Públicas e Privadas). Para garantir confidencialidade, o remente criptografa a mensagem com a Chave Pública do receptor. Para garantir autoria, ele assina com sua própria Chave Privada. O processamento caractere por caractere (ou bloco a bloco) garante uma complexidade de tempo linear O(n) em relação ao tamanho da mensagem.
+        </div>
+        <pre><code><span class="keyword">def</span> <span class="function">preparar_mensagem_segura</span>(mensagem, chave_privada_remetente, chave_publica_receptor):
+    mensagem_processada = []
+    
+    <span class="comment"># A complexidade é O(n) onde 'n' é o tamanho da mensagem</span>
+    <span class="keyword">for</span> caractere <span class="keyword">in</span> mensagem:
+        <span class="comment"># 1. Assinatura: Criptografa com a chave privada de quem envia (Garante autoria)</span>
+        char_assinado = <span class="function">assinar_caractere</span>(caractere, chave_privada_remetente)
+        
+        <span class="comment"># 2. Confidencialidade: Criptografa com a chave pública do destino (Só ele lê)</span>
+        char_seguro = <span class="function">criptografar_caractere</span>(char_assinado, chave_publica_receptor)
+        
+        mensagem_processada.append(char_seguro)
+        
+    <span class="keyword">return</span> mensagem_processada</code></pre>
+    </div>
+
+    <div class="problem-card">
+        <h2>5. Otimização da Distribuição de Jornais</h2>
+        <div class="explanation">
+            <strong>Lógica O(n):</strong> Como o número de pontos de distribuição é fixo ($K = 3$), iteramos sobre as $n$ bancas e calculamos a distância para os 3 pontos. A complexidade fica $O(K \times n)$, que como $K$ é constante, simplifica-se para um problema perfeitamente linear $O(n)$.
+        </div>
+        <pre><code><span class="keyword">import</span> math
+
+<span class="keyword">def</span> <span class="function">calcular_distancia</span>(coord1, coord2):
+    <span class="comment"># Teorema de Pitágoras simples - Operação O(1)</span>
+    <span class="keyword">return</span> math.sqrt((coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2)
+
+<span class="keyword">def</span> <span class="function">otimizar_rotas_jornais</span>(bancas, pontos_distribuicao):
+    <span class="comment"># Inicializa a alocação de rotas</span>
+    alocacao = {ponto: [] <span class="keyword">for</span> ponto <span class="keyword">in</span> pontos_distribuicao}
+    
+    <span class="comment"># Para cada banca (n), comparamos com os 3 pontos fixos: Tempo O(n)</span>
+    <span class="keyword">for</span> banca <span class="keyword">in</span> bancas:
+        menor_distancia = <span class="function">float</span>(<span class="string">'inf'</span>)
+        melhor_ponto = <span class="keyword">None</span>
+        
+        <span class="keyword">for</span> ponto <span class="keyword">in</span> pontos_distribuicao:
+            distancia = <span class="function">calcular_distancia</span>(banca, ponto)
+            
+            <span class="keyword">if</span> distancia < 
+
+ menor_distancia:
+                menor_distancia = distancia
+                melhor_ponto = ponto
+                
+        alocacao[melhor_ponto].append(banca)
+        
+    <span class="keyword">return</span> alocacao</code></pre>
+    </div>
+
+</div>
+</body>
+</html>
