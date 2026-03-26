@@ -46,10 +46,7 @@
         }
         .authorship p { margin: 5px 0; }
         
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+        .container { max-width: 900px; margin: auto; }
         .card {
             background: var(--card-bg);
             padding: 25px;
@@ -57,12 +54,8 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 30px;
         }
-        .intro-card {
-            border-left: 5px solid var(--primary-color);
-        }
-        .legacy-card {
-            border-left: 5px solid #28a745;
-        }
+        .intro-card { border-left: 5px solid var(--primary-color); }
+        .legacy-card { border-left: 5px solid #28a745; }
         .explanation {
             background-color: var(--accent-color);
             padding: 15px;
@@ -85,21 +78,16 @@
         .string { color: #98c379; }
         .comment { color: #5c6370; font-style: italic; }
         
-        /* Estilo do container do Grafo */
-        #grafo-celebridade {
+        .vis-container {
             width: 100%;
-            height: 350px;
+            height: 300px;
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #fafafa;
             margin-top: 15px;
         }
         .graph-caption {
-            text-align: center;
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-            font-style: italic;
+            text-align: center; font-size: 0.9em; color: #666; margin-top: 5px; font-style: italic;
         }
     </style>
 </head>
@@ -108,7 +96,7 @@
 <div class="container">
     <header>
         <h1>Soluções de Algoritmos</h1>
-        <p>Análise de Eficiência e Complexidade Linear O(n)</p>
+        <p>Análise de Eficiência Estrutural e Algorítmica</p>
         
         <div class="authorship">
             <p><strong>Autoria:</strong> Marco Aurélio Penteado Miquelino e Igor Eccard de Sá</p>
@@ -120,165 +108,144 @@
     <div class="card">
         <h2>1. O Problema da Celebridade</h2>
         <div class="explanation">
-            <strong>Lógica O(n):</strong> Utilizamos uma abordagem de eliminação. Assumimos que a primeira pessoa é a candidata. Iteramos pela multidão: se o candidato atual conhece a próxima pessoa, ele não pode ser a celebridade. Ao final de uma passagem, temos um único candidato que é validado em uma segunda passagem.
+            <strong>Lógica O(n):</strong> Assumimos que a primeira pessoa é a candidata. Iteramos pela multidão: se o candidato atual conhece a próxima pessoa, ele é eliminado. A segunda passagem apenas valida as conexões do único candidato restante.
         </div>
-        <pre><code><span class="keyword">def</span> <span class="function">encontrar_celebridade</span>(matriz_conhecimento, n):
-    candidato = <span class="string">0</span>
-    
-    <span class="comment"># Fase 1: Eliminação em O(n)</span>
-    <span class="keyword">for</span> pessoa <span class="keyword">in</span> <span class="function">range</span>(1, n):
-        <span class="keyword">if</span> matriz_conhecimento[candidato][pessoa] == <span class="keyword">True</span>:
-            candidato = pessoa
-
-    <span class="comment"># Fase 2: Validação em O(n)</span>
-    <span class="keyword">for</span> pessoa <span class="keyword">in</span> <span class="function">range</span>(n):
-        <span class="keyword">if</span> pessoa != candidato:
-            <span class="keyword">if</span> matriz_conhecimento[candidato][pessoa] <span class="keyword">or not</span> matriz_conhecimento[pessoa][candidato]:
-                <span class="keyword">return</span> <span class="string">-1</span>
-                
-    <span class="keyword">return</span> candidato</code></pre>
-        
-        <h3>Visualização em Grafo (Matriz de Adjacência)</h3>
-        <p>Interaja com o grafo abaixo. Note que as setas representam "quem conhece quem". A <strong>Celebridade</strong> recebe arestas (1s na coluna) de todos, mas não emite nenhuma aresta (0s na linha).</p>
-        <div id="grafo-celebridade"></div>
-        <p class="graph-caption">Grafo Direcionado: Você pode arrastar os nós para visualizar melhor as conexões.</p>
+        <div id="grafo-celebridade" class="vis-container"></div>
+        <p class="graph-caption">Grafo de Conhecimento: A Celebridade (amarela) recebe arestas de todos, mas não emite nenhuma.</p>
     </div>
 
     <div class="card">
         <h2>2. Eleição por Maioria Absoluta</h2>
         <div class="explanation">
-            <strong>Lógica O(n):</strong> Utilizando o <em>Algoritmo de Votação de Boyer-Moore</em>. Mantemos um contador: se o voto for igual ao do candidato atual, incrementamos; se diferente, decrementamos. Se zerar, trocamos o candidato.
+            <strong>Lógica O(n):</strong> Pelo Algoritmo de Boyer-Moore, pares de votos divergentes se anulam. O candidato que "sobra" no saldo é o provável vencedor, confirmado em uma segunda passagem.
         </div>
-        <pre><code><span class="keyword">def</span> <span class="function">vencedor_maioria_absoluta</span>(votos):
-    candidato_atual = <span class="keyword">None</span>
-    saldo_votos = <span class="string">0</span>
-
-    <span class="keyword">for</span> voto <span class="keyword">in</span> votos:
-        <span class="keyword">if</span> saldo_votos == <span class="string">0</span>:
-            candidato_atual = voto
-            saldo_votos = <span class="string">1</span>
-        <span class="keyword">elif</span> voto == candidato_atual:
-            saldo_votos += <span class="string">1</span>
-        <span class="keyword">else</span>:
-            saldo_votos -= <span class="string">1</span>
-
-    <span class="keyword">if</span> <span class="function">sum</span>(<span class="string">1</span> <span class="keyword">for</span> v <span class="keyword">in</span> votos <span class="keyword">if</span> v == candidato_atual) > <span class="function">len</span>(votos) // <span class="string">2</span>:
-        <span class="keyword">return</span> candidato_atual
-    <span class="keyword">return</span> <span class="keyword">None</span></code></pre>
+        <pre><code><span class="keyword">def</span> <span class="function">vencedor_maioria</span>(votos):
+    candidato, saldo = <span class="keyword">None</span>, <span class="string">0</span>
+    <span class="keyword">for</span> v <span class="keyword">in</span> votos:
+        <span class="keyword">if</span> saldo == <span class="string">0</span>: candidato, saldo = v, <span class="string">1</span>
+        <span class="keyword">elif</span> v == candidato: saldo += <span class="string">1</span>
+        <span class="keyword">else</span>: saldo -= <span class="string">1</span>
+    <span class="keyword">return</span> candidato <span class="keyword">if</span> votos.count(candidato) > <span class="function">len</span>(votos)//<span class="string">2</span> <span class="keyword">else</span> <span class="keyword">None</span></code></pre>
+        <div id="grafo-votacao" class="vis-container"></div>
+        <p class="graph-caption">Visualização de Votos: Elementos de mesma cor reforçam o saldo, cores diferentes se anulam até sobrar a maioria.</p>
     </div>
 
     <div class="card">
-        <h2>3. Busca na Agenda Telefônica</h2>
+        <h2>3. Agenda Telefônica Dinâmica</h2>
         <div class="explanation">
-            <strong>Lógica O(n):</strong> Uma busca linear simples iterando sobre uma lista não ordenada de contatos.
+            <strong>Lógica de Operações:</strong> Adição no fim da lista é O(1). A remoção e a busca linear são O(n). A ordenação utiliza o algoritmo nativo do Python (Timsort), que opera em O(n log n).
         </div>
-        <pre><code><span class="keyword">def</span> <span class="function">buscar_amigo_agenda</span>(agenda_lista, nome_buscado):
-    <span class="keyword">for</span> contato <span class="keyword">in</span> agenda_lista:
-        <span class="keyword">if</span> contato[<span class="string">'nome'</span>] == nome_buscado:
-            <span class="keyword">return</span> contato[<span class="string">'telefone'</span>]
-    <span class="keyword">return</span> <span class="string">"Contato não encontrado"</span></code></pre>
+        <pre><code><span class="keyword">def</span> <span class="function">adicionar_contato</span>(agenda, nome, tel):
+    agenda.append({<span class="string">'nome'</span>: nome, <span class="string">'tel'</span>: tel}) <span class="comment"># O(1) amortizado</span>
+
+<span class="keyword">def</span> <span class="function">remover_contato</span>(agenda, nome):
+    <span class="comment"># Filtra a lista removendo o alvo em O(n)</span>
+    agenda[:] = [c <span class="keyword">for</span> c <span class="keyword">in</span> agenda <span class="keyword">if</span> c[<span class="string">'nome'</span>] != nome]
+
+<span class="keyword">def</span> <span class="function">ordenar_agenda</span>(agenda):
+    <span class="comment"># Ordenação In-place em O(n log n)</span>
+    agenda.sort(key=<span class="keyword">lambda</span> x: x[<span class="string">'nome'</span>])
+
+<span class="keyword">def</span> <span class="function">buscar_contato</span>(agenda, nome):
+    <span class="keyword">for</span> c <span class="keyword">in</span> agenda:
+        <span class="keyword">if</span> c[<span class="string">'nome'</span>] == nome: <span class="keyword">return</span> c[<span class="string">'tel'</span>] <span class="comment"># O(n)</span></code></pre>
+        <div id="grafo-agenda" class="vis-container"></div>
+        <p class="graph-caption">Estrutura Sequencial: Representação dos contatos como nós que podem ser reorganizados, adicionados ou removidos.</p>
     </div>
 
     <div class="card">
-        <h2>4. Troca de Mensagem Segura e Anônima</h2>
+        <h2>4. Criptografia por Tabela Hash</h2>
         <div class="explanation">
-            <strong>Lógica O(n):</strong> Criptografia Assimétrica aplicada de forma linear. Confidencialidade (Chave Pública do receptor) e Autenticidade (Chave Privada do remetente).
+            <strong>Lógica O(1) por caractere:</strong> Utilizamos um Dicionário (Tabela Hash) para criar uma Cifra de Substituição. O custo para encontrar a letra correspondente na tabela é O(1). Logo, percorrer uma mensagem de tamanho <em>n</em> custa O(n) no total.
         </div>
-        <pre><code><span class="keyword">def</span> <span class="function">preparar_mensagem_segura</span>(mensagem, chave_priv_remetente, chave_pub_receptor):
-    mensagem_processada = []
-    
-    <span class="keyword">for</span> caractere <span class="keyword">in</span> mensagem:
-        char_assinado = <span class="function">assinar_caractere</span>(caractere, chave_priv_remetente)
-        char_seguro = <span class="function">criptografar_caractere</span>(char_assinado, chave_pub_receptor)
-        mensagem_processada.append(char_seguro)
+        <pre><code><span class="keyword">def</span> <span class="function">gerar_tabela_hash_cripto</span>():
+    <span class="comment"># Tabela Hash O(1) atuando como chave de substituição</span>
+    <span class="keyword">return</span> {<span class="string">'A'</span>: <span class="string">'X'</span>, <span class="string">'B'</span>: <span class="string">'Y'</span>, <span class="string">'C'</span>: <span class="string">'Z'</span>, <span class="string">'D'</span>: <span class="string">'W'</span>}
+
+<span class="keyword">def</span> <span class="function">criptografar_mensagem</span>(mensagem, tabela_hash):
+    msg_criptografada = []
+    <span class="keyword">for</span> letra <span class="keyword">in</span> mensagem:
+        <span class="comment"># Busca na Hash Table: O(1)</span>
+        letra_cifrada = tabela_hash.get(letra, letra)
+        msg_criptografada.append(letra_cifrada)
         
-    <span class="keyword">return</span> mensagem_processada</code></pre>
+    <span class="keyword">return</span> <span class="string">""</span>.join(msg_criptografada) <span class="comment"># Complexidade Final: O(n)</span></code></pre>
+        <div id="grafo-hash" class="vis-container"></div>
+        <p class="graph-caption">Mapeamento Hash: Chaves (Texto Claro) apontam diretamente para Valores (Texto Cifrado) em tempo constante.</p>
     </div>
 
     <div class="card">
-        <h2>5. Otimização da Distribuição de Jornais</h2>
+        <h2>5. Otimização de Jornais</h2>
         <div class="explanation">
-            <strong>Lógica O(n):</strong> Iteramos sobre as <em>n</em> bancas calculando a distância para os 3 pontos fixos. A complexidade O(3 * n) simplifica-se para O(n).
+            <strong>Lógica O(n):</strong> Com K=3 pontos fixos de distribuição, calculamos a distância de cada uma das <em>n</em> bancas para os 3 centros. A operação O(3*n) simplifica-se para O(n).
         </div>
-        <pre><code><span class="keyword">import</span> math
-
-<span class="keyword">def</span> <span class="function">otimizar_rotas_jornais</span>(bancas, pontos_distribuicao):
-    alocacao = {ponto: [] <span class="keyword">for</span> ponto <span class="keyword">in</span> pontos_distribuicao}
-    
-    <span class="keyword">for</span> banca <span class="keyword">in</span> bancas:
-        menor_distancia = <span class="function">float</span>(<span class="string">'inf'</span>)
-        melhor_ponto = <span class="keyword">None</span>
-        
-        <span class="keyword">for</span> ponto <span class="keyword">in</span> pontos_distribuicao:
-            dist = math.sqrt((banca[0]-ponto[0])**2 + (banca[1]-ponto[1])**2)
-            <span class="keyword">if</span> dist < menor_distancia:
-                menor_distancia = dist
-                melhor_ponto = ponto
-                
-        alocacao[melhor_ponto].append(banca)
-        
-    <span class="keyword">return</span> alocacao</code></pre>
+        <div id="grafo-rotas" class="vis-container"></div>
+        <p class="graph-caption">Alocação Espacial: Bancas (pontos azuis) ligam-se ao Centro de Distribuição (estrelas vermelhas) mais próximo.</p>
     </div>
 
     <div class="card legacy-card">
         <h2>Motivações e Legado do Projeto</h2>
-        <p>A escolha de desenvolver este site como ferramenta de apresentação, no lugar de slides tradicionais, baseia-se em dois pilares fundamentais para o ensino e aprendizado contínuo:</p>
-        
+        <p>A escolha de desenvolver este site como ferramenta de apresentação, no lugar de slides tradicionais, baseia-se em dois pilares:</p>
         <ul>
-            <li><strong>Atemporalidade e Compartilhamento:</strong> Apresentações de slides frequentemente se perdem nos arquivos locais após o fim do semestre. Ao hospedar estas soluções na web, criamos um repositório vivo e acessível. Nosso objetivo é que estudantes de semestres futuros possam consultar este material de forma clara, garantindo que o conhecimento desenvolvido na disciplina continue ajudando outras pessoas a compreenderem a análise de complexidade.</li>
-            <li><strong>A Assimilação do Python com Provas Escritas:</strong> A opção pela linguagem Python foi estritamente estratégica. Sua sintaxe enxuta, legível e livre de excessos de formatação (como chaves e pontos-e-vírgulas) assemelha-se profundamente ao **pseudo-código** cobrado e utilizado nas provas teóricas da disciplina. Dessa forma, os algoritmos aqui expostos servem não apenas para compilar em uma máquina, mas como um molde mental facilmente transcritível para o papel em momentos de avaliação.</li>
+            <li><strong>Atemporalidade e Compartilhamento:</strong> Ao hospedar estas soluções na web, criamos um repositório vivo e acessível para que estudantes de semestres futuros possam consultar este material de forma clara.</li>
+            <li><strong>A Assimilação do Python com Provas Escritas:</strong> A opção pela linguagem Python foi estratégica. Sua sintaxe enxuta e legível assemelha-se profundamente ao pseudo-código cobrado nas provas teóricas, servindo como um molde mental facilmente transcritível para o papel.</li>
         </ul>
     </div>
-
 </div>
 
 <script>
-    // Criação do Array de Nós
-    var nodes = new vis.DataSet([
-        { id: 1, label: 'Pessoa A' },
-        { id: 2, label: 'Pessoa B' },
-        { id: 3, label: 'Pessoa C' },
-        { id: 4, label: 'Pessoa D' },
-        { id: 5, label: 'Celebridade', color: '#ffd700', font: {size: 16, bold: true}, shape: 'star', size: 30 }
-    ]);
+    const optionsPadrao = { physics: { stabilization: false } };
 
-    // Criação do Array de Arestas (Quem conhece quem)
-    // A Celebridade (ID 5) não conhece ninguém (nenhuma aresta sai dela)
-    // Todos conhecem a Celebridade (arestas apontam para ela)
-    var edges = new vis.DataSet([
-        { from: 1, to: 5, arrows: 'to' },
-        { from: 2, to: 5, arrows: 'to' },
-        { from: 3, to: 5, arrows: 'to' },
-        { from: 4, to: 5, arrows: 'to' },
-        
-        // Algumas conexões aleatórias entre as pessoas comuns
-        { from: 1, to: 2, arrows: 'to' },
-        { from: 2, to: 3, arrows: 'to' },
-        { from: 4, to: 1, arrows: 'to' }
-    ]);
+    // 1. Grafo Celebridade
+    new vis.Network(document.getElementById('grafo-celebridade'), {
+        nodes: [
+            { id: 1, label: 'A' }, { id: 2, label: 'B' }, { id: 3, label: 'C' },
+            { id: 5, label: 'Celebridade', color: '#ffd700', shape: 'star', size: 25 }
+        ],
+        edges: [ { from: 1, to: 5, arrows: 'to' }, { from: 2, to: 5, arrows: 'to' }, { from: 3, to: 5, arrows: 'to' }, { from: 1, to: 2, arrows: 'to' } ]
+    }, optionsPadrao);
 
-    // Obtendo o container do HTML
-    var container = document.getElementById('grafo-celebridade');
+    // 2. Grafo Votação
+    new vis.Network(document.getElementById('grafo-votacao'), {
+        nodes: [
+            { id: 1, label: 'Voto X', color: '#87CEFA' }, { id: 2, label: 'Voto X', color: '#87CEFA' },
+            { id: 3, label: 'Voto Y', color: '#FFB6C1' }, { id: 4, label: 'Voto X', color: '#87CEFA' }
+        ],
+        edges: [ { from: 1, to: 2 }, { from: 2, to: 3, dashes: true, label: 'anula' }, { from: 2, to: 4 } ]
+    }, { physics: { enabled: false }, layout: { hierarchical: { direction: 'LR' } } });
 
-    // Juntando os dados
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
+    // 3. Grafo Agenda
+    new vis.Network(document.getElementById('grafo-agenda'), {
+        nodes: [
+            { id: 1, label: 'Ana\n999-111', shape: 'box' },
+            { id: 2, label: 'Bruno\n999-222', shape: 'box' },
+            { id: 3, label: 'Carlos\n999-333', shape: 'box' }
+        ],
+        edges: [ { from: 1, to: 2, arrows: 'to' }, { from: 2, to: 3, arrows: 'to' } ]
+    }, { layout: { hierarchical: { direction: 'LR' } } });
 
-    // Opções visuais do Grafo
-    var options = {
-        physics: {
-            stabilization: false,
-            barnesHut: {
-                springLength: 200
-            }
-        }
-    };
+    // 4. Grafo Tabela Hash
+    new vis.Network(document.getElementById('grafo-hash'), {
+        nodes: [
+            { id: 'A', label: 'Chave: A', color: '#98FB98' }, { id: 'B', label: 'Chave: B', color: '#98FB98' },
+            { id: 'X', label: 'Valor: X', color: '#DDA0DD' }, { id: 'Y', label: 'Valor: Y', color: '#DDA0DD' }
+        ],
+        edges: [ { from: 'A', to: 'X', arrows: 'to', label: 'O(1)' }, { from: 'B', to: 'Y', arrows: 'to', label: 'O(1)' } ]
+    }, { layout: { hierarchical: { direction: 'LR' } } });
 
-    // Inicializando o Grafo
-    var network = new vis.Network(container, data, options);
+    // 5. Grafo Rotas
+    new vis.Network(document.getElementById('grafo-rotas'), {
+        nodes: [
+            { id: 'C1', label: 'Centro 1', shape: 'star', color: '#FF6347', size: 20 },
+            { id: 'C2', label: 'Centro 2', shape: 'star', color: '#FF6347', size: 20 },
+            { id: 'B1', label: 'Banca 1' }, { id: 'B2', label: 'Banca 2' }, { id: 'B3', label: 'Banca 3' }
+        ],
+        edges: [ { from: 'B1', to: 'C1' }, { from: 'B2', to: 'C1' }, { from: 'B3', to: 'C2' } ]
+    }, optionsPadrao);
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
