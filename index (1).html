@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AED — UFRJ | Resolução de Problemas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d0f14;
+            --surface: #13161e;
+            --surface2: #1a1e28;
+            --border: #242836;
+            --text: #e8eaf0;
+            --muted: #7a8099;
+            --accent: #5dade2;
+            --accent2: #f39c12;
+            --accent3: #27ae60;
+            --danger: #e74c3c;
+            --code-bg: #0a0c10;
+            --gold: #f1c40f;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* ─── NOISE TEXTURE OVERLAY ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── SIDEBAR NAV ─── */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 32px 0;
+            z-index: 100;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-logo .label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-logo h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 22px;
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .sidebar-logo p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .nav-section {
+            padding: 24px 24px 8px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text);
+            border-left-color: var(--accent);
+            background: rgba(93, 173, 226, 0.06);
+        }
+
+        .nav-item .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            min-width: 20px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* ─── MAIN CONTENT ─── */
+        .main {
+            margin-left: 260px;
+            min-height: 100vh;
+            padding: 60px 60px 100px;
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 80px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .hero-tag::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 68px;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-desc {
+            font-size: 17px;
+            color: var(--muted);
+            max-width: 560px;
+            line-height: 1.8;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 32px;
+            margin-top: 48px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item { border-left: 2px solid var(--border); padding-left: 16px; }
+        .meta-item .key { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+        .meta-item .val { font-size: 15px; font-weight: 700; color: var(--text); }
+
+        /* ─── PROBLEM CARDS ─── */
+        .problem {
+            margin-bottom: 80px;
+            scroll-margin-top: 40px;
+        }
+
+        .problem-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .problem-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--border);
+            line-height: 1;
+            min-width: 64px;
+            margin-top: 4px;
+        }
+
+        .problem-title-block h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 32px;
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .badge-time { background: rgba(93,173,226,0.12); color: var(--accent); border: 1px solid rgba(93,173,226,0.25); }
+        .badge-space { background: rgba(39,174,96,0.1); color: var(--accent3); border: 1px solid rgba(39,174,96,0.2); }
+        .badge-struct { background: rgba(243,156,18,0.1); color: var(--accent2); border: 1px solid rgba(243,156,18,0.2); }
+
+        /* Enunciado */
+        .enunciado {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 28px;
+            line-height: 1.8;
+        }
+
+        .enunciado strong { color: var(--accent2); }
+
+        /* Seções internas */
+        .section-label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .insight-box {
+            background: var(--surface2);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            font-size: 14px;
+            line-height: 1.9;
+            color: #c5c9d8;
+        }
+
+        .insight-box strong { color: var(--text); }
+
+        .steps-list {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .steps-list li {
+            display: flex;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: #b0b5c8;
+            line-height: 1.7;
+        }
+
+        .steps-list li:last-child { border-bottom: none; }
+
+        .step-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent);
+            min-width: 28px;
+            padding-top: 2px;
+            font-weight: 600;
+        }
+
+        /* Code block */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        pre code { color: #abb2bf; }
+        .kw { color: #c678dd; }
+        .fn { color: #61afef; }
+        .st { color: #98c379; }
+        .cm { color: #5c6370; font-style: italic; }
+        .num { color: #d19a66; }
+        .op { color: #56b6c2; }
+
+        /* Complexity breakdown */
+        .complexity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 28px;
+            font-size: 13px;
+        }
+
+        .complexity-table th {
+            text-align: left;
+            padding: 10px 16px;
+            background: var(--surface);
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .complexity-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: #c5c9d8;
+        }
+
+        .complexity-table td:first-child { color: var(--text); font-weight: 600; }
+        .complexity-table td code {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        /* Vis graph */
+        .vis-container {
+            height: 280px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--code-bg);
+            margin-bottom: 12px;
+        }
+
+        .graph-caption {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 28px;
+            font-style: italic;
+        }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 80px 0;
+        }
+
+        /* Rationale card */
+        .rationale {
+            background: linear-gradient(135deg, #13161e, #1a1e28);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 80px;
+        }
+
+        .rationale h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            margin-bottom: 24px;
+        }
+
+        .rationale p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.9;
+            margin-bottom: 16px;
+        }
+
+        .rationale p strong { color: var(--accent2); }
+
+        /* Highlight callout */
+        .callout {
+            display: flex;
+            gap: 16px;
+            background: rgba(93,173,226,0.06);
+            border: 1px solid rgba(93,173,226,0.2);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #c5c9d8;
+            line-height: 1.7;
+        }
+
+        .callout-icon { color: var(--accent); font-size: 16px; min-width: 20px; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; padding: 32px 24px 60px; }
+            .hero h1 { font-size: 42px; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+    <div class="sidebar-logo">
+        <div class="label">UFRJ · AED</div>
+        <h1>Algoritmos &amp;<br>Estrutura de Dados</h1>
+        <p>Prof. Strauss</p>
+    </div>
+
+    <div class="nav-section">Problemas</div>
+    <a href="#p1" class="nav-item"><span class="num">01</span>Problema da Celebridade</a>
+    <a href="#p2" class="nav-item"><span class="num">02</span>Votação por Maioria</a>
+    <a href="#p3" class="nav-item"><span class="num">03</span>Agenda de Contatos</a>
+    <a href="#p4" class="nav-item"><span class="num">04</span>Criptografia Hash</a>
+    <a href="#p5" class="nav-item"><span class="num">05</span>Distribuição de Jornais</a>
+    <a href="#p6" class="nav-item"><span class="num">06</span>Fila de Prioridade</a>
+    <a href="#p7" class="nav-item"><span class="num">07</span>Top-K Funcionários</a>
+    <a href="#p8" class="nav-item"><span class="num">08</span>Linha de Montagem</a>
+
+    <div class="sidebar-footer">
+        Marco Aurélio Miquelino<br>Igor Eccard de Sá
+    </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-tag">Repositório Acadêmico</div>
+        <h1>Resolvendo<br>Problemas com<br><em>Algoritmos</em></h1>
+        <p class="hero-desc">
+            Cada problema apresentado em aula destrinchado: motivação, intuição, estrutura de dados escolhida, análise de complexidade e implementação comentada em Python.
+        </p>
+        <div class="hero-meta">
+            <div class="meta-item">
+                <div class="key">Disciplina</div>
+                <div class="val">Algoritmos e Estruturas de Dados</div>
+            </div>
+            <div class="meta-item">
+                <div class="key">Professor</div>
+                <div class="val">Strauss</div>
+            </div>
+            <div class="meta-item">
+                <div class="key">Problemas</div>
+                <div class="val">8 resolvidos</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 1 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p1">
+        <div class="problem-header">
+            <div class="problem-number">01</div>
+            <div class="problem-title-block">
+                <h2>O Problema da Celebridade</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1)</span>
+                    <span class="badge badge-struct">Eliminação por candidato</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Em uma multidão de <em>n</em> pessoas, todos conhecem uma celebridade, mas a celebridade não conhece ninguém. Dado um oráculo <code>conhece(A, B)</code> que responde em O(1), encontre a celebridade com o menor número possível de chamadas.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            A chave do problema está em explorar a <strong>assimetria do relacionamento</strong>. Se perguntarmos "A conhece B?" e a resposta for sim — A imediatamente se descarta como celebridade, pois celebridade não conhece ninguém. Se a resposta for não — B se descarta, pois todos conhecem a celebridade.
+            <br><br>
+            Com isso, <strong>cada pergunta elimina exatamente um candidato</strong>. Com n-1 perguntas, ficamos com um único candidato sobrevivente. Uma segunda rodada de validação em O(n) confirma se ele é de fato a celebridade. Total: <strong>O(n)</strong>.
+        </div>
+
+        <div class="section-label">Passo a Passo</div>
+        <ul class="steps-list">
+            <li><span class="step-num">01</span><span>Inicialize o <code>candidato = 0</code> (qualquer pessoa serve como ponto de partida).</span></li>
+            <li><span class="step-num">02</span><span>Para cada pessoa <code>i</code> de 1 até n-1: se <code>candidato</code> conhece <code>i</code>, então <code>candidato = i</code> (o antigo foi eliminado). Caso contrário, <code>i</code> é eliminado (candidato sobrevive).</span></li>
+            <li><span class="step-num">03</span><span>Ao fim da Fase 1, temos um único sobrevivente. Ele <em>pode</em> ser a celebridade, mas precisamos verificar.</span></li>
+            <li><span class="step-num">04</span><span>Fase 2: verifique (a) que o candidato não conhece ninguém e (b) que todos conhecem o candidato. Se ambas as condições falham, não há celebridade.</span></li>
+        </ul>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">encontrar_celebridade</span>(conhece, n):
+    <span class="cm"># ─── Fase 1: Eliminação ───────────────────────────────────────────</span>
+    <span class="cm"># Invariante: candidato nunca foi eliminado</span>
+    candidato = <span class="num">0</span>
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n):
+        <span class="kw">if</span> conhece(candidato, i):
+            <span class="cm"># candidato conhece i → candidato NÃO pode ser celebridade</span>
+            candidato = i
+        <span class="cm"># else: i não é conhecido pelo candidato → i eliminado</span>
+
+    <span class="cm"># ─── Fase 2: Validação ────────────────────────────────────────────</span>
+    <span class="kw">for</span> pessoa <span class="kw">in</span> <span class="fn">range</span>(n):
+        <span class="kw">if</span> pessoa == candidato:
+            <span class="kw">continue</span>
+        <span class="cm"># A celebridade não conhece ninguém E todos conhecem ela</span>
+        <span class="kw">if</span> conhece(candidato, pessoa) <span class="kw">or not</span> conhece(pessoa, candidato):
+            <span class="kw">return</span> <span class="num">-1</span>  <span class="cm"># Não existe celebridade</span>
+
+    <span class="kw">return</span> candidato</code></pre>
+
+        <table class="complexity-table">
+            <tr><th>Fase</th><th>Operações</th><th>Complexidade</th></tr>
+            <tr><td>Eliminação</td><td>n-1 chamadas a <code>conhece()</code></td><td><code>O(n)</code></td></tr>
+            <tr><td>Validação</td><td>até 2(n-1) chamadas</td><td><code>O(n)</code></td></tr>
+            <tr><td><strong>Total</strong></td><td>máximo 3(n-1) chamadas</td><td><code>O(n)</code></td></tr>
+        </table>
+
+        <div class="callout">
+            <span class="callout-icon">⚠</span>
+            <span>A abordagem ingênua — checar todos os pares — faz O(n²) consultas. O algoritmo acima é ótimo: qualquer algoritmo correto precisa de pelo menos Ω(n) consultas, pois precisa ver cada pessoa ao menos uma vez.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-celebridade" class="vis-container"></div>
+        <p class="graph-caption">Todos apontam para a celebridade (dourado). Nenhuma aresta sai dela.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 2 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p2">
+        <div class="problem-header">
+            <div class="problem-number">02</div>
+            <div class="problem-title-block">
+                <h2>Votação por Maioria Absoluta</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1)</span>
+                    <span class="badge badge-struct">Algoritmo de Boyer-Moore</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Dado o histórico de votos de uma eleição, determine se existe um candidato com maioria absoluta (mais de 50% dos votos + 1). Se existir, retorne-o. Use espaço constante.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            O algoritmo de Boyer-Moore é uma obra de arte da elegância algorítmica. Imagine que cada voto é uma moeda de um candidato. Quando dois candidatos diferentes se encontram, eles se <strong>"cancelam" mutuamente</strong> — removemos um de cada. O elemento que sobrar no fim <em>é o único que poderia ter maioria</em>, pois se um elemento aparece mais de n/2 vezes, ele sempre sobrevive ao cancelamento.
+            <br><br>
+            Porém, sobreviver não garante maioria — é necessária uma segunda passagem para confirmar a contagem real.
+        </div>
+
+        <div class="section-label">Passo a Passo</div>
+        <ul class="steps-list">
+            <li><span class="step-num">01</span><span>Inicialize <code>candidato = None</code> e <code>contagem = 0</code>.</span></li>
+            <li><span class="step-num">02</span><span>Para cada voto: se contagem é 0, o candidato passa a ser o voto atual. Se o voto é igual ao candidato, <code>contagem += 1</code>. Caso contrário, <code>contagem -= 1</code> (cancelamento).</span></li>
+            <li><span class="step-num">03</span><span>Fase 2: conte quantas vezes o candidato sobrevivente aparece. Se mais de n/2 vezes, ele tem maioria absoluta.</span></li>
+        </ul>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">maioria_absoluta</span>(votos):
+    <span class="cm"># ─── Fase 1: Encontrar candidato por Boyer-Moore ──────────────────</span>
+    candidato = <span class="kw">None</span>
+    contagem  = <span class="num">0</span>
+
+    <span class="kw">for</span> voto <span class="kw">in</span> votos:
+        <span class="kw">if</span> contagem == <span class="num">0</span>:
+            candidato = voto       <span class="cm"># Novo candidato emerge</span>
+            contagem  = <span class="num">1</span>
+        <span class="kw">elif</span> voto == candidato:
+            contagem += <span class="num">1</span>         <span class="cm"># Reforço: mesmo candidato</span>
+        <span class="kw">else</span>:
+            contagem -= <span class="num">1</span>         <span class="cm"># Cancelamento: votos diferentes se anulam</span>
+
+    <span class="cm"># ─── Fase 2: Confirmar se tem maioria real ────────────────────────</span>
+    <span class="cm"># O sobrevivente pode não ter maioria (ex: [A, B, C])</span>
+    confirmacao = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> v <span class="kw">in</span> votos <span class="kw">if</span> v == candidato)
+
+    <span class="kw">if</span> confirmacao > <span class="fn">len</span>(votos) / <span class="num">2</span>:
+        <span class="kw">return</span> candidato
+    <span class="kw">return</span> <span class="kw">None</span>  <span class="cm"># Nenhum candidato com maioria absoluta</span>
+
+
+<span class="cm"># Exemplo:</span>
+votos = [<span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="st">'X'</span>, <span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="st">'X'</span>, <span class="st">'X'</span>]
+<span class="fn">print</span>(maioria_absoluta(votos))  <span class="cm"># → 'X' (5 de 7 votos)</span></code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">💡</span>
+            <span>Por que não usar um dicionário de contagens? Funcionaria em O(n) tempo, mas usaria O(k) espaço onde k é o número de candidatos. Boyer-Moore faz o mesmo em O(1) espaço — ideal para streams de dados gigantescas onde não cabe tudo na memória.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-votacao" class="vis-container"></div>
+        <p class="graph-caption">Votos do mesmo candidato somam; votos diferentes se cancelam mutuamente.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 3 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p3">
+        <div class="problem-header">
+            <div class="problem-number">03</div>
+            <div class="problem-title-block">
+                <h2>Agenda de Contatos do Celular</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Busca: O(log n)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">Lista ordenada + Busca binária</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Como o celular armazena e encontra um contato na agenda de forma eficiente? Modele a estrutura de dados ideal considerando as operações: adicionar contato, remover contato, buscar por nome e listar em ordem alfabética.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Uma lista desordenada exigiria varrer todos os contatos a cada busca — O(n) por pesquisa. Mas a grande maioria das agendas mantém os contatos <strong>ordenados alfabeticamente</strong>. Com isso, podemos usar <strong>Busca Binária</strong>: a cada passo, descartamos metade dos contatos restantes. Com 1.000 contatos, precisamos de no máximo <strong>10 comparações</strong> (log₂ 1000 ≈ 10).
+            <br><br>
+            Na prática, celulares modernos usam árvores de busca balanceadas (como B-trees) ou índices hash, mas a busca binária em lista ordenada é o modelo conceitual correto.
+        </div>
+
+        <div class="section-label">Análise das Operações</div>
+        <table class="complexity-table">
+            <tr><th>Operação</th><th>Estrutura</th><th>Complexidade</th></tr>
+            <tr><td>Buscar por nome</td><td>Lista ordenada + Busca Binária</td><td><code>O(log n)</code></td></tr>
+            <tr><td>Adicionar contato</td><td>Inserção em posição correta</td><td><code>O(n)</code> (shift)</td></tr>
+            <tr><td>Remover contato</td><td>Deleção com shift</td><td><code>O(n)</code></td></tr>
+            <tr><td>Listar ordenado</td><td>Lista já mantida ordenada</td><td><code>O(n)</code></td></tr>
+        </table>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> bisect
+
+<span class="kw">class</span> <span class="fn">AgendaContatos</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.contatos = []    <span class="cm"># Lista de dicts ordenada por 'nome'</span>
+        self.nomes    = []    <span class="cm"># Lista paralela só com nomes (para bisect)</span>
+
+    <span class="kw">def</span> <span class="fn">adicionar</span>(self, nome, telefone):
+        <span class="cm"># bisect_left devolve o índice de inserção para manter a ordem: O(log n)</span>
+        pos = bisect.bisect_left(self.nomes, nome)
+        self.nomes.insert(pos, nome)                           <span class="cm"># O(n) shift</span>
+        self.contatos.insert(pos, {<span class="st">'nome'</span>: nome, <span class="st">'tel'</span>: telefone})
+
+    <span class="kw">def</span> <span class="fn">buscar</span>(self, nome):
+        <span class="cm"># Busca Binária: O(log n) comparações</span>
+        pos = bisect.bisect_left(self.nomes, nome)
+        <span class="kw">if</span> pos < <span class="fn">len</span>(self.nomes) <span class="kw">and</span> self.nomes[pos] == nome:
+            <span class="kw">return</span> self.contatos[pos][<span class="st">'tel'</span>]
+        <span class="kw">return</span> <span class="st">"Não encontrado"</span>
+
+    <span class="kw">def</span> <span class="fn">remover</span>(self, nome):
+        <span class="cm"># Localiza com busca binária, depois remove: O(log n) + O(n) shift</span>
+        pos = bisect.bisect_left(self.nomes, nome)
+        <span class="kw">if</span> pos < <span class="fn">len</span>(self.nomes) <span class="kw">and</span> self.nomes[pos] == nome:
+            self.nomes.pop(pos)
+            self.contatos.pop(pos)
+
+    <span class="kw">def</span> <span class="fn">listar</span>(self):
+        <span class="cm"># Já ordenado! O(n) para imprimir</span>
+        <span class="kw">return</span> self.contatos</code></pre>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-agenda" class="vis-container"></div>
+        <p class="graph-caption">Lista ordenada alfabeticamente. A busca binária elimina metade dos contatos a cada comparação.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 4 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p4">
+        <div class="problem-header">
+            <div class="problem-number">04</div>
+            <div class="problem-title-block">
+                <h2>Criptografia com Anonimato de Remetente</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1) extra</span>
+                    <span class="badge badge-struct">Tabela Hash + Cifra de Substituição</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Envie uma mensagem de modo que somente o receptor final saiba o conteúdo e ninguém saiba quem enviou. Modele o mecanismo de criptografia da mensagem e anonimização do remetente.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            O problema tem <strong>duas dimensões independentes</strong>: (1) criptografar o <em>conteúdo</em> e (2) ocultar a <em>identidade do remetente</em>. Para o conteúdo, usamos uma <strong>Tabela Hash como chave de substituição</strong> — cada caractere é mapeado para outro em O(1). Para o anonimato, modelamos um sistema de <strong>roteamento em cadeia</strong> (onion routing simplificado): a mensagem passa por intermediários que não sabem nem a origem nem o destino final.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> hashlib, os
+
+<span class="cm"># ─── Parte 1: Cifra de Substituição via Tabela Hash ───────────────</span>
+<span class="kw">def</span> <span class="fn">gerar_chave_substituicao</span>(seed=<span class="num">42</span>):
+    <span class="cm">"""Gera um mapeamento bijetivo de cada letra para outra."""</span>
+    <span class="kw">import</span> random
+    rng = random.Random(seed)
+    alfabeto = <span class="fn">list</span>(<span class="st">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>)
+    embaralhado = alfabeto[:]
+    rng.shuffle(embaralhado)
+    <span class="cm"># Chave (dict): busca em O(1) por hash interno do Python</span>
+    chave    = <span class="fn">dict</span>(<span class="fn">zip</span>(alfabeto, embaralhado))
+    inversa  = <span class="fn">dict</span>(<span class="fn">zip</span>(embaralhado, alfabeto))
+    <span class="kw">return</span> chave, inversa
+
+<span class="kw">def</span> <span class="fn">criptografar</span>(mensagem, chave):
+    <span class="cm"># Cada lookup na tabela hash é O(1) → total O(n)</span>
+    <span class="kw">return</span> <span class="st">""</span>.join(chave.get(c.upper(), c) <span class="kw">for</span> c <span class="kw">in</span> mensagem)
+
+<span class="kw">def</span> <span class="fn">descriptografar</span>(cifrado, inversa):
+    <span class="kw">return</span> <span class="st">""</span>.join(inversa.get(c, c) <span class="kw">for</span> c <span class="kw">in</span> cifrado)
+
+<span class="cm"># ─── Parte 2: Anonimato via Cadeia de Roteamento ──────────────────</span>
+<span class="kw">class</span> <span class="fn">NoRoteamento</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, id_no):
+        self.id = id_no
+
+    <span class="kw">def</span> <span class="fn">repassar</span>(self, pacote, proximo_no):
+        <span class="cm"># O nó intermediário vê apenas o próximo salto, nunca a origem</span>
+        <span class="fn">print</span>(<span class="st">f"Nó {self.id}: repassando para {proximo_no.id} (origem desconhecida)"</span>)
+        <span class="kw">return</span> proximo_no
+
+<span class="cm"># Uso combinado:</span>
+chave, inversa = <span class="fn">gerar_chave_substituicao</span>()
+msg_original   = <span class="st">"ENCONTRO NA SEXTA"</span>
+msg_cifrada    = <span class="fn">criptografar</span>(msg_original, chave)
+<span class="fn">print</span>(msg_cifrada)       <span class="cm"># Ex: "VQPBZQCF QU YVMZU"</span>
+<span class="fn">print</span>(<span class="fn">descriptografar</span>(msg_cifrada, inversa))  <span class="cm"># → "ENCONTRO NA SEXTA"</span></code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">🔐</span>
+            <span>Em criptografia real moderna, usa-se AES (simétrico) ou RSA/Elliptic Curve (assimétrico). O modelo de roteamento anônimo é a base do <strong>Tor</strong> (The Onion Router). A cifra de substituição é vulnerável à análise de frequência, mas ilustra perfeitamente o uso de hash maps em O(1).</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-hash" class="vis-container"></div>
+        <p class="graph-caption">Tabela Hash mapeia cada caractere em tempo O(1) — independente do tamanho da mensagem.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 5 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p5">
+        <div class="problem-header">
+            <div class="problem-number">05</div>
+            <div class="problem-title-block">
+                <h2>Distribuição de Jornais com 3 Centros</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">K-means com K fixo (K=3)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Um bairro tem <em>n</em> bancas de jornal e 3 pontos de distribuição fixos em posições aleatórias. Otimize a distribuição alocando cada banca ao ponto mais próximo, minimizando a distância total percorrida.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Como K=3 é uma <strong>constante fixa</strong>, o loop interno que compara cada banca com os 3 centros executa exatamente 3 vezes — um número constante, independente de n. Logo, O(K×n) = O(3×n) = <strong>O(n)</strong>. Esse é um padrão importante: quando K é fixo, o que parece quadrático colapsa para linear.
+            <br><br>
+            Este problema é uma versão simplificada do <strong>K-means clustering</strong>, mas com centros fixos (não há iteração de convergência). O critério de alocação é a distância euclidiana mínima.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">distancia_euclidiana</span>(ponto_a, ponto_b):
+    <span class="cm"># Teorema de Pitágoras em 2D</span>
+    <span class="kw">return</span> math.sqrt((ponto_a[<span class="num">0</span>] - ponto_b[<span class="num">0</span>])**<span class="num">2</span> + (ponto_a[<span class="num">1</span>] - ponto_b[<span class="num">1</span>])**<span class="num">2</span>)
+
+<span class="kw">def</span> <span class="fn">alocar_bancas</span>(bancas, centros):
+    <span class="cm">"""
+    bancas  : lista de tuplas (x, y) — posição de cada banca
+    centros : lista de 3 tuplas (x, y) — pontos de distribuição fixos
+    
+    Retorna: dicionário centro → [lista de bancas atribuídas]
+    """</span>
+    alocacao = {c: [] <span class="kw">for</span> c <span class="kw">in</span> centros}
+
+    <span class="kw">for</span> banca <span class="kw">in</span> bancas:               <span class="cm"># Loop externo: O(n)</span>
+        melhor_centro = <span class="fn">min</span>(           <span class="cm"># Loop interno: O(K) = O(3) = O(1)</span>
+            centros,
+            key=<span class="kw">lambda</span> c: <span class="fn">distancia_euclidiana</span>(banca, c)
+        )
+        alocacao[melhor_centro].append(banca)
+
+    <span class="kw">return</span> alocacao
+
+<span class="kw">def</span> <span class="fn">distancia_total</span>(alocacao):
+    <span class="cm">"""Calcula a soma de todas as distâncias (métrica de qualidade)."""</span>
+    total = <span class="num">0</span>
+    <span class="kw">for</span> centro, bancas_grupo <span class="kw">in</span> alocacao.items():
+        <span class="kw">for</span> banca <span class="kw">in</span> bancas_grupo:
+            total += <span class="fn">distancia_euclidiana</span>(banca, centro)
+    <span class="kw">return</span> total
+
+<span class="cm"># Exemplo de uso:</span>
+centros = [(<span class="num">2</span>, <span class="num">3</span>), (<span class="num">8</span>, <span class="num">7</span>), (<span class="num">5</span>, <span class="num">1</span>)]
+bancas  = [(<span class="num">1</span>, <span class="num">2</span>), (<span class="num">9</span>, <span class="num">6</span>), (<span class="num">4</span>, <span class="num">1</span>), (<span class="num">7</span>, <span class="num">8</span>), (<span class="num">3</span>, <span class="num">4</span>)]
+resultado = <span class="fn">alocar_bancas</span>(bancas, centros)
+<span class="fn">print</span>(<span class="st">f"Distância total: {distancia_total(resultado):.2f}"</span>)</code></pre>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-rotas" class="vis-container"></div>
+        <p class="graph-caption">Cada banca (azul) conecta ao centro de distribuição (vermelho) mais próximo.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 6 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p6">
+        <div class="problem-header">
+            <div class="problem-number">06</div>
+            <div class="problem-title-block">
+                <h2>Fila de Prioridade com Prioridades Dinâmicas</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Extração: O(log n)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">Heap Binário (Min-Heap)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Um sistema de tarefas tem prioridades que mudam dinamicamente durante a execução. Como garantir que sempre executemos a tarefa de maior prioridade, mesmo com inserções e mudanças de prioridade frequentes?
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Uma lista simples exigiria O(n) para encontrar a tarefa de maior prioridade a cada extração. Um <strong>Heap Binário</strong> resolve isso em O(log n): é uma árvore binária quase-completa onde o pai <em>sempre</em> tem prioridade maior que os filhos. O elemento de maior prioridade está sempre na raiz — acesso em O(1). Inserção e remoção reorganizam a árvore em no máximo log₂n passos.
+            <br><br>
+            Para prioridades dinâmicas, mantemos um mapeamento de tarefa→índice no heap, permitindo localizar e atualizar a prioridade de qualquer tarefa em O(log n).
+        </div>
+
+        <div class="section-label">Passo a Passo</div>
+        <ul class="steps-list">
+            <li><span class="step-num">01</span><span><strong>Inserção:</strong> Adiciona ao fim do heap. Então "sobe" (heapify-up): compara com o pai e troca se necessário. Máximo de log n trocas.</span></li>
+            <li><span class="step-num">02</span><span><strong>Extração do máximo:</strong> Remove a raiz. Move o último elemento para a raiz. "Desce" (heapify-down): compara com filhos e troca com o maior. Máximo de log n trocas.</span></li>
+            <li><span class="step-num">03</span><span><strong>Atualização de prioridade:</strong> Localiza a tarefa (O(1) com dicionário auxiliar). Atualiza a prioridade. Se aumentou, sobe; se diminuiu, desce. O(log n).</span></li>
+        </ul>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">class</span> <span class="fn">FilaPrioridadeDinamica</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.heap   = []   <span class="cm"># Min-heap: (−prioridade, contador, tarefa)</span>
+        self.index  = {}   <span class="cm"># tarefa → entrada ativa no heap</span>
+        self.contador = <span class="num">0</span>  <span class="cm"># Desempate por ordem de chegada (FIFO)</span>
+        self.REMOVIDA = <span class="st">'REMOVIDA'</span>  <span class="cm"># Marcador de entrada invalidada</span>
+
+    <span class="kw">def</span> <span class="fn">inserir</span>(self, tarefa, prioridade):
+        <span class="kw">if</span> tarefa <span class="kw">in</span> self.index:
+            self.<span class="fn">atualizar</span>(tarefa, prioridade)
+            <span class="kw">return</span>
+        entrada = [-prioridade, self.contador, tarefa]  <span class="cm"># negativo → max-heap via min-heap</span>
+        self.index[tarefa] = entrada
+        heapq.heappush(self.heap, entrada)              <span class="cm"># O(log n)</span>
+        self.contador += <span class="num">1</span>
+
+    <span class="kw">def</span> <span class="fn">atualizar</span>(self, tarefa, nova_prioridade):
+        <span class="cm"># Invalidação lazy: marca a entrada antiga como removida</span>
+        entrada_antiga = self.index.pop(tarefa)
+        entrada_antiga[<span class="num">2</span>] = self.REMOVIDA
+        self.<span class="fn">inserir</span>(tarefa, nova_prioridade)  <span class="cm"># Insere nova entrada</span>
+
+    <span class="kw">def</span> <span class="fn">extrair_maior</span>(self):
+        <span class="kw">while</span> self.heap:
+            prioridade, _, tarefa = heapq.heappop(self.heap)  <span class="cm"># O(log n)</span>
+            <span class="kw">if</span> tarefa != self.REMOVIDA:
+                <span class="kw">del</span> self.index[tarefa]
+                <span class="kw">return</span> tarefa, -prioridade
+        <span class="kw">raise</span> <span class="fn">KeyError</span>(<span class="st">"Fila vazia"</span>)
+
+<span class="cm"># Exemplo:</span>
+fila = <span class="fn">FilaPrioridadeDinamica</span>()
+fila.<span class="fn">inserir</span>(<span class="st">"Relatório"</span>, <span class="num">3</span>)
+fila.<span class="fn">inserir</span>(<span class="st">"Email urgente"</span>, <span class="num">8</span>)
+fila.<span class="fn">inserir</span>(<span class="st">"Reunião"</span>, <span class="num">5</span>)
+fila.<span class="fn">atualizar</span>(<span class="st">"Relatório"</span>, <span class="num">10</span>)  <span class="cm"># Prazo aproximou — prioridade sobe!</span>
+<span class="fn">print</span>(fila.<span class="fn">extrair_maior</span>())   <span class="cm"># → ("Relatório", 10)</span></code></pre>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-heap" class="vis-container"></div>
+        <p class="graph-caption">Heap Binário: o elemento de maior prioridade sempre está na raiz.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 7 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p7">
+        <div class="problem-header">
+            <div class="problem-number">07</div>
+            <div class="problem-title-block">
+                <h2>Top-5 Funcionários por Produtividade</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n log 5) = O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1)</span>
+                    <span class="badge badge-struct">Min-Heap de Tamanho Fixo</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Uma empresa quer selecionar os 5 funcionários mais produtivos de um total de <em>n</em> para premiação em um resort. Como fazer isso sem ordenar todos os funcionários?
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Ordenar todos os n funcionários custaria O(n log n). Mas precisamos apenas dos 5 melhores. A solução elegante é manter um <strong>min-heap de tamanho 5</strong>. A raiz guarda o <em>menor dos top-5</em>. Para cada novo funcionário, se ele for melhor que o pior do top-5, substituímos. Assim o heap sempre contém os 5 melhores vistos até agora, e cada atualização custa O(log 5) = O(1).
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">top_k_funcionarios</span>(funcionarios, k=<span class="num">5</span>):
+    <span class="cm">"""
+    funcionarios: lista de (nome, produtividade)
+    k           : número de funcionários premiados
+    
+    Estratégia: min-heap de tamanho k
+    - Raiz = o MENOR dos top-k (o que seria eliminado primeiro)
+    - Se novo funcionário > raiz → substitui e reheapifica
+    """</span>
+    heap = []  <span class="cm"># Min-heap com no máximo k elementos</span>
+
+    <span class="kw">for</span> nome, prod <span class="kw">in</span> funcionarios:        <span class="cm"># O(n)</span>
+        <span class="kw">if</span> <span class="fn">len</span>(heap) < k:
+            heapq.heappush(heap, (prod, nome))  <span class="cm"># Preenche as k primeiras vagas</span>
+        <span class="kw">elif</span> prod > heap[<span class="num">0</span>][<span class="num">0</span>]:              <span class="cm"># Candidato melhor que o pior do top-k</span>
+            heapq.heapreplace(heap, (prod, nome))  <span class="cm"># Remove o pior, insere novo: O(log k)</span>
+
+    <span class="cm"># Extrai do maior para o menor</span>
+    <span class="kw">return</span> <span class="fn">sorted</span>(heap, key=<span class="kw">lambda</span> x: -x[<span class="num">0</span>])
+
+<span class="cm"># Complexidade Final:</span>
+<span class="cm"># n iterações × O(log k) por heapreplace = O(n log k)</span>
+<span class="cm"># Como k=5 é constante → O(n log 5) = O(n)</span>
+<span class="cm"># Muito melhor que O(n log n) de uma ordenação completa!</span>
+
+funcionarios = [
+    (<span class="st">"Alice"</span>, <span class="num">92</span>), (<span class="st">"Bruno"</span>, <span class="num">87</span>), (<span class="st">"Carla"</span>, <span class="num">95</span>),
+    (<span class="st">"Diego"</span>, <span class="num">78</span>), (<span class="st">"Eva"</span>, <span class="num">99</span>), (<span class="st">"Fábio"</span>, <span class="num">88</span>),
+]
+premiados = <span class="fn">top_k_funcionarios</span>(funcionarios, k=<span class="num">5</span>)
+<span class="kw">for</span> prod, nome <span class="kw">in</span> premiados:
+    <span class="fn">print</span>(<span class="st">f"{nome}: {prod} pontos"</span>)</code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">📊</span>
+            <span>Esse padrão (top-K com K fixo usando min-heap) é amplamente usado em sistemas de recomendação, rankings em tempo real e processamento de streams de dados onde não podemos armazenar tudo na memória.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-topk" class="vis-container"></div>
+        <p class="graph-caption">Min-heap de tamanho 5: a raiz é o menor dos top-5. Novos candidatos desafiam a raiz.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 8 -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p8">
+        <div class="problem-header">
+            <div class="problem-number">08</div>
+            <div class="problem-title-block">
+                <h2>Linha de Montagem com Máquinas Heterogêneas</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n × m)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">Fila de Prioridade + Escalonamento Greedy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Em situação emergencial, maximize a produção de uma fábrica com múltiplas linhas de montagem (<em>m</em> linhas), cada uma com máquinas modernas (rápidas) e antigas (lentas). Como escalonar a produção para maximizar o throughput?
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Este é um problema de <strong>escalonamento de tarefas em máquinas paralelas heterogêneas</strong>. A estratégia gulosa ótima é: <strong>sempre alocar o próximo item à máquina que terminar primeiro</strong>. Isso evita que máquinas rápidas fiquem ociosas enquanto lentas acumulam trabalho.
+            <br><br>
+            Usamos um <strong>min-heap de disponibilidade</strong>: a raiz sempre aponta para a máquina que ficará livre primeiro. Quando uma nova peça chega, extraímos a máquina mais disponível, alocamos, e reinserimos com o novo tempo de conclusão.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">escalonar_producao</span>(n_pecas, linhas_maquinas):
+    <span class="cm">"""
+    n_pecas        : número de peças a produzir
+    linhas_maquinas: lista de listas — cada sub-lista tem os tempos
+                     de produção das máquinas naquela linha
+                     Ex: [[2, 5], [3, 6]] = 2 linhas, máquinas com
+                     velocidades 2 e 5 (moderna e antiga, resp.)
+    
+    Retorna: tempo total até última peça ser concluída (makespan)
+    """</span>
+    <span class="cm"># Inicializa o heap com todas as máquinas disponíveis no tempo 0</span>
+    <span class="cm"># Formato: (tempo_livre, linha_id, maquina_id, velocidade)</span>
+    heap = []
+    <span class="kw">for</span> linha_id, maquinas <span class="kw">in</span> <span class="fn">enumerate</span>(linhas_maquinas):
+        <span class="kw">for</span> maq_id, velocidade <span class="kw">in</span> <span class="fn">enumerate</span>(maquinas):
+            heapq.heappush(heap, (<span class="num">0</span>, linha_id, maq_id, velocidade))
+
+    log        = []
+    tempo_final = <span class="num">0</span>
+
+    <span class="kw">for</span> peca <span class="kw">in</span> <span class="fn">range</span>(n_pecas):
+        <span class="cm"># Máquina que ficará livre mais cedo: O(log(total_maquinas))</span>
+        tempo_livre, linha, maquina, vel = heapq.heappop(heap)
+
+        novo_tempo = tempo_livre + vel  <span class="cm"># Tempo de conclusão desta peça</span>
+        tempo_final = <span class="fn">max</span>(tempo_final, novo_tempo)
+        log.append(<span class="st">f"Peça {peca+1} → Linha {linha}, Máquina {maquina} (vel={vel}) → pronta em t={novo_tempo}"</span>)
+
+        <span class="cm"># Reinsere máquina com novo tempo de disponibilidade</span>
+        heapq.heappush(heap, (novo_tempo, linha, maquina, vel))
+
+    <span class="kw">return</span> tempo_final, log
+
+<span class="cm"># Exemplo: 2 linhas, cada uma com máquina moderna (vel=2) e antiga (vel=5)</span>
+linhas = [[<span class="num">2</span>, <span class="num">5</span>], [<span class="num">3</span>, <span class="num">6</span>]]
+makespan, log = <span class="fn">escalonar_producao</span>(<span class="num">8</span>, linhas)
+<span class="fn">print</span>(<span class="st">f"Tempo total de produção: {makespan}"</span>)
+<span class="kw">for</span> entrada <span class="kw">in</span> log:
+    <span class="fn">print</span>(entrada)</code></pre>
+
+        <table class="complexity-table">
+            <tr><th>Operação</th><th>Complexidade</th><th>Observação</th></tr>
+            <tr><td>Inicialização do heap</td><td><code>O(M log M)</code></td><td>M = total de máquinas</td></tr>
+            <tr><td>Por peça produzida</td><td><code>O(log M)</code></td><td>pop + push no heap</td></tr>
+            <tr><td><strong>Total</strong></td><td><code>O(n log M)</code></td><td>n peças, M máquinas</td></tr>
+        </table>
+
+        <div class="callout">
+            <span class="callout-icon">🏭</span>
+            <span>Este algoritmo é a base de escalonadores em sistemas operacionais (CPU scheduling), clusters de computação (Hadoop, Spark) e gerenciamento de filas em serviços de nuvem. O problema em sua forma geral (Job Shop Scheduling) é NP-completo, mas a versão com máquinas independentes tem solução gulosa ótima.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-montagem" class="vis-container"></div>
+        <p class="graph-caption">Máquinas modernas (verde) recebem mais peças por ficarem disponíveis mais rápido.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- RATIONALE -->
+    <!-- ══════════════════════════════════════════════ -->
+    <div class="rationale">
+        <h2>Por que um site, não slides?</h2>
+        <p>
+            <strong>Atemporalidade:</strong> Apresentações em slides ficam presas em diretórios locais. Este repositório vive na web — acessível para turmas futuras, persistente, linkável. O conhecimento produzido neste semestre não some com o fim do período.
+        </p>
+        <p>
+            <strong>Python como pseudo-código vivo:</strong> A sintaxe do Python é deliberadamente próxima de pseudo-código: sem chaves, sem ponto-e-vírgula, indentação semântica. O que escrevemos aqui pode ser transcrito para uma prova escrita com mínimas adaptações. É código executável <em>e</em> modelo mental ao mesmo tempo.
+        </p>
+        <p>
+            <strong>Visualizações interativas:</strong> Grafos estáticos em slides são imagens mortas. Aqui, as estruturas de dados são renderizadas dinamicamente e podem ser exploradas. A compreensão intuitiva de um heap ou de um grafo de eliminação é muito mais profunda quando se pode ver a estrutura.
+        </p>
+        <p style="margin-bottom:0; color:#6b7190; font-size:13px;">
+            Marco Aurélio Penteado Miquelino &amp; Igor Eccard de Sá · Algoritmos e Estruturas de Dados · Prof. Strauss · UFRJ
+        </p>
+    </div>
+
+</main>
+
+<script>
+// ─── VIS.JS THEME ────────────────────────────────────────────────────
+const DARK = '#0a0c10';
+const NODE_DEF = { color: { background: '#1a1e28', border: '#5dade2', highlight: { background: '#1e2535', border: '#61d3f4' } }, font: { color: '#e8eaf0', size: 13, face: 'JetBrains Mono' }, borderWidth: 1.5 };
+const EDGE_DEF = { color: { color: '#2e3547', highlight: '#5dade2' }, font: { color: '#7a8099', size: 11, face: 'JetBrains Mono' }, smooth: { type: 'curvedCW', roundness: 0.1 } };
+
+function mkNet(id, nodes, edges, opts = {}) {
+    const container = document.getElementById(id);
+    const data = {
+        nodes: new vis.DataSet(nodes.map(n => ({ ...NODE_DEF, ...n, color: { ...NODE_DEF.color, ...n.color } }))),
+        edges: new vis.DataSet(edges.map(e => ({ ...EDGE_DEF, ...e })))
+    };
+    const defaults = { background: DARK, physics: { stabilization: false }, interaction: { tooltipDelay: 200 } };
+    return new vis.Network(container, data, { ...defaults, ...opts });
+}
+
+// 1. Celebridade
+mkNet('grafo-celebridade', [
+    { id: 1, label: 'Pessoa A', shape: 'dot', size: 14, color: { background: '#1e2535', border: '#5dade2' } },
+    { id: 2, label: 'Pessoa B', shape: 'dot', size: 14, color: { background: '#1e2535', border: '#5dade2' } },
+    { id: 3, label: 'Pessoa C', shape: 'dot', size: 14, color: { background: '#1e2535', border: '#5dade2' } },
+    { id: 4, label: 'Pessoa D', shape: 'dot', size: 14, color: { background: '#1e2535', border: '#5dade2' } },
+    { id: 5, label: '⭐ Celebridade', shape: 'star', size: 28, color: { background: '#f1c40f', border: '#d4ac0d' }, font: { color: '#000', size: 14, face: 'Syne', bold: true } }
+], [
+    { from: 1, to: 5, arrows: 'to', label: 'conhece' },
+    { from: 2, to: 5, arrows: 'to', label: 'conhece' },
+    { from: 3, to: 5, arrows: 'to', label: 'conhece' },
+    { from: 4, to: 5, arrows: 'to', label: 'conhece' },
+    { from: 1, to: 2, arrows: 'to', dashes: true, label: 'conhece?', color: { color: '#444' } },
+    { from: 2, to: 3, arrows: 'to', dashes: true, color: { color: '#444' } },
+]);
+
+// 2. Votação
+mkNet('grafo-votacao', [
+    { id: 1, label: 'Voto X\n+1', color: { background: '#1a3a5c', border: '#5dade2' } },
+    { id: 2, label: 'Voto X\n+1', color: { background: '#1a3a5c', border: '#5dade2' } },
+    { id: 3, label: 'Voto Y\n−1', color: { background: '#3a1a1a', border: '#e74c3c' } },
+    { id: 4, label: 'Voto X\n+1', color: { background: '#1a3a5c', border: '#5dade2' } },
+    { id: 5, label: 'X vence\n✓', shape: 'star', size: 26, color: { background: '#27ae60', border: '#1e8449' }, font: { color: '#fff', bold: true } },
+], [
+    { from: 1, to: 2, arrows: 'to', label: '+1' },
+    { from: 2, to: 3, dashes: true, label: 'cancela' },
+    { from: 4, to: 5, arrows: 'to', label: 'sobrevive' },
+], { layout: { hierarchical: { direction: 'LR', nodeSpacing: 120, levelSeparation: 160 } }, physics: { enabled: false } });
+
+// 3. Agenda
+mkNet('grafo-agenda', [
+    { id: 1, label: '[ Ana ]\ntel: 9999-1111', shape: 'box', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 2, label: '[ Bruno ]\ntel: 9999-2222', shape: 'box', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 3, label: '[ Carlos ]\ntel: 9999-3333', shape: 'box', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 4, label: '↕ busca\nbinária', shape: 'diamond', color: { background: '#2c1a4a', border: '#9b59b6' }, font: { color: '#d7bde2' } },
+], [
+    { from: 1, to: 2, arrows: 'to', label: 'próximo' },
+    { from: 2, to: 3, arrows: 'to', label: 'próximo' },
+    { from: 4, to: 2, dashes: true, label: 'O(log n)' },
+], { layout: { hierarchical: { direction: 'LR' } }, physics: { enabled: false } });
+
+// 4. Hash
+mkNet('grafo-hash', [
+    { id: 'A', label: 'Chave: "E"', shape: 'ellipse', color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'B', label: 'Chave: "N"', shape: 'ellipse', color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'C', label: 'Chave: "C"', shape: 'ellipse', color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'X', label: 'Valor: "V"', shape: 'box', color: { background: '#3a2a1a', border: '#f39c12' } },
+    { id: 'Y', label: 'Valor: "Q"', shape: 'box', color: { background: '#3a2a1a', border: '#f39c12' } },
+    { id: 'Z', label: 'Valor: "Z"', shape: 'box', color: { background: '#3a2a1a', border: '#f39c12' } },
+], [
+    { from: 'A', to: 'X', arrows: 'to', label: 'O(1)' },
+    { from: 'B', to: 'Y', arrows: 'to', label: 'O(1)' },
+    { from: 'C', to: 'Z', arrows: 'to', label: 'O(1)' },
+], { layout: { hierarchical: { direction: 'LR', levelSeparation: 220 } }, physics: { enabled: false } });
+
+// 5. Rotas
+mkNet('grafo-rotas', [
+    { id: 'C1', label: '📦 Centro 1', shape: 'star', size: 24, color: { background: '#3a1a1a', border: '#e74c3c' } },
+    { id: 'C2', label: '📦 Centro 2', shape: 'star', size: 24, color: { background: '#3a1a1a', border: '#e74c3c' } },
+    { id: 'C3', label: '📦 Centro 3', shape: 'star', size: 24, color: { background: '#3a1a1a', border: '#e74c3c' } },
+    { id: 'B1', label: 'Banca 1', size: 12, color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'B2', label: 'Banca 2', size: 12, color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'B3', label: 'Banca 3', size: 12, color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'B4', label: 'Banca 4', size: 12, color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 'B5', label: 'Banca 5', size: 12, color: { background: '#1a2a3a', border: '#5dade2' } },
+], [
+    { from: 'B1', to: 'C1', label: 'min dist' },
+    { from: 'B2', to: 'C1', label: 'min dist' },
+    { from: 'B3', to: 'C2', label: 'min dist' },
+    { from: 'B4', to: 'C3', label: 'min dist' },
+    { from: 'B5', to: 'C2', label: 'min dist' },
+]);
+
+// 6. Heap de Prioridade
+mkNet('grafo-heap', [
+    { id: 1, label: 'Relatório\nP=10 ⬆', shape: 'star', size: 24, color: { background: '#f39c12', border: '#d4ac0d' }, font: { color: '#000', bold: true } },
+    { id: 2, label: 'Email\nP=8', color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 3, label: 'Reunião\nP=5', color: { background: '#1a2a3a', border: '#5dade2' } },
+    { id: 4, label: 'Tarefa\nP=3', color: { background: '#1e2020', border: '#444' } },
+    { id: 5, label: 'Leitura\nP=2', color: { background: '#1e2020', border: '#444' } },
+], [
+    { from: 1, to: 2, arrows: 'to' },
+    { from: 1, to: 3, arrows: 'to' },
+    { from: 2, to: 4, arrows: 'to' },
+    { from: 2, to: 5, arrows: 'to' },
+], { layout: { hierarchical: { direction: 'UD', levelSeparation: 80 } }, physics: { enabled: false } });
+
+// 7. Top-K
+mkNet('grafo-topk', [
+    { id: 1, label: 'Eva\n99 ★', shape: 'star', size: 22, color: { background: '#1a4a1a', border: '#27ae60' } },
+    { id: 2, label: 'Carla\n95', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 3, label: 'Alice\n92', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 4, label: 'Fábio\n88', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 5, label: 'Bruno\n87 ⬇\n(pior top-5)', color: { background: '#2a1a1a', border: '#e74c3c' }, font: { color: '#e08080' } },
+    { id: 6, label: 'Diego\n78\n(eliminado)', color: { background: '#1e1e1e', border: '#444' }, font: { color: '#666' } },
+], [
+    { from: 5, to: 1, dashes: true, label: 'desafiado por\nnovo candidato' },
+    { from: 6, to: 5, arrows: 'to', dashes: true, label: '78 < 87\n→ descartado' },
+]);
+
+// 8. Montagem
+mkNet('grafo-montagem', [
+    { id: 'L1M1', label: 'Linha 1\nMod (vel=2)', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 'L1M2', label: 'Linha 1\nAntiga (vel=5)', color: { background: '#2a1e1e', border: '#7f8c8d' } },
+    { id: 'L2M1', label: 'Linha 2\nMod (vel=3)', color: { background: '#1a3a1a', border: '#27ae60' } },
+    { id: 'L2M2', label: 'Linha 2\nAntiga (vel=6)', color: { background: '#2a1e1e', border: '#7f8c8d' } },
+    { id: 'P1', label: 'Peça →\nt=2', shape: 'box', color: { background: '#1a2535', border: '#5dade2' } },
+    { id: 'P2', label: 'Peça →\nt=4', shape: 'box', color: { background: '#1a2535', border: '#5dade2' } },
+    { id: 'P3', label: 'Peça →\nt=3', shape: 'box', color: { background: '#1a2535', border: '#5dade2' } },
+], [
+    { from: 'L1M1', to: 'P1', arrows: 'to', label: 'alocada' },
+    { from: 'L2M1', to: 'P3', arrows: 'to', label: 'alocada' },
+    { from: 'L1M1', to: 'P2', arrows: 'to', label: 'livre mais cedo' },
+    { from: 'L1M2', to: 'P2', dashes: true, label: 'mais lenta', color: { color: '#444' } },
+]);
+</script>
+
+</body>
+</html>
