@@ -460,9 +460,11 @@
     <a href="#p6" class="nav-item"><span class="num">06</span>Fila de Prioridade</a>
     <a href="#p7" class="nav-item"><span class="num">07</span>Top-K Funcionários</a>
     <a href="#p8" class="nav-item"><span class="num">08</span>Linha de Montagem</a>
+    <a href="#p9" class="nav-item"><span class="num">09</span>Matrizes M×N</a>
+    <a href="#p10" class="nav-item"><span class="num">10</span>Torre de Hanói</a>
 
     <div class="sidebar-footer">
-        Marco Aurélio Miquelino<br>Igor de Sa Eccard
+        Marco Aurélio Miquelino<br>Igor Eccard de Sá
     </div>
 </nav>
 
@@ -487,7 +489,7 @@
             </div>
             <div class="meta-item">
                 <div class="key">Problemas</div>
-                <div class="val">8 resolvidos</div>
+                <div class="val">10 resolvidos</div>
             </div>
         </div>
     </section>
@@ -1112,6 +1114,351 @@ makespan, log = <span class="fn">escalonar_producao</span>(<span class="num">8</
     <hr class="divider">
 
     <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 9 — MATRIZES M×N -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p9">
+        <div class="problem-header">
+            <div class="problem-number">09</div>
+            <div class="problem-title-block">
+                <h2>Soma e Multiplicação de Matrizes [M×N]</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Soma: O(M·N)</span>
+                    <span class="badge badge-time">Multiplicação: O(M·N·P)</span>
+                    <span class="badge badge-space">Espaço: O(M·P)</span>
+                    <span class="badge badge-struct">Álgebra Linear Computacional</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Implemente operações de <em>soma</em> (A[M×N] + B[M×N]) e <em>multiplicação</em> (A[M×N] × B[N×P]) de matrizes de ordem arbitrária. Analise as pré-condições de cada operação, a complexidade resultante e visualize o padrão de acesso à memória.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            A <strong>soma</strong> é elementar: soma-se posição a posição. Exige que A e B tenham exatamente a mesma ordem — qualquer diferença de dimensão torna a operação inválida. O custo é proporcional ao número de elementos: <strong>O(M·N)</strong>.
+            <br><br>
+            A <strong>multiplicação</strong> é mais sutil. Para que A[M×N] × B[N×P] seja definida, o número de <em>colunas de A</em> deve ser igual ao número de <em>linhas de B</em> (ambos N). Cada elemento C[i][j] da matriz resultado é o <strong>produto interno</strong> (dot product) da linha i de A com a coluna j de B — N multiplicações e N−1 somas. Como há M×P elementos em C, o custo total é <strong>O(M·N·P)</strong>. Para matrizes quadradas n×n, isso colapsa para O(n³) — o custo clássico.
+        </div>
+
+        <div class="section-label">Análise das Operações</div>
+        <table class="complexity-table">
+            <tr><th>Operação</th><th>Pré-condição</th><th>Complexidade</th><th>Resultado</th></tr>
+            <tr><td>Soma A + B</td><td>A e B com mesma ordem [M×N]</td><td><code>O(M·N)</code></td><td>Matriz [M×N]</td></tr>
+            <tr><td>Multiplicação A × B</td><td>Colunas(A) = Linhas(B)</td><td><code>O(M·N·P)</code></td><td>Matriz [M×P]</td></tr>
+            <tr><td>Caso quadrado (n×n)</td><td>A e B com ordem [n×n]</td><td><code>O(n³)</code></td><td>Matriz [n×n]</td></tr>
+        </table>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">somar_matrizes</span>(A, B):
+    <span class="cm">"""
+    Pré-condição: len(A) == len(B) e len(A[0]) == len(B[0])
+    Complexidade: O(M·N) tempo, O(M·N) espaço (resultado)
+    """</span>
+    M, N = <span class="fn">len</span>(A), <span class="fn">len</span>(A[<span class="num">0</span>])
+    <span class="cm"># Cria matriz resultado inicializada com zeros</span>
+    C = [[<span class="num">0</span>] * N <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(M)]
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(M):        <span class="cm"># O(M) linhas</span>
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(N):    <span class="cm"># O(N) colunas → total O(M·N)</span>
+            C[i][j] = A[i][j] + B[i][j]
+    <span class="kw">return</span> C
+
+
+<span class="kw">def</span> <span class="fn">multiplicar_matrizes</span>(A, B):
+    <span class="cm">"""
+    A[M×N] × B[N×P] → C[M×P]
+    Pré-condição: len(A[0]) == len(B)  (colunas de A = linhas de B)
+    Complexidade: O(M·N·P) tempo, O(M·P) espaço (resultado)
+    """</span>
+    M = <span class="fn">len</span>(A)
+    N = <span class="fn">len</span>(A[<span class="num">0</span>])  <span class="cm"># = len(B) — dimensão compartilhada</span>
+    P = <span class="fn">len</span>(B[<span class="num">0</span>])
+    C = [[<span class="num">0</span>] * P <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(M)]
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(M):          <span class="cm"># Linhas de A</span>
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(P):      <span class="cm"># Colunas de B</span>
+            <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(N):  <span class="cm"># Produto interno: acumula N termos</span>
+                C[i][j] += A[i][k] * B[k][j]
+    <span class="kw">return</span> C
+
+
+<span class="cm"># Exemplo:</span>
+A = [[<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>],   <span class="cm"># A[2×3]</span>
+     [<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>]]
+
+B = [[<span class="num">7</span>, <span class="num">8</span>],     <span class="cm"># B[3×2]</span>
+     [<span class="num">9</span>, <span class="num">10</span>],
+     [<span class="num">11</span>, <span class="num">12</span>]]
+
+C = <span class="fn">multiplicar_matrizes</span>(A, B)   <span class="cm"># C[2×2]</span>
+<span class="cm"># C[0][0] = 1·7 + 2·9 + 3·11 = 58</span>
+<span class="cm"># C[0][1] = 1·8 + 2·10 + 3·12 = 64</span>
+<span class="fn">print</span>(C)  <span class="cm"># [[58, 64], [139, 154]]</span></code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">⚡</span>
+            <span>O algoritmo ingênuo O(n³) é o padrão prático. Existem algoritmos assintoticamente melhores: Strassen (O(n^2.807)) e Coppersmith-Winograd (O(n^2.373)), mas com constantes tão altas que só superam o ingênuo para n absurdamente grande. Para uso geral, bibliotecas como NumPy usam BLAS otimizado — mesma complexidade, mas com paralelismo SIMD e cache-oblivious memory layouts.</span>
+        </div>
+
+        <div class="section-label">Calculadora Interativa</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+            <label style="font-size:13px;color:var(--muted);">M (linhas A):</label>
+            <input type="number" id="mat-M" value="2" min="1" max="5" style="width:52px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:4px 8px;font-family:JetBrains Mono,monospace;">
+            <label style="font-size:13px;color:var(--muted);">N (cols A / linhas B):</label>
+            <input type="number" id="mat-N" value="3" min="1" max="5" style="width:52px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:4px 8px;font-family:JetBrains Mono,monospace;">
+            <label style="font-size:13px;color:var(--muted);">P (cols B):</label>
+            <input type="number" id="mat-P" value="2" min="1" max="5" style="width:52px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:4px 8px;font-family:JetBrains Mono,monospace;">
+            <button onclick="gerarMatrizes()" style="padding:7px 16px;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;">GERAR</button>
+            <button onclick="calcularSoma()" style="padding:7px 16px;background:var(--surface2);color:var(--accent);border:1px solid var(--accent);border-radius:4px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;">SOMA A+B</button>
+            <button onclick="calcularMult()" style="padding:7px 16px;background:var(--surface2);color:var(--accent2);border:1px solid var(--accent2);border-radius:4px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;">MULT A×B</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Soma só disponível quando ambas têm mesma ordem (M×N = M×N). P só importa para multiplicação.</p>
+
+        <div id="matrix-display" style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:center;min-height:120px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:12px;">
+            <span style="color:var(--muted);font-size:13px;font-style:italic;">Clique em GERAR para começar.</span>
+        </div>
+        <div id="matrix-info" style="display:none;background:var(--surface2);border-left:3px solid var(--accent3);border-radius:0 6px 6px 0;padding:12px 18px;font-family:JetBrains Mono,monospace;font-size:13px;color:var(--text);margin-bottom:12px;"></div>
+        <p class="graph-caption">Matrizes geradas com valores aleatórios entre 1–9. Observe como os índices (i,j,k) percorrem a estrutura.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PROBLEMA 10 — TORRE DE HANÓI -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="problem" id="p10">
+        <div class="problem-header">
+            <div class="problem-number">10</div>
+            <div class="problem-title-block">
+                <h2>Torre de Hanói — Recursivo vs. Iterativo</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(2ⁿ)</span>
+                    <span class="badge badge-space">Rec: O(n) pilha</span>
+                    <span class="badge badge-space">Iter: O(2ⁿ) heap</span>
+                    <span class="badge badge-struct">Recursão / Pilha Explícita</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Mova <em>n</em> discos do pino A para o pino C usando B como auxiliar, nunca colocando um disco maior sobre um menor. Implemente as versões recursiva e iterativa, compare os custos, a natureza do problema e a relação com o Big O. Adicione visualização gráfica com OpenGL.
+        </div>
+
+        <div class="callout" style="border-color:rgba(243,156,18,0.4);background:rgba(243,156,18,0.06);">
+            <span class="callout-icon" style="color:var(--accent2);">⚠</span>
+            <span><strong style="color:var(--accent2);">Nota sobre linguagem e OpenGL:</strong> Este é o único problema do repositório implementado em <strong>C++</strong>. A escolha é deliberada: a visualização gráfica em tempo real exige acesso direto à API OpenGL (via GLUT/GLFW), que não está disponível em Python sem camadas de abstração pesadas. C++ também oferece controle fino sobre a pilha de chamadas — relevante para comparar o uso de memória das duas abordagens. Os pseudocódigos em Python abaixo servem exclusivamente de referência conceitual para a prova escrita.</span>
+        </div>
+
+        <div class="section-label">A Natureza do Problema</div>
+        <div class="insight-box">
+            Hanói é um problema <strong>inerentemente recursivo</strong> por definição matemática: para mover n discos de A para C, <em>é necessário e suficiente</em> mover n−1 discos de A para B, mover o disco maior de A para C, e depois mover os n−1 discos de B para C. Não existe atalho — o número mínimo de movimentos é exatamente <strong>2ⁿ − 1</strong>, independente da abordagem usada.
+            <br><br>
+            O que muda entre recursivo e iterativo <em>não é o número de movimentos</em>, mas sim <strong>como o estado é gerenciado</strong>: na versão recursiva, a call stack do sistema operacional guarda implicitamente os estados pendentes (O(n) frames). Na iterativa, simulamos essa mesma pilha explicitamente no heap (O(2ⁿ) estados no pior caso).
+        </div>
+
+        <div class="section-label">Comparativo</div>
+        <table class="complexity-table">
+            <tr><th>Critério</th><th>🔁 Recursivo</th><th>🔄 Iterativo</th></tr>
+            <tr><td>Complexidade de Tempo</td><td><code>O(2ⁿ)</code></td><td><code>O(2ⁿ)</code></td></tr>
+            <tr><td>Complexidade de Espaço</td><td><code>O(n)</code> — call stack</td><td><code>O(2ⁿ)</code> — pilha explícita</td></tr>
+            <tr><td>Naturalidade</td><td>Espelha a definição matemática direta</td><td>Artificial — simula a call stack manualmente</td></tr>
+            <tr><td>Risco de Stack Overflow</td><td>Sim, para n grande (limite do SO)</td><td>Não — alocação no heap</td></tr>
+            <tr><td>Legibilidade</td><td>~5 linhas essenciais</td><td>~15 linhas + lógica auxiliar</td></tr>
+            <tr><td>Overhead de chamadas</td><td>Frame de função por nível recursivo</td><td>Nenhum — loop simples</td></tr>
+            <tr><td><strong>Vencedor prático</strong></td><td colspan="2">Recursivo — para n ≤ ~20 (limites de stack típicos). Iterativo — para n muito grande ou ambientes com stack limitada.</td></tr>
+        </table>
+
+        <div style="display:flex;gap:0;margin-bottom:-1px;margin-top:28px;">
+            <button class="hanoi-tab active" id="tab-btn-py-rec" onclick="switchTab('py-rec')" style="padding:8px 18px;border:1px solid var(--border);border-bottom:none;background:var(--code-bg);color:var(--accent);border-radius:6px 6px 0 0;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;">PYTHON · RECURSIVO</button>
+            <button class="hanoi-tab" id="tab-btn-py-iter" onclick="switchTab('py-iter')" style="padding:8px 18px;border:1px solid var(--border);border-bottom:none;background:var(--surface);color:var(--muted);border-radius:6px 6px 0 0;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;margin-left:4px;">PYTHON · ITERATIVO</button>
+            <button class="hanoi-tab" id="tab-btn-cpp" onclick="switchTab('cpp')" style="padding:8px 18px;border:1px solid var(--border);border-bottom:none;background:var(--surface);color:var(--muted);border-radius:6px 6px 0 0;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;margin-left:4px;">C++ · OPENGL</button>
+        </div>
+
+        <div id="tab-py-rec" class="hanoi-tab-content">
+<pre><code><span class="kw">def</span> <span class="fn">hanoi_recursivo</span>(n, origem, destino, auxiliar, movimentos=[]):
+    <span class="cm"># ─── Caso base ────────────────────────────────────────────────────</span>
+    <span class="kw">if</span> n == <span class="num">1</span>:
+        movimentos.append((origem, destino))
+        <span class="kw">return</span>
+
+    <span class="cm"># Passo 1: mover n−1 discos superiores do Origem → Auxiliar</span>
+    <span class="fn">hanoi_recursivo</span>(n - <span class="num">1</span>, origem, auxiliar, destino, movimentos)
+
+    <span class="cm"># Passo 2: mover o disco maior (o de baixo) do Origem → Destino</span>
+    movimentos.append((origem, destino))
+
+    <span class="cm"># Passo 3: mover n−1 discos do Auxiliar → Destino</span>
+    <span class="fn">hanoi_recursivo</span>(n - <span class="num">1</span>, auxiliar, destino, origem, movimentos)
+
+    <span class="kw">return</span> movimentos
+
+<span class="cm"># Uso: hanoi_recursivo(3, 'A', 'C', 'B')
+# Gera exatamente 2³ − 1 = 7 movimentos
+# Profundidade máxima da call stack: n frames</span></code></pre>
+        </div>
+
+        <div id="tab-py-iter" class="hanoi-tab-content" style="display:none;">
+<pre><code><span class="kw">def</span> <span class="fn">hanoi_iterativo</span>(n, origem, destino, auxiliar):
+    <span class="cm">"""
+    Simula a recursão com uma pilha explícita no heap.
+    Cada entrada na pilha é um "estado suspenso" equivalente
+    a um frame de chamada recursiva não resolvido.
+    """</span>
+    <span class="cm"># Pilha: cada estado é (n, origem, destino, auxiliar)</span>
+    pilha = [(n, origem, destino, auxiliar)]
+    movimentos = []
+
+    <span class="kw">while</span> pilha:
+        cn, org, dst, aux = pilha.pop()  <span class="cm"># LIFO — último a entrar, primeiro a sair</span>
+
+        <span class="kw">if</span> cn == <span class="num">1</span>:
+            <span class="cm"># Caso base: movimento atômico</span>
+            movimentos.append((org, dst))
+            <span class="kw">continue</span>
+
+        <span class="cm"># Empilhamos na ordem INVERSA para executar na ordem correta:</span>
+        <span class="cm"># 3° (será executado último): n−1 discos do aux → dst</span>
+        pilha.append((cn - <span class="num">1</span>, aux, dst, org))
+        <span class="cm"># 2° (será executado no meio): disco maior org → dst</span>
+        pilha.append((<span class="num">1</span>, org, dst, aux))
+        <span class="cm"># 1° (será executado primeiro): n−1 discos de org → aux</span>
+        pilha.append((cn - <span class="num">1</span>, org, aux, dst))
+
+    <span class="kw">return</span> movimentos
+
+<span class="cm"># Mesmos 2ⁿ−1 movimentos — porém o espaço usado é O(2ⁿ) no heap
+# vs O(n) na call stack da versão recursiva.</span></code></pre>
+        </div>
+
+        <div id="tab-cpp" class="hanoi-tab-content" style="display:none;">
+<pre><code><span class="cm">// ─── Torre de Hanói com Visualização OpenGL — C++ ───────────────────────
+// Implementado em C++ para acesso direto à API OpenGL (GLUT).
+// A visualização em Canvas desta página é a demonstração equivalente no browser.
+// Compile com: g++ -o hanoi hanoi.cpp -lGL -lGLU -lglut</span>
+
+<span class="kw">#include</span> <span class="st">&lt;GL/glut.h&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stack&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;vector&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;tuple&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;cmath&gt;</span>
+
+<span class="kw">using namespace</span> std;
+<span class="kw">using</span> Move = pair&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt;;  <span class="cm">// (pino_origem, pino_destino)</span>
+<span class="kw">struct</span> Estado { <span class="kw">int</span> n, org, dst, aux; };
+
+<span class="cm">// ─── Versão Recursiva — O(2ⁿ) tempo, O(n) espaço de stack ────────────</span>
+<span class="kw">void</span> <span class="fn">hanoi_rec</span>(<span class="kw">int</span> n, <span class="kw">int</span> org, <span class="kw">int</span> dst, <span class="kw">int</span> aux, vector&lt;Move&gt;&amp; moves) {
+    <span class="kw">if</span> (n == <span class="num">1</span>) { moves.push_back({org, dst}); <span class="kw">return</span>; }
+    <span class="fn">hanoi_rec</span>(n-<span class="num">1</span>, org, aux, dst, moves);
+    moves.push_back({org, dst});
+    <span class="fn">hanoi_rec</span>(n-<span class="num">1</span>, aux, dst, org, moves);
+}
+
+<span class="cm">// ─── Versão Iterativa — O(2ⁿ) tempo, O(2ⁿ) espaço de heap ───────────</span>
+vector&lt;Move&gt; <span class="fn">hanoi_iter</span>(<span class="kw">int</span> n, <span class="kw">int</span> org, <span class="kw">int</span> dst, <span class="kw">int</span> aux) {
+    stack&lt;Estado&gt; pilha;
+    vector&lt;Move&gt; moves;
+    pilha.push({n, org, dst, aux});
+    <span class="kw">while</span> (!pilha.empty()) {
+        <span class="kw">auto</span> [cn, o, d, a] = pilha.top(); pilha.pop();
+        <span class="kw">if</span> (cn == <span class="num">1</span>) { moves.push_back({o, d}); <span class="kw">continue</span>; }
+        pilha.push({cn-<span class="num">1</span>, a, d, o});
+        pilha.push({<span class="num">1</span>,    o, d, a});
+        pilha.push({cn-<span class="num">1</span>, o, a, d});
+    }
+    <span class="kw">return</span> moves;
+}
+
+<span class="cm">// ─── Estado global da animação ────────────────────────────────────────</span>
+vector&lt;Move&gt; moves;
+<span class="kw">int</span> step = <span class="num">0</span>, N = <span class="num">5</span>;
+vector&lt;<span class="kw">int</span>&gt; pinos[<span class="num">3</span>];  <span class="cm">// pinos[0]=A, pinos[1]=B, pinos[2]=C</span>
+
+<span class="cm">// ─── OpenGL: desenha um disco como quad colorido ──────────────────────</span>
+<span class="kw">void</span> <span class="fn">drawDisk</span>(<span class="kw">float</span> cx, <span class="kw">float</span> cy, <span class="kw">float</span> w, <span class="kw">float</span> h,
+              <span class="kw">float</span> r, <span class="kw">float</span> g, <span class="kw">float</span> b) {
+    glColor3f(r, g, b);
+    glBegin(GL_QUADS);
+        glVertex2f(cx - w/<span class="num">2</span>, cy);
+        glVertex2f(cx + w/<span class="num">2</span>, cy);
+        glVertex2f(cx + w/<span class="num">2</span>, cy + h);
+        glVertex2f(cx - w/<span class="num">2</span>, cy + h);
+    glEnd();
+}
+
+<span class="cm">// ─── OpenGL: callback de display ──────────────────────────────────────</span>
+<span class="kw">void</span> <span class="fn">display</span>() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    <span class="cm">/* desenha pinos, base e discos usando drawDisk()
+       com cores mapeadas pelo tamanho do disco */</span>
+    glutSwapBuffers();
+}
+
+<span class="cm">// ─── Timer: avança um passo da animação a cada 400ms ──────────────────</span>
+<span class="kw">void</span> <span class="fn">timer</span>(<span class="kw">int</span>) {
+    <span class="kw">if</span> (step < (<span class="kw">int</span>)moves.size()) {
+        <span class="kw">auto</span> [from, to] = moves[step++];
+        pinos[to].push_back(pinos[from].back());
+        pinos[from].pop_back();
+        glutPostRedisplay();
+    }
+    glutTimerFunc(<span class="num">400</span>, timer, <span class="num">0</span>);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">int</span> argc, <span class="kw">char</span>** argv) {
+    <span class="kw">for</span> (<span class="kw">int</span> i = N; i >= <span class="num">1</span>; i--) pinos[<span class="num">0</span>].push_back(i);
+    <span class="fn">hanoi_rec</span>(N, <span class="num">0</span>, <span class="num">2</span>, <span class="num">1</span>, moves);  <span class="cm">// ou hanoi_iter()</span>
+    glutInit(&amp;argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(<span class="num">800</span>, <span class="num">500</span>);
+    glutCreateWindow(<span class="st">"Torre de Hanói — OpenGL"</span>);
+    glutDisplayFunc(display);
+    glutTimerFunc(<span class="num">400</span>, timer, <span class="num">0</span>);
+    glutMainLoop();
+}</code></pre>
+        </div>
+
+        <div class="section-label" style="margin-top:28px;">Visualização Animada</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+            <label style="font-size:13px;color:var(--muted);">Discos (n):</label>
+            <input type="range" id="hanoi-n" min="1" max="8" value="4" oninput="document.getElementById('hanoi-n-val').textContent=this.value" style="width:120px;accent-color:var(--accent);">
+            <span id="hanoi-n-val" style="font-family:JetBrains Mono,monospace;color:var(--accent);font-weight:700;min-width:20px;">4</span>
+            <label style="font-size:13px;color:var(--muted);margin-left:8px;">Velocidade:</label>
+            <input type="range" id="hanoi-speed" min="80" max="900" value="420" style="width:100px;accent-color:var(--accent2);">
+            <button onclick="iniciarHanoi('rec')" style="padding:7px 16px;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;">▶ RECURSIVO</button>
+            <button onclick="iniciarHanoi('iter')" style="padding:7px 16px;background:var(--surface2);color:var(--accent2);border:1px solid var(--accent2);border-radius:4px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;">▶ ITERATIVO</button>
+            <button onclick="resetHanoi()" style="padding:7px 16px;background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;font-size:12px;">↺ RESET</button>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;">
+                <div id="stat-n" style="font-family:JetBrains Mono,monospace;font-size:1.6em;font-weight:700;color:var(--accent);">—</div>
+                <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Discos (n)</div>
+            </div>
+            <div style="flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;">
+                <div id="stat-total" style="font-family:JetBrains Mono,monospace;font-size:1.6em;font-weight:700;color:var(--accent2);">—</div>
+                <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Total (2ⁿ−1)</div>
+            </div>
+            <div style="flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;">
+                <div id="stat-atual" style="font-family:JetBrains Mono,monospace;font-size:1.6em;font-weight:700;color:var(--accent3);">0</div>
+                <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Movimento</div>
+            </div>
+            <div style="flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;">
+                <div id="stat-modo" style="font-family:JetBrains Mono,monospace;font-size:1.1em;font-weight:700;color:var(--muted);">—</div>
+                <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Modo</div>
+            </div>
+        </div>
+
+        <canvas id="hanoi-canvas" style="width:100%;height:300px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;display:block;margin-bottom:12px;"></canvas>
+
+        <div id="hanoi-log" style="max-height:150px;overflow-y:auto;background:var(--code-bg);border:1px solid var(--border);color:#98c379;font-family:JetBrains Mono,monospace;font-size:12px;padding:12px;border-radius:6px;margin-bottom:12px;">&gt; Pressione ▶ RECURSIVO ou ▶ ITERATIVO para iniciar...</div>
+        <p class="graph-caption">Simulação em Canvas 2D — equivalente visual à renderização OpenGL em C++. Discos coloridos por tamanho sobre os pinos A, B e C.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
     <!-- RATIONALE -->
     <!-- ══════════════════════════════════════════════ -->
     <div class="rationale">
@@ -1120,13 +1467,13 @@ makespan, log = <span class="fn">escalonar_producao</span>(<span class="num">8</
             <strong>Atemporalidade:</strong> Apresentações em slides ficam presas em diretórios locais. Este repositório vive na web — acessível para turmas futuras, persistente, linkável. O conhecimento produzido neste semestre não some com o fim do período.
         </p>
         <p>
-            <strong>Python como pseudo-código vivo:</strong> A sintaxe do Python é deliberadamente próxima de pseudo-código: sem chaves, sem ponto-e-vírgula, indentação semântica. O que escrevemos aqui pode ser transcrito para uma prova escrita com mínimas adaptações. É código executável <em>e</em> modelo mental ao mesmo tempo.
+            <strong>Python como pseudo-código vivo:</strong> A sintaxe do Python é deliberadamente próxima de pseudo-código: sem chaves, sem ponto-e-vírgula, indentação semântica. O que escrevemos aqui pode ser transcrito para uma prova escrita com mínimas adaptações. É código executável <em>e</em> modelo mental ao mesmo tempo. <strong>A única exceção é o Problema 10 (Torre de Hanói)</strong>, implementado em C++ para uso direto da API OpenGL.
         </p>
         <p>
             <strong>Visualizações interativas:</strong> Grafos estáticos em slides são imagens mortas. Aqui, as estruturas de dados são renderizadas dinamicamente e podem ser exploradas. A compreensão intuitiva de um heap ou de um grafo de eliminação é muito mais profunda quando se pode ver a estrutura.
         </p>
         <p style="margin-bottom:0; color:#6b7190; font-size:13px;">
-            Marco Aurélio Penteado Miquelino &amp; Igor de Sa Eccard · Algoritmos e Estruturas de Dados · Prof. Strauss · UFRJ
+            Marco Aurélio Penteado Miquelino &amp; Igor Eccard de Sá · Algoritmos e Estruturas de Dados · Prof. Strauss · UFRJ
         </p>
     </div>
 
@@ -1263,6 +1610,244 @@ mkNet('grafo-montagem', [
     { from: 'L1M1', to: 'P2', arrows: 'to', label: 'livre mais cedo' },
     { from: 'L1M2', to: 'P2', dashes: true, label: 'mais lenta', color: { color: '#444' } },
 ]);
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   PROBLEMA 9 — CALCULADORA DE MATRIZES
+══════════════════════════════════════════════════════ */
+let matA = [], matB = [];
+
+function randInt(lo, hi) { return Math.floor(Math.random() * (hi - lo + 1)) + lo; }
+
+function gerarMatrizes() {
+    const M = +document.getElementById('mat-M').value;
+    const N = +document.getElementById('mat-N').value;
+    const P = +document.getElementById('mat-P').value;
+    matA = Array.from({length: M}, () => Array.from({length: N}, () => randInt(1, 9)));
+    matB = Array.from({length: N}, () => Array.from({length: P}, () => randInt(1, 9)));
+    renderMatrizes(matA, matB, null, null, M, N, P);
+    document.getElementById('matrix-info').style.display = 'none';
+}
+
+function renderMatrizes(A, B, C, op, M, N, P) {
+    const d = document.getElementById('matrix-display');
+    d.innerHTML = '';
+    d.appendChild(makeMat(A, `A [${M}×${N}]`, '#5dade2'));
+    if (op) {
+        const sym = document.createElement('div');
+        sym.textContent = op;
+        sym.style.cssText = 'font-size:2em;font-weight:700;color:#7a8099;align-self:center;';
+        d.appendChild(sym);
+    }
+    d.appendChild(makeMat(B, `B [${N}×${P}]`, '#5dade2'));
+    if (C) {
+        const eq = document.createElement('div');
+        eq.textContent = '=';
+        eq.style.cssText = 'font-size:2em;font-weight:700;color:#7a8099;align-self:center;';
+        d.appendChild(eq);
+        d.appendChild(makeMat(C, `C [${C.length}×${C[0].length}]`, '#27ae60', true));
+    }
+}
+
+function makeMat(data, label, borderColor, isResult) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'text-align:center;';
+    const lbl = document.createElement('div');
+    lbl.textContent = label;
+    lbl.style.cssText = `font-family:JetBrains Mono,monospace;font-size:12px;color:${borderColor};margin-bottom:8px;font-weight:700;`;
+    wrap.appendChild(lbl);
+    const tbl = document.createElement('table');
+    tbl.style.cssText = 'border-collapse:collapse;margin:auto;';
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(val => {
+            const td = document.createElement('td');
+            td.textContent = val;
+            td.style.cssText = `width:36px;height:36px;text-align:center;border:1px solid #242836;font-family:JetBrains Mono,monospace;font-size:13px;background:${isResult ? 'rgba(39,174,96,0.12)' : '#1a1e28'};color:${isResult ? '#98c379' : '#e8eaf0'};`;
+            tr.appendChild(td);
+        });
+        tbl.appendChild(tr);
+    });
+    wrap.appendChild(tbl);
+    return wrap;
+}
+
+function calcularSoma() {
+    if (!matA.length) { alert('Gere as matrizes primeiro!'); return; }
+    const M = matA.length, N = matA[0].length;
+    const info = document.getElementById('matrix-info');
+    if (M !== matB.length || N !== matB[0].length) {
+        info.style.display = 'block';
+        info.style.borderColor = '#e74c3c';
+        info.innerHTML = `❌ Soma inválida: A[${M}×${N}] ≠ B[${matB.length}×${matB[0].length}] — dimensões devem ser iguais.`;
+        return;
+    }
+    const C = matA.map((row, i) => row.map((v, j) => v + matB[i][j]));
+    renderMatrizes(matA, matB, C, '+', M, N, matB[0].length);
+    info.style.display = 'block';
+    info.style.borderColor = '#27ae60';
+    info.innerHTML = `✅ Soma A + B — <strong>O(M·N) = O(${M}×${N}) = O(${M*N} operações)</strong>`;
+}
+
+function calcularMult() {
+    if (!matA.length) { alert('Gere as matrizes primeiro!'); return; }
+    const M = matA.length, N = matA[0].length, P = matB[0].length;
+    const info = document.getElementById('matrix-info');
+    if (N !== matB.length) {
+        info.style.display = 'block';
+        info.style.borderColor = '#e74c3c';
+        info.innerHTML = `❌ Multiplicação inválida: colunas de A (${N}) ≠ linhas de B (${matB.length}).`;
+        return;
+    }
+    const C = Array.from({length: M}, () => Array(P).fill(0));
+    for (let i = 0; i < M; i++)
+        for (let j = 0; j < P; j++)
+            for (let k = 0; k < N; k++)
+                C[i][j] += matA[i][k] * matB[k][j];
+    renderMatrizes(matA, matB, C, '×', M, N, P);
+    info.style.display = 'block';
+    info.style.borderColor = '#f39c12';
+    info.innerHTML = `✅ Multiplicação A × B — <strong>O(M·N·P) = O(${M}×${N}×${P}) = O(${M*N*P} operações)</strong>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   PROBLEMA 10 — TABS DO CÓDIGO
+══════════════════════════════════════════════════════ */
+function switchTab(id) {
+    ['py-rec','py-iter','cpp'].forEach(t => {
+        document.getElementById('tab-'+t).style.display = t === id ? 'block' : 'none';
+        const btn = document.getElementById('tab-btn-'+t);
+        if (t === id) {
+            btn.style.background = 'var(--code-bg)';
+            btn.style.color = 'var(--accent)';
+        } else {
+            btn.style.background = 'var(--surface)';
+            btn.style.color = 'var(--muted)';
+        }
+    });
+}
+
+/* ══════════════════════════════════════════════════════
+   PROBLEMA 10 — ANIMAÇÃO HANÓI
+══════════════════════════════════════════════════════ */
+const DISK_COLORS = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c','#3498db','#9b59b6','#e91e63'];
+let hanoiMoves = [], hanoiStep = 0, hanoiTimer = null, hanoiPinos = {A:[],B:[],C:[]}, hanoiN = 4;
+
+function gerarRec(n, o, d, a, moves) {
+    if (n === 1) { moves.push([o,d]); return; }
+    gerarRec(n-1, o, a, d, moves);
+    moves.push([o,d]);
+    gerarRec(n-1, a, d, o, moves);
+}
+function gerarIter(n, o, d, a) {
+    const pilha = [{n,o,d,a}], moves = [];
+    while (pilha.length) {
+        const {n:cn,o:co,d:cd,a:ca} = pilha.pop();
+        if (cn === 1) { moves.push([co,cd]); continue; }
+        pilha.push({n:cn-1,o:ca,d:cd,a:co});
+        pilha.push({n:1,o:co,d:cd,a:ca});
+        pilha.push({n:cn-1,o:co,d:ca,a:cd});
+    }
+    return moves;
+}
+
+function iniciarHanoi(modo) {
+    if (hanoiTimer) clearInterval(hanoiTimer);
+    hanoiN = +document.getElementById('hanoi-n').value;
+    hanoiMoves = [];
+    if (modo === 'rec') gerarRec(hanoiN, 'A', 'C', 'B', hanoiMoves);
+    else hanoiMoves = gerarIter(hanoiN, 'A', 'C', 'B');
+    hanoiPinos = {A:[],B:[],C:[]};
+    for (let i = hanoiN; i >= 1; i--) hanoiPinos.A.push(i);
+    hanoiStep = 0;
+    document.getElementById('stat-n').textContent = hanoiN;
+    document.getElementById('stat-total').textContent = hanoiMoves.length;
+    document.getElementById('stat-atual').textContent = 0;
+    document.getElementById('stat-modo').textContent = modo === 'rec' ? 'REC' : 'ITER';
+    const log = document.getElementById('hanoi-log');
+    log.innerHTML = `> Iniciando ${modo === 'rec' ? 'recursivo' : 'iterativo'} — n=${hanoiN}, ${hanoiMoves.length} movimentos...\n`;
+    const speed = 980 - +document.getElementById('hanoi-speed').value;
+    desenharHanoi();
+    hanoiTimer = setInterval(() => {
+        if (hanoiStep >= hanoiMoves.length) {
+            clearInterval(hanoiTimer);
+            log.innerHTML += `> ✅ Concluído! ${hanoiMoves.length} movimentos.\n`;
+            log.scrollTop = log.scrollHeight;
+            return;
+        }
+        const [from, to] = hanoiMoves[hanoiStep];
+        const disco = hanoiPinos[from].pop();
+        hanoiPinos[to].push(disco);
+        hanoiStep++;
+        document.getElementById('stat-atual').textContent = hanoiStep;
+        log.innerHTML += `> [${hanoiStep}] disco ${disco}  ${from} → ${to}\n`;
+        log.scrollTop = log.scrollHeight;
+        desenharHanoi();
+    }, speed);
+}
+
+function resetHanoi() {
+    if (hanoiTimer) clearInterval(hanoiTimer);
+    hanoiN = +document.getElementById('hanoi-n').value;
+    hanoiPinos = {A:[],B:[],C:[]};
+    for (let i = hanoiN; i >= 1; i--) hanoiPinos.A.push(i);
+    hanoiStep = 0;
+    ['stat-n','stat-total','stat-modo'].forEach(id => document.getElementById(id).textContent = '—');
+    document.getElementById('stat-atual').textContent = 0;
+    document.getElementById('hanoi-log').innerHTML = '> Reset. Pressione ▶ para iniciar.\n';
+    desenharHanoi();
+}
+
+function desenharHanoi() {
+    const canvas = document.getElementById('hanoi-canvas');
+    const W = canvas.offsetWidth || 820;
+    const H = 300; canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a0c10'; ctx.fillRect(0,0,W,H);
+    const baseY = H - 28, pinoH = 220, pinoW = 7, baseW = W/4 - 30;
+    const maxN = hanoiN || 4, discH = 20;
+    const pinoX = {A: W/4, B: W/2, C: 3*W/4};
+    // Base
+    ctx.fillStyle = '#242836'; ctx.fillRect(W/8, baseY, W*3/4, 10);
+    // Pinos
+    Object.values(pinoX).forEach(x => {
+        ctx.fillStyle = '#3a3f52';
+        ctx.fillRect(x - pinoW/2, baseY - pinoH, pinoW, pinoH);
+    });
+    // Labels e contagem
+    ['A','B','C'].forEach(p => {
+        ctx.fillStyle = '#5dade2'; ctx.font = 'bold 14px JetBrains Mono,monospace';
+        ctx.textAlign = 'center'; ctx.fillText(p, pinoX[p], baseY + 22);
+        ctx.fillStyle = '#3a3f52'; ctx.font = '10px JetBrains Mono,monospace';
+        ctx.fillText(hanoiPinos[p].length, pinoX[p], baseY - pinoH - 6);
+    });
+    // Discos
+    ['A','B','C'].forEach(p => {
+        hanoiPinos[p].forEach((disco, idx) => {
+            const frac = disco / maxN;
+            const dw = Math.max(baseW * (0.25 + 0.75 * frac), 24);
+            const dy = baseY - (idx + 1) * (discH + 2);
+            const cor = DISK_COLORS[disco - 1] || '#7f8c8d';
+            // Sombra
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.fillRect(pinoX[p] - dw/2 + 3, dy + 3, dw, discH);
+            // Disco
+            ctx.fillStyle = cor;
+            ctx.beginPath();
+            ctx.roundRect(pinoX[p] - dw/2, dy, dw, discH, 4);
+            ctx.fill();
+            // Número
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            ctx.font = 'bold 11px JetBrains Mono,monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(disco, pinoX[p], dy + discH/2 + 4);
+        });
+    });
+}
+
+window.addEventListener('load', () => { resetHanoi(); gerarMatrizes(); });
+window.addEventListener('resize', desenharHanoi);
 </script>
 
 </body>
