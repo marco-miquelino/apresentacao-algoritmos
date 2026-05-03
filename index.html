@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AED — UFRJ | Algoritmos &amp; Estrutura de Dados</title>
+
+    <!-- ── Fonts ── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ── External Library ── -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+    <!-- ── Stylesheets (ordem importa) ── -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/content.css">
+    <link rel="stylesheet" href="css/sort.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     TOP BAR
+════════════════════════════════════════════════════ -->
+<header class="topbar" id="topbar">
+    <!-- Logo row -->
+    <div class="topbar-header">
+        <div class="topbar-brand">
+            <div>
+                <div class="brand-label">UFRJ · AED</div>
+                <h1>Algoritmos &amp; Estrutura de Dados</h1>
+            </div>
+            <div class="brand-sep"></div>
+            <div style="font-size:12px;color:var(--muted)">Prof. <strong style="color:var(--text)">Strauss</strong></div>
+        </div>
+        <div class="topbar-meta">
+            <div class="tm-item">Marco Aurélio Miquelino &nbsp;·&nbsp; Igor Eccard de Sá</div>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema claro/escuro"><span id="theme-icon">☾</span></button>
+            <div class="tm-item" style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:4px;color:var(--accent)">3 Módulos · Sort + Estruturas</div>
+        </div>
+    </div>
+
+    <!-- Module tab strip -->
+    <div class="module-tabs">
+        <button class="mod-tab active" data-mod="home" onclick="switchMod('home')">
+            <span class="tab-icon">⌂</span>
+            <span class="tab-label-wrap">
+                <span>Início</span>
+            </span>
+        </button>
+
+        <button class="mod-tab" data-mod="m1" onclick="switchMod('m1')">
+            <span class="tab-icon" style="color:#9b59b6">𝒪</span>
+            <span class="tab-label-wrap">
+                <span>Módulo 1 — Teoria</span>
+                <span class="tab-sub">Notações + Estruturas de Dados</span>
+            </span>
+            <span class="tab-count">3 seções</span>
+        </button>
+
+        <button class="mod-tab" data-mod="m2" onclick="switchMod('m2')">
+            <span class="tab-icon" style="color:var(--accent)">🧩</span>
+            <span class="tab-label-wrap">
+                <span>Módulo 2 — Problemas</span>
+                <span class="tab-sub">8 Problemas de Aula</span>
+            </span>
+            <span class="tab-count">8 problemas</span>
+        </button>
+
+        <button class="mod-tab" data-mod="m3" onclick="switchMod('m3')">
+            <span class="tab-icon" style="color:var(--accent2)">⚙</span>
+            <span class="tab-label-wrap">
+                <span>Módulo 3 — Exercícios</span>
+                <span class="tab-sub">Exercícios Complementares</span>
+            </span>
+            <span class="tab-count">2 exercícios</span>
+        </button>
+    </div>
+
+    <!-- Sub-tab bar (shown per module) -->
+    <div class="subtab-bar" id="subtab-m1">
+        <button class="sub-tab active" data-mod="m1" data-panel="m1-notacoes" onclick="switchPanel('m1','m1-notacoes')">
+            <span class="st-num">1.1</span> Notações &amp; Complexidade
+        </button>
+        <button class="sub-tab" data-mod="m1" data-panel="m1-estruturas" onclick="switchPanel('m1','m1-estruturas')">
+            <span class="st-num">1.2</span> Estruturas de Dados
+        </button>
+        <button class="sub-tab" data-mod="m1" data-panel="m1-sort" onclick="switchPanel('m1','m1-sort')">
+            <span class="st-num">1.3</span> Ordenação (Sort)
+        </button>
+    </div>
+
+    <div class="subtab-bar" id="subtab-m2">
+        <button class="sub-tab active" data-mod="m2" data-panel="p1" onclick="switchPanel('m2','p1')"><span class="st-num">01</span>Celebridade</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p2" onclick="switchPanel('m2','p2')"><span class="st-num">02</span>Votação</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p3" onclick="switchPanel('m2','p3')"><span class="st-num">03</span>Agenda</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p4" onclick="switchPanel('m2','p4')"><span class="st-num">04</span>Criptografia</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p5" onclick="switchPanel('m2','p5')"><span class="st-num">05</span>Jornais</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p6" onclick="switchPanel('m2','p6')"><span class="st-num">06</span>Fila Prior.</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p7" onclick="switchPanel('m2','p7')"><span class="st-num">07</span>Top-K</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p8" onclick="switchPanel('m2','p8')"><span class="st-num">08</span>Montagem</button>
+    </div>
+
+    <div class="subtab-bar" id="subtab-m3">
+        <button class="sub-tab active" data-mod="m3" data-panel="p9" onclick="switchPanel('m3','p9')"><span class="st-num">09</span>Matrizes M×N</button>
+        <button class="sub-tab" data-mod="m3" data-panel="p10" onclick="switchPanel('m3','p10')"><span class="st-num">10</span>Torre de Hanói</button>
+    </div>
+</header>
+
+<div class="page-wrap" id="page-wrap">
+
+    <!-- ─── HOME ─── -->
+    <div class="mod-panel active" id="panel-home">
+        <div class="hero">
+            <div class="hero-tag">Repositório Acadêmico</div>
+            <h1>Resolvendo<br>Problemas com<br><em>Algoritmos</em></h1>
+            <p class="hero-desc">
+                Da teoria das notações assintóticas às principais estruturas de dados — e cada problema de aula destrinchado com motivação, intuição, análise de complexidade e implementação em Python.
+            </p>
+            <div class="module-cards">
+                <div class="mod-card card-m1" onclick="switchMod('m1')">
+                    <div class="mc-icon">𝒪</div>
+                    <div class="mc-num">Módulo 1 · Teoria</div>
+                    <h3>Notações &amp; Estruturas</h3>
+                    <p>Fundamentos teóricos: Big-O, Theta, Omega e as 8 estruturas de dados essenciais.</p>
+                    <div class="mc-items">
+                        <div class="mc-item">Notações assintóticas e hierarquia</div>
+                        <div class="mc-item">Calculadora de crescimento interativa</div>
+                        <div class="mc-item">8 estruturas de dados com complexidades</div>
+                        <div class="mc-item">Demos interativos de Array, Pilha, Fila, Hash</div>
+                        <div class="mc-item">9 Algoritmos de Ordenação com animações</div>
+                    </div>
+                    <div class="mc-cta">Acessar Módulo →</div>
+                </div>
+                <div class="mod-card card-m2" onclick="switchMod('m2')">
+                    <div class="mc-icon">🧩</div>
+                    <div class="mc-num">Módulo 2 · Problemas de Aula</div>
+                    <h3>8 Problemas Clássicos</h3>
+                    <p>Cada problema com enunciado, intuição, análise completa e implementação comentada.</p>
+                    <div class="mc-items">
+                        <div class="mc-item">Celebridade · Votação · Agenda</div>
+                        <div class="mc-item">Criptografia · Jornais · Fila Prior.</div>
+                        <div class="mc-item">Top-K · Linha de Montagem</div>
+                        <div class="mc-item">Visualizações com grafos interativos</div>
+                    </div>
+                    <div class="mc-cta">Acessar Módulo →</div>
+                </div>
+                <div class="mod-card card-m3" onclick="switchMod('m3')">
+                    <div class="mc-icon">⚙</div>
+                    <div class="mc-num">Módulo 3 · Exercícios</div>
+                    <h3>Exercícios Complementares</h3>
+                    <p>Implementações adicionais com visualizações interativas e análise de complexidade.</p>
+                    <div class="mc-items">
+                        <div class="mc-item">Operações com Matrizes M×N</div>
+                        <div class="mc-item">Torre de Hanói — Rec vs Iterativo</div>
+                        <div class="mc-item">Animações passo a passo</div>
+                    </div>
+                    <div class="mc-cta">Acessar Módulo →</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── MÓDULO 1 ─── -->
+    <div class="mod-panel" id="panel-m1">
+        <!-- 1.1 Notações -->
+        <div class="content-panel active" id="panel-m1-notacoes">
+            <section class="problem" id="notacoes-intro">
+        <div class="section-label purple">Por que analisar complexidade?</div>
+        <div class="insight-box purple">
+            Antes de qualquer algoritmo, precisamos responder: <strong>quanto tempo e memória ele consome à medida que a entrada cresce?</strong> Um algoritmo que demora 1ms para n=100 pode demorar 11 dias para n=1.000.000 se for O(n²) — ou ainda 1 segundo se for O(n log n). As notações assintóticas são a linguagem matemática que nos permite comparar algoritmos <em>independentemente</em> do hardware, da linguagem e das constantes de implementação.
+        </div>
+
+        <!-- 3 cards -->
+        <div class="notation-grid">
+            <div class="notation-card omega">
+                <div class="notation-symbol">Ω</div>
+                <div class="notation-name">Ômega — Limite Inferior</div>
+                <div class="notation-meaning">O algoritmo precisa de <em>pelo menos</em> esse tempo. É o <strong>melhor caso</strong> assintótico — cota de baixo.</div>
+                <div class="notation-formal">f(n) = Ω(g(n))<br>∃ c,n₀: f(n) ≥ c·g(n), n≥n₀</div>
+            </div>
+            <div class="notation-card big-o">
+                <div class="notation-symbol">O</div>
+                <div class="notation-name">Big-O — Limite Superior</div>
+                <div class="notation-meaning">O algoritmo demora <em>no máximo</em> esse tempo. É o <strong>pior caso</strong> assintótico — cota de cima.</div>
+                <div class="notation-formal">f(n) = O(g(n))<br>∃ c,n₀: f(n) ≤ c·g(n), n≥n₀</div>
+            </div>
+            <div class="notation-card theta">
+                <div class="notation-symbol">Θ</div>
+                <div class="notation-name">Theta — Limite Exato</div>
+                <div class="notation-meaning">O algoritmo demora <em>exatamente</em> essa ordem. Limita superior <strong>e</strong> inferiormente — crescimento "sanduichado".</div>
+                <div class="notation-formal">f(n) = Θ(g(n))<br>f = O(g) e f = Ω(g)</div>
+            </div>
+        </div>
+
+        <div class="section-label purple">Definição formal e intuição</div>
+
+        <table class="complexity-table">
+            <tr><th>Notação</th><th>Leitura informal</th><th>Exemplo concreto</th><th>Uso</th></tr>
+            <tr>
+                <td><code style="color:#be90d4">Ω(n)</code></td>
+                <td>"cresce pelo menos tão rápido quanto n"</td>
+                <td>Ordenação por comparação: Ω(n log n)</td>
+                <td>Provar que não há algoritmo mais rápido</td>
+            </tr>
+            <tr>
+                <td><code style="color:var(--accent)">O(n²)</code></td>
+                <td>"cresce no máximo tão rápido quanto n²"</td>
+                <td>Bubble sort: O(n²) no pior caso</td>
+                <td>Garantir que o algoritmo caberá no tempo</td>
+            </tr>
+            <tr>
+                <td><code style="color:var(--accent2)">Θ(n log n)</code></td>
+                <td>"cresce exatamente nessa ordem"</td>
+                <td>Merge sort: Θ(n log n) em todos os casos</td>
+                <td>Caracterização completa do algoritmo</td>
+            </tr>
+        </table>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:#9b59b6;">📐</span>
+            <span><strong>Regra de ouro:</strong> Quando alguém diz "o algoritmo é O(n²)", normalmente querem dizer que o pior caso cresce quadraticamente. Big-O é a notação mais usada na prática por ser a mais conservadora — garante que o programa <em>nunca</em> ultrapassa aquele tempo.</span>
+        </div>
+
+        <!-- Interactive complexity comparator -->
+        <div class="section-label purple">Calculadora de Crescimento</div>
+        <div class="bigo-demo">
+            <label>Tamanho da entrada n = <strong id="n-val">100</strong></label>
+            <input type="range" min="1" max="500" value="100" oninput="updateBigoCalc(this.value)">
+            <div class="bigo-results">
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent3)">O(1)</div>
+                    <div class="bv-num cost-o1" id="bv-o1">1</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent)">O(log n)</div>
+                    <div class="bv-num cost-ologn" id="bv-logn">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent2)">O(n)</div>
+                    <div class="bv-num cost-on" id="bv-n">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label">O(n log n)</div>
+                    <div class="bv-num" style="color:#e8eaf0" id="bv-nlogn">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent2)">O(n²)</div>
+                    <div class="bv-num cost-on" id="bv-n2">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--danger)">O(2ⁿ)</div>
+                    <div class="bv-num cost-on2" id="bv-2n">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:#7f8c8d">O(n!)</div>
+                    <div class="bv-num" style="color:#7f8c8d" id="bv-nfat">—</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Growth chart -->
+        <div class="section-label purple">Comparação Visual de Crescimento</div>
+        <div class="complexity-chart-wrap">
+            <canvas id="bigo-canvas"></canvas>
+            <div class="complexity-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div>O(1)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#5dade2"></div>O(log n)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#f39c12"></div>O(n)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#e8eaf0"></div>O(n log n)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>O(n²)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div>O(2ⁿ)</div>
+            </div>
+        </div>
+
+        <!-- Hierarchy of complexity classes -->
+        <div class="section-label purple">Hierarquia das Classes de Complexidade</div>
+        <div class="complexity-classes">
+            <div class="complexity-row">
+                <div class="cc-badge cost-o1">O(1)</div>
+                <div><div class="cc-name">Constante</div><div class="cc-ex">Acesso a array, hash map</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#27ae60,#27ae60); width:15px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-ologn">O(log n)</div>
+                <div><div class="cc-name">Logarítmico</div><div class="cc-ex">Busca binária, AVL tree</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#5dade2,#5dade2); width:30px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on">O(√n)</div>
+                <div><div class="cc-name">Raiz quadrada</div><div class="cc-ex">Crivo de Eratóstenes</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#1abc9c,#1abc9c); width:45px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on">O(n)</div>
+                <div><div class="cc-name">Linear</div><div class="cc-ex">Busca linear, Boyer-Moore</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#f39c12,#f39c12); width:70px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge" style="color:#e8eaf0">O(n log n)</div>
+                <div><div class="cc-name">Quase-linear</div><div class="cc-ex">Merge sort, Heap sort</div></div>
+                <div class="cc-bar" style="background:#7f8c8d; width:90px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on2">O(n²)</div>
+                <div><div class="cc-name">Quadrático</div><div class="cc-ex">Bubble sort, seleção</div></div>
+                <div class="cc-bar" style="background:#e74c3c; width:120px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on2">O(n³)</div>
+                <div><div class="cc-name">Cúbico</div><div class="cc-ex">Multiplicação naïve de matrizes</div></div>
+                <div class="cc-bar" style="background:#c0392b; width:150px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on2">O(2ⁿ)</div>
+                <div><div class="cc-name">Exponencial</div><div class="cc-ex">Subconjuntos, força bruta</div></div>
+                <div class="cc-bar" style="background:#8e44ad; width:170px"></div>
+            </div>
+        </div>
+
+        <div class="section-label purple">Regras de Simplificação</div>
+        <pre><code><span class="cm"># Regra 1: Constantes são descartadas</span>
+f(n) = <span class="num">3</span>n² + <span class="num">5</span>n + <span class="num">100</span>  →  O(n²)  <span class="cm"># termo dominante</span>
+
+<span class="cm"># Regra 2: Multiplicação de loops aninhados</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(n):
+    <span class="kw">for</span> j <span class="kw">in</span> range(n):  <span class="cm"># → O(n²)</span>
+        fazer_algo()
+
+<span class="cm"># Regra 3: Soma de etapas sequenciais → maior domina</span>
+busca_linear(arr)   <span class="cm"># O(n)</span>
+ordenar(arr)        <span class="cm"># O(n log n)</span>
+<span class="cm"># Total: O(n + n log n) = O(n log n)</span>
+
+<span class="cm"># Regra 4: Ω(limite inferior) para ordenação por comparação</span>
+<span class="cm"># Qualquer algoritmo de ordenação por comparação: Ω(n log n)</span>
+<span class="cm"># Merge sort é Θ(n log n) → é ótimo nessa classe!</span>
+
+<span class="cm"># Regra 5: log n em qualquer base → mesma classe</span>
+O(log₂ n) = O(log₁₀ n) = O(log n)  <span class="cm"># diferença é só constante</span></code></pre>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:#9b59b6;">⚠</span>
+            <span><strong>Armadilha comum:</strong> O(n²) não significa "lento sempre". Para n=10, O(n²)=100 operações e O(n log n)≈33. A diferença é irrelevante. Complexidade importa para <em>grandes entradas</em>. Sempre pergunte: qual é o n do meu problema?</span>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+        </div>
+        <!-- 1.2 Estruturas -->
+        <div class="content-panel" id="panel-m1-estruturas">
+            <section class="problem">
+
+        <div class="section-label green">Visão Geral das Estruturas</div>
+        <div class="ds-grid">
+
+            <!-- Array -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">📦</div>
+                    <h3>Array / Vetor</h3>
+                    <span class="ds-tag">Sequencial</span>
+                </div>
+                <p class="ds-desc">Elementos armazenados em posições contíguas na memória. Acesso direto por índice em O(1). Base de quase todas as outras estruturas.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Acesso por índice</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca linear</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção/Remoção no fim</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção/Remoção no meio</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Linked List -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🔗</div>
+                    <h3>Lista Encadeada</h3>
+                    <span class="ds-tag" style="color:var(--accent2);border-color:rgba(243,156,18,.3)">Dinâmica</span>
+                </div>
+                <p class="ds-desc">Nós que apontam para o próximo. Sem índice direto — mas inserção/remoção no início é O(1). Sem alocação contígua.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Acesso por posição</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção/Remoção no início</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Espaço extra</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Stack -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">📚</div>
+                    <h3>Pilha (Stack)</h3>
+                    <span class="ds-tag" style="color:var(--accent2);border-color:rgba(243,156,18,.3)">LIFO</span>
+                </div>
+                <p class="ds-desc">Último a entrar, primeiro a sair (LIFO). Usada em recursão, desfazer ações, avaliação de expressões e backtracking.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Push (empilhar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Pop (desempilhar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Peek (topo)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Queue -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🚶</div>
+                    <h3>Fila (Queue)</h3>
+                    <span class="ds-tag" style="color:#be90d4;border-color:rgba(155,89,182,.3)">FIFO</span>
+                </div>
+                <p class="ds-desc">Primeiro a entrar, primeiro a sair (FIFO). Usada em BFS, escalonamento de processos, sistemas de eventos.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Enqueue (enfileirar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Dequeue (desenfileirar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Peek (frente)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Hash Table -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🗝</div>
+                    <h3>Tabela Hash</h3>
+                    <span class="ds-tag" style="color:var(--accent3);border-color:rgba(39,174,96,.25)">Chave-Valor</span>
+                </div>
+                <p class="ds-desc">Mapeamento chave→valor via função hash. Busca/inserção/remoção em O(1) amortizado. Base dos dicionários Python.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Busca por chave</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Remoção</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Pior caso (colisões)</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Binary Tree -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🌲</div>
+                    <h3>Árvore Binária de Busca</h3>
+                    <span class="ds-tag" style="color:var(--danger);border-color:rgba(231,76,60,.25)">BST</span>
+                </div>
+                <p class="ds-desc">Nó raiz; filhos esquerdo (menor) e direito (maior). Balanceada: busca, inserção e remoção em O(log n).</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Busca (balanceada)</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção (balanceada)</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Pior caso (degenerada)</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Percurso em ordem</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Heap -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">⛰</div>
+                    <h3>Heap Binário</h3>
+                    <span class="ds-tag">Prioridade</span>
+                </div>
+                <p class="ds-desc">Árvore binária completa onde o pai sempre é maior (max-heap) ou menor (min-heap). Usado em filas de prioridade e Heap Sort.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Ver máximo/mínimo</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Extração do topo</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Construção a partir de array</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Graph -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🕸</div>
+                    <h3>Grafo</h3>
+                    <span class="ds-tag" style="color:#be90d4;border-color:rgba(155,89,182,.3)">G=(V,E)</span>
+                </div>
+                <p class="ds-desc">Conjunto de vértices e arestas. Representado por lista de adjacências (esparso) ou matriz de adjacências (denso).</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">BFS / DFS</span><span class="op-cost cost-on">O(V+E)</span></div>
+                    <div class="ds-op"><span class="op-name">Checar aresta (lista adj.)</span><span class="op-cost cost-on">O(grau)</span></div>
+                    <div class="ds-op"><span class="op-name">Checar aresta (matriz adj.)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Espaço (lista adj.)</span><span class="op-cost cost-on">O(V+E)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive DS demos -->
+        <div class="section-label green">Demonstrações Interativas</div>
+
+        <div style="margin-bottom:12px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                <button class="btn active" onclick="switchDS('array')">📦 Array</button>
+                <button class="btn" onclick="switchDS('stack')">📚 Pilha</button>
+                <button class="btn" onclick="switchDS('queue')">🚶 Fila</button>
+                <button class="btn" onclick="switchDS('hash')">🗝 Hash Table</button>
+            </div>
+
+            <!-- Array demo -->
+            <div id="demo-array">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsArrayPush()">+ Inserir no fim</button>
+                    <button class="btn red-btn" onclick="dsArrayPop()">− Remover do fim</button>
+                    <button class="btn" onclick="dsArrayAccess()">🔍 Acessar índice 0</button>
+                    <button class="btn" onclick="dsReset('array')">↺ Resetar</button>
+                </div>
+                <div class="ds-anim-area" id="ds-arr-area"></div>
+                <div class="ds-log" id="ds-arr-log">Clique em um botão para começar.</div>
+            </div>
+
+            <!-- Stack demo -->
+            <div id="demo-stack" style="display:none">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsStackPush()">⬆ Push</button>
+                    <button class="btn red-btn" onclick="dsStackPop()">⬇ Pop</button>
+                    <button class="btn" onclick="dsStackPeek()">👁 Peek</button>
+                    <button class="btn" onclick="dsReset('stack')">↺ Resetar</button>
+                </div>
+                <div class="ds-anim-area" id="ds-stack-area" style="flex-direction:column-reverse;align-items:flex-start;"></div>
+                <div class="ds-log" id="ds-stack-log">Topo da pilha à esquerda.</div>
+            </div>
+
+            <!-- Queue demo -->
+            <div id="demo-queue" style="display:none">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsQueueEnq()">⟶ Enqueue</button>
+                    <button class="btn red-btn" onclick="dsQueueDeq()">⟵ Dequeue</button>
+                    <button class="btn" onclick="dsReset('queue')">↺ Resetar</button>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+                    <span style="font-size:11px;color:var(--accent3);font-family:JetBrains Mono,monospace;">FRENTE →</span>
+                    <div class="ds-anim-area" id="ds-queue-area" style="flex:1;margin-bottom:0;"></div>
+                    <span style="font-size:11px;color:var(--muted);font-family:JetBrains Mono,monospace;">← FIM</span>
+                </div>
+                <div class="ds-log" id="ds-queue-log">Primeiro a entrar, primeiro a sair.</div>
+            </div>
+
+            <!-- Hash demo -->
+            <div id="demo-hash" style="display:none">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsHashSet()">+ set(chave, valor)</button>
+                    <button class="btn" onclick="dsHashGet()">🔍 get(chave)</button>
+                    <button class="btn red-btn" onclick="dsHashDel()">− del(chave)</button>
+                    <button class="btn" onclick="dsReset('hash')">↺ Resetar</button>
+                </div>
+                <div class="ds-anim-area" id="ds-hash-area" style="flex-wrap:wrap;gap:8px;"></div>
+                <div class="ds-log" id="ds-hash-log">Cada chave é mapeada em O(1) via função hash.</div>
+            </div>
+        </div>
+
+        <div class="callout green">
+            <span class="callout-icon" style="color:var(--accent3)">💡</span>
+            <span><strong>Como escolher a estrutura certa?</strong> Pergunte-se: (1) qual operação é mais frequente? (2) preciso de ordem? (3) tenho restrição de memória? A maioria dos problemas desta matéria é resolvida escolhendo a estrutura adequada — não inventing um algoritmo novo.</span>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+        </div>
+        <!-- 1.3 Ordenação Sort -->
+        <div class="content-panel" id="panel-m1-sort">
+            <section class="problem">
+
+        <div class="section-label purple">O que são algoritmos de ordenação?</div>
+        <div class="intro-box">
+            <h3>🎯 Por que ordenar importa?</h3>
+            <p>
+                Imagine uma pilha de 1.000.000 de registros. Desordenados: busca em O(n) = 1.000.000 operações. Ordenados: busca binária em O(log n) = apenas 20 operações. Ordenar é uma das operações mais fundamentais da computação — e não existe "o melhor algoritmo": existe o certo para cada situação.
+            </p>
+        </div>
+
+        <div class="section-label purple">Escolha um algoritmo para explorar</div>
+        <div class="sort-layout">
+            <div class="sort-sidebar">
+                <div class="sort-category" id="cat-elementares">
+                    <div class="sort-category-line"></div>
+                    <div class="sort-category-line-accent" style="background:#e74c3c;top:0;bottom:0"></div>
+                    <div class="sort-cat-label" style="color:#e74c3c">Elementares</div>
+                    <div class="sort-cat-count">O(n²)</div>
+                </div>
+                <div class="sort-category" id="cat-eficientes" style="margin-top:12px">
+                    <div class="sort-category-line"></div>
+                    <div class="sort-category-line-accent" style="background:#5dade2;top:0;bottom:0"></div>
+                    <div class="sort-cat-label" style="color:#5dade2">Eficientes</div>
+                    <div class="sort-cat-count">O(n log n)</div>
+                </div>
+                <div class="sort-category" id="cat-lineares" style="margin-top:12px">
+                    <div class="sort-category-line"></div>
+                    <div class="sort-category-line-accent" style="background:#27ae60;top:0;bottom:64px"></div>
+                    <div class="sort-category-line-accent" style="background:#9b59b6;bottom:0;top:auto;height:60px"></div>
+                    <div class="sort-cat-label" style="color:#27ae60">Lineares</div>
+                    <div class="sort-cat-count" style="margin-bottom:auto">O(n+k)</div>
+                    <div class="sort-cat-label" style="color:#9b59b6;margin-top:0">Híbridos</div>
+                </div>
+            </div>
+            <div class="sort-cards-col">
+                <div class="sort-group">
+                    <div class="algo-card selected" id="ac-bubble" onclick="selectAlgo('bubble')">
+                        <div class="ac-left">
+                            <div class="ac-name">Bubble Sort</div>
+                            <div class="ac-time">O(n²) pior &nbsp;·&nbsp; O(n) melhor</div>
+                            <div class="ac-tag">Didático · Estável</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-selection" onclick="selectAlgo('selection')">
+                        <div class="ac-left">
+                            <div class="ac-name">Selection Sort</div>
+                            <div class="ac-time">O(n²) sempre</div>
+                            <div class="ac-tag">Mínimo de trocas · Instável</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-insertion" onclick="selectAlgo('insertion')">
+                        <div class="ac-left">
+                            <div class="ac-name">Insertion Sort</div>
+                            <div class="ac-time">O(n²) pior &nbsp;·&nbsp; O(n) melhor</div>
+                            <div class="ac-tag">Excelente para dados quase-ordenados</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                </div>
+                <div class="sort-group">
+                    <div class="algo-card" id="ac-merge" onclick="selectAlgo('merge')">
+                        <div class="ac-left">
+                            <div class="ac-name">Merge Sort</div>
+                            <div class="ac-time">Θ(n log n) sempre</div>
+                            <div class="ac-tag">Garantido · Estável · Externo</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-quick" onclick="selectAlgo('quick')">
+                        <div class="ac-left">
+                            <div class="ac-name">Quicksort</div>
+                            <div class="ac-time">O(n log n) médio &nbsp;·&nbsp; O(n²) pior</div>
+                            <div class="ac-tag">Mais rápido na prática</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-heap" onclick="selectAlgo('heap')">
+                        <div class="ac-left">
+                            <div class="ac-name">Heap Sort</div>
+                            <div class="ac-time">Θ(n log n) sempre</div>
+                            <div class="ac-tag">In-place · Não estável</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                </div>
+                <div class="sort-group">
+                    <div class="algo-card" id="ac-counting" onclick="selectAlgo('counting')">
+                        <div class="ac-left">
+                            <div class="ac-name">Counting Sort</div>
+                            <div class="ac-time">O(n + k) &nbsp;·&nbsp; k = intervalo</div>
+                            <div class="ac-tag">Linear · Quebra o limite O(n log n)</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-radix" onclick="selectAlgo('radix')">
+                        <div class="ac-left">
+                            <div class="ac-name">Radix Sort</div>
+                            <div class="ac-time">O(d × (n + k))</div>
+                            <div class="ac-tag">Para inteiros · Linear</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-tim" onclick="selectAlgo('tim')">
+                        <div class="ac-left">
+                            <div class="ac-name">TimSort</div>
+                            <div class="ac-time">O(n) melhor &nbsp;·&nbsp; O(n log n) pior</div>
+                            <div class="ac-tag">Python list.sort() · Java Arrays.sort()</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="algo-detail" id="algo-detail-area"></div>
+
+        <div class="section-label purple">Visualização Interativa</div>
+        <div class="sort-controls">
+            <button class="btn" style="color:var(--accent3);border-color:rgba(39,174,96,0.4)" onclick="sortRun()">&#9654; Animar</button>
+            <button class="btn" onclick="sortNewArr()">&#8634; Novo array</button>
+            <div class="sort-stat">Comparações: <span id="srt-comps">0</span></div>
+            <div class="sort-stat">Trocas/Escritas: <span id="srt-swaps">0</span></div>
+            <div class="sort-stat">Fase: <span id="srt-phase">—</span></div>
+        </div>
+        <div class="sort-bar-wrap" id="srt-bars"></div>
+        <div class="sort-log" id="srt-log">Selecione um algoritmo acima e clique em Animar.</div>
+
+        <div class="section-label purple">Tabela Comparativa Completa</div>
+        <table class="complexity-table">
+            <tr><th>Algoritmo</th><th>Melhor</th><th>Médio</th><th>Pior</th><th>Espaço</th><th>Estável</th><th>Uso Real</th></tr>
+            <tr><td>Bubble Sort</td><td><code>O(n)</code></td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(1)</code></td><td>Sim</td><td>Ensino</td></tr>
+            <tr><td>Selection Sort</td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(1)</code></td><td>Não</td><td>Memória flash</td></tr>
+            <tr><td>Insertion Sort</td><td><code>O(n)</code></td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(1)</code></td><td>Sim</td><td>Dados quase-ord., TimSort</td></tr>
+            <tr><td><strong>Merge Sort</strong></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>O(n)</code></td><td>Sim</td><td>Listas, externo, MapReduce</td></tr>
+            <tr><td><strong>Quicksort</strong></td><td><code>O(n log n)</code></td><td><code>O(n log n)</code></td><td><code>O(n²)</code></td><td><code>O(log n)</code></td><td>Não</td><td>C++ std::sort, arrays RAM</td></tr>
+            <tr><td><strong>Heap Sort</strong></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>O(1)</code></td><td>Não</td><td>Sistemas embarcados</td></tr>
+            <tr><td>Counting Sort</td><td><code>O(n+k)</code></td><td><code>O(n+k)</code></td><td><code>O(n+k)</code></td><td><code>O(k)</code></td><td>Sim</td><td>Inteiros pequenos, histograma</td></tr>
+            <tr><td>Radix Sort</td><td><code>O(d(n+k))</code></td><td><code>O(d(n+k))</code></td><td><code>O(d(n+k))</code></td><td><code>O(n+k)</code></td><td>Sim</td><td>Inteiros grandes, strings</td></tr>
+            <tr><td><strong>TimSort</strong></td><td><code>O(n)</code></td><td><code>O(n log n)</code></td><td><code>O(n log n)</code></td><td><code>O(n)</code></td><td>Sim</td><td>Python, Java, Android</td></tr>
+        </table>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:#9b59b6;">⚠</span>
+            <span><strong>Limite fundamental:</strong> Nenhum algoritmo de ordenação <em>por comparação</em> pode ser melhor que <strong>Ω(n log n)</strong>. Counting Sort e Radix Sort escapam porque não fazem comparações — exploram a estrutura dos valores.</span>
+        </div>
+
+    </section>
+        </div>
+    </div>
+
+    <!-- ─── MÓDULO 2 ─── -->
+    <div class="mod-panel" id="panel-m2">
+        <div class="content-panel active" id="panel-p1"><!-- PROBLEMA 1 -->
+    <section class="problem" id="p1">
+        <div class="problem-header">
+            <div class="problem-number">01</div>
+            <div class="problem-title-block">
+                <h2>O Problema da Celebridade</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1)</span>
+                    <span class="badge badge-struct">Eliminação por candidato</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Em uma multidão de <em>n</em> pessoas, todos conhecem uma celebridade, mas a celebridade não conhece ninguém. Dado um oráculo <code>conhece(A, B)</code> que responde em O(1), encontre a celebridade com o menor número possível de chamadas.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            A chave do problema está em explorar a <strong>assimetria do relacionamento</strong>. Se perguntarmos "A conhece B?" e a resposta for sim — A imediatamente se descarta como celebridade, pois celebridade não conhece ninguém. Se a resposta for não — B se descarta, pois todos conhecem a celebridade.
+            <br><br>
+            Com isso, <strong>cada pergunta elimina exatamente um candidato</strong>. Com n-1 perguntas, ficamos com um único candidato sobrevivente. Uma segunda rodada de validação em O(n) confirma se ele é de fato a celebridade. Total: <strong>O(n)</strong>.
+        </div>
+
+        <div class="section-label">Passo a Passo</div>
+        <ul class="steps-list">
+            <li><span class="step-num">01</span><span>Inicialize o <code>candidato = 0</code> (qualquer pessoa serve como ponto de partida).</span></li>
+            <li><span class="step-num">02</span><span>Para cada pessoa <code>i</code> de 1 até n-1: se <code>candidato</code> conhece <code>i</code>, então <code>candidato = i</code> (o antigo foi eliminado). Caso contrário, <code>i</code> é eliminado (candidato sobrevive).</span></li>
+            <li><span class="step-num">03</span><span>Ao fim da Fase 1, temos um único sobrevivente. Ele <em>pode</em> ser a celebridade, mas precisamos verificar.</span></li>
+            <li><span class="step-num">04</span><span>Fase 2: verifique (a) que o candidato não conhece ninguém e (b) que todos conhecem o candidato. Se ambas as condições falham, não há celebridade.</span></li>
+        </ul>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">encontrar_celebridade</span>(conhece, n):
+    <span class="cm"># ─── Fase 1: Eliminação ───────────────────────────────────────────</span>
+    <span class="cm"># Invariante: candidato nunca foi eliminado</span>
+    candidato = <span class="num">0</span>
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n):
+        <span class="kw">if</span> conhece(candidato, i):
+            <span class="cm"># candidato conhece i → candidato NÃO pode ser celebridade</span>
+            candidato = i
+        <span class="cm"># else: i não é conhecido pelo candidato → i eliminado</span>
+
+    <span class="cm"># ─── Fase 2: Validação ────────────────────────────────────────────</span>
+    <span class="kw">for</span> pessoa <span class="kw">in</span> <span class="fn">range</span>(n):
+        <span class="kw">if</span> pessoa == candidato:
+            <span class="kw">continue</span>
+        <span class="cm"># A celebridade não conhece ninguém E todos conhecem ela</span>
+        <span class="kw">if</span> conhece(candidato, pessoa) <span class="kw">or not</span> conhece(pessoa, candidato):
+            <span class="kw">return</span> <span class="num">-1</span>  <span class="cm"># Não existe celebridade</span>
+
+    <span class="kw">return</span> candidato</code></pre>
+
+        <table class="complexity-table">
+            <tr><th>Fase</th><th>Operações</th><th>Complexidade</th></tr>
+            <tr><td>Eliminação</td><td>n-1 chamadas a <code>conhece()</code></td><td><code>O(n)</code></td></tr>
+            <tr><td>Validação</td><td>até 2(n-1) chamadas</td><td><code>O(n)</code></td></tr>
+            <tr><td><strong>Total</strong></td><td>máximo 3(n-1) chamadas</td><td><code>O(n)</code></td></tr>
+        </table>
+
+        <div class="callout">
+            <span class="callout-icon">⚠</span>
+            <span>A abordagem ingênua — checar todos os pares — faz O(n²) consultas. O algoritmo acima é ótimo: qualquer algoritmo correto precisa de pelo menos Ω(n) consultas, pois precisa ver cada pessoa ao menos uma vez.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-celebridade" class="vis-container"></div>
+        <p class="graph-caption">Todos apontam para a celebridade (dourado). Nenhuma aresta sai dela.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p2"><!-- PROBLEMA 2 -->
+    <section class="problem" id="p2">
+        <div class="problem-header">
+            <div class="problem-number">02</div>
+            <div class="problem-title-block">
+                <h2>Votação por Maioria Absoluta</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1)</span>
+                    <span class="badge badge-struct">Algoritmo de Boyer-Moore</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Dado o histórico de votos de uma eleição, determine se existe um candidato com maioria absoluta (mais de 50% dos votos + 1). Se existir, retorne-o. Use espaço constante.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            O algoritmo de Boyer-Moore é uma obra de arte da elegância algorítmica. Imagine que cada voto é uma moeda de um candidato. Quando dois candidatos diferentes se encontram, eles se <strong>"cancelam" mutuamente</strong> — removemos um de cada. O elemento que sobrar no fim <em>é o único que poderia ter maioria</em>, pois se um elemento aparece mais de n/2 vezes, ele sempre sobrevive ao cancelamento.
+            <br><br>
+            Porém, sobreviver não garante maioria — é necessária uma segunda passagem para confirmar a contagem real.
+        </div>
+
+        <div class="section-label">Passo a Passo</div>
+        <ul class="steps-list">
+            <li><span class="step-num">01</span><span>Inicialize <code>candidato = None</code> e <code>contagem = 0</code>.</span></li>
+            <li><span class="step-num">02</span><span>Para cada voto: se contagem é 0, o candidato passa a ser o voto atual. Se o voto é igual ao candidato, <code>contagem += 1</code>. Caso contrário, <code>contagem -= 1</code> (cancelamento).</span></li>
+            <li><span class="step-num">03</span><span>Fase 2: conte quantas vezes o candidato sobrevivente aparece. Se mais de n/2 vezes, ele tem maioria absoluta.</span></li>
+        </ul>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">maioria_absoluta</span>(votos):
+    <span class="cm"># ─── Fase 1: Encontrar candidato por Boyer-Moore ──────────────────</span>
+    candidato = <span class="kw">None</span>
+    contagem  = <span class="num">0</span>
+
+    <span class="kw">for</span> voto <span class="kw">in</span> votos:
+        <span class="kw">if</span> contagem == <span class="num">0</span>:
+            candidato = voto       <span class="cm"># Novo candidato emerge</span>
+            contagem  = <span class="num">1</span>
+        <span class="kw">elif</span> voto == candidato:
+            contagem += <span class="num">1</span>         <span class="cm"># Reforço: mesmo candidato</span>
+        <span class="kw">else</span>:
+            contagem -= <span class="num">1</span>         <span class="cm"># Cancelamento: votos diferentes se anulam</span>
+
+    <span class="cm"># ─── Fase 2: Confirmar se tem maioria real ────────────────────────</span>
+    confirmacao = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> v <span class="kw">in</span> votos <span class="kw">if</span> v == candidato)
+
+    <span class="kw">if</span> confirmacao > <span class="fn">len</span>(votos) / <span class="num">2</span>:
+        <span class="kw">return</span> candidato
+    <span class="kw">return</span> <span class="kw">None</span>  <span class="cm"># Nenhum candidato com maioria absoluta</span>
+
+votos = [<span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="st">'X'</span>, <span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="st">'X'</span>, <span class="st">'X'</span>]
+<span class="fn">print</span>(maioria_absoluta(votos))  <span class="cm"># → 'X' (5 de 7 votos)</span></code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">💡</span>
+            <span>Por que não usar um dicionário de contagens? Funcionaria em O(n) tempo, mas usaria O(k) espaço onde k é o número de candidatos. Boyer-Moore faz o mesmo em O(1) espaço — ideal para streams de dados gigantescas onde não cabe tudo na memória.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-votacao" class="vis-container"></div>
+        <p class="graph-caption">Votos do mesmo candidato somam; votos diferentes se cancelam mutuamente.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p3"><!-- PROBLEMA 3 -->
+    <section class="problem" id="p3">
+        <div class="problem-header">
+            <div class="problem-number">03</div>
+            <div class="problem-title-block">
+                <h2>Agenda de Contatos do Celular</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Busca: O(log n)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">Lista ordenada + Busca binária</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Como o celular armazena e encontra um contato na agenda de forma eficiente? Modele a estrutura de dados ideal considerando as operações: adicionar contato, remover contato, buscar por nome e listar em ordem alfabética.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Uma lista desordenada exigiria varrer todos os contatos a cada busca — O(n) por pesquisa. Mas a grande maioria das agendas mantém os contatos <strong>ordenados alfabeticamente</strong>. Com isso, podemos usar <strong>Busca Binária</strong>: a cada passo, descartamos metade dos contatos restantes. Com 1.000 contatos, precisamos de no máximo <strong>10 comparações</strong> (log₂ 1000 ≈ 10).
+        </div>
+
+        <div class="section-label">Análise das Operações</div>
+        <table class="complexity-table">
+            <tr><th>Operação</th><th>Estrutura</th><th>Complexidade</th></tr>
+            <tr><td>Buscar por nome</td><td>Lista ordenada + Busca Binária</td><td><code>O(log n)</code></td></tr>
+            <tr><td>Adicionar contato</td><td>Inserção em posição correta</td><td><code>O(n)</code> (shift)</td></tr>
+            <tr><td>Remover contato</td><td>Deleção com shift</td><td><code>O(n)</code></td></tr>
+            <tr><td>Listar ordenado</td><td>Lista já mantida ordenada</td><td><code>O(n)</code></td></tr>
+        </table>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> bisect
+
+<span class="kw">class</span> <span class="fn">AgendaContatos</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.contatos = []    <span class="cm"># Lista de dicts ordenada por 'nome'</span>
+        self.nomes    = []    <span class="cm"># Lista paralela só com nomes (para bisect)</span>
+
+    <span class="kw">def</span> <span class="fn">adicionar</span>(self, nome, telefone):
+        pos = bisect.bisect_left(self.nomes, nome)
+        self.nomes.insert(pos, nome)
+        self.contatos.insert(pos, {<span class="st">'nome'</span>: nome, <span class="st">'tel'</span>: telefone})
+
+    <span class="kw">def</span> <span class="fn">buscar</span>(self, nome):
+        pos = bisect.bisect_left(self.nomes, nome)
+        <span class="kw">if</span> pos < <span class="fn">len</span>(self.nomes) <span class="kw">and</span> self.nomes[pos] == nome:
+            <span class="kw">return</span> self.contatos[pos][<span class="st">'tel'</span>]
+        <span class="kw">return</span> <span class="st">"Não encontrado"</span>
+
+    <span class="kw">def</span> <span class="fn">remover</span>(self, nome):
+        pos = bisect.bisect_left(self.nomes, nome)
+        <span class="kw">if</span> pos < <span class="fn">len</span>(self.nomes) <span class="kw">and</span> self.nomes[pos] == nome:
+            self.nomes.pop(pos)
+            self.contatos.pop(pos)</code></pre>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-agenda" class="vis-container"></div>
+        <p class="graph-caption">Lista ordenada alfabeticamente. A busca binária elimina metade dos contatos a cada comparação.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p4"><!-- PROBLEMA 4 -->
+    <section class="problem" id="p4">
+        <div class="problem-header">
+            <div class="problem-number">04</div>
+            <div class="problem-title-block">
+                <h2>Criptografia com Anonimato de Remetente</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1) extra</span>
+                    <span class="badge badge-struct">Tabela Hash + Cifra de Substituição</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Envie uma mensagem de modo que somente o receptor final saiba o conteúdo e ninguém saiba quem enviou. Modele o mecanismo de criptografia da mensagem e anonimização do remetente.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            O problema tem <strong>duas dimensões independentes</strong>: (1) criptografar o <em>conteúdo</em> e (2) ocultar a <em>identidade do remetente</em>. Para o conteúdo, usamos uma <strong>Tabela Hash como chave de substituição</strong> — cada caractere é mapeado para outro em O(1). Para o anonimato, modelamos um sistema de <strong>roteamento em cadeia</strong> (onion routing simplificado): a mensagem passa por intermediários que não sabem nem a origem nem o destino final.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> hashlib, os
+
+<span class="cm"># ─── Parte 1: Cifra de Substituição via Tabela Hash ───────────────</span>
+<span class="kw">def</span> <span class="fn">gerar_chave_substituicao</span>(seed=<span class="num">42</span>):
+    <span class="kw">import</span> random
+    rng = random.Random(seed)
+    alfabeto = <span class="fn">list</span>(<span class="st">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>)
+    embaralhado = alfabeto[:]
+    rng.shuffle(embaralhado)
+    chave   = <span class="fn">dict</span>(<span class="fn">zip</span>(alfabeto, embaralhado))
+    inversa = <span class="fn">dict</span>(<span class="fn">zip</span>(embaralhado, alfabeto))
+    <span class="kw">return</span> chave, inversa
+
+<span class="kw">def</span> <span class="fn">criptografar</span>(mensagem, chave):
+    <span class="kw">return</span> <span class="st">""</span>.join(chave.get(c.upper(), c) <span class="kw">for</span> c <span class="kw">in</span> mensagem)
+
+<span class="kw">def</span> <span class="fn">descriptografar</span>(cifrado, inversa):
+    <span class="kw">return</span> <span class="st">""</span>.join(inversa.get(c, c) <span class="kw">for</span> c <span class="kw">in</span> cifrado)
+
+chave, inversa = <span class="fn">gerar_chave_substituicao</span>()
+msg_original   = <span class="st">"ENCONTRO NA SEXTA"</span>
+msg_cifrada    = <span class="fn">criptografar</span>(msg_original, chave)
+<span class="fn">print</span>(msg_cifrada)
+<span class="fn">print</span>(<span class="fn">descriptografar</span>(msg_cifrada, inversa))  <span class="cm"># → "ENCONTRO NA SEXTA"</span></code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">🔐</span>
+            <span>Em criptografia real moderna, usa-se AES (simétrico) ou RSA/Elliptic Curve (assimétrico). O modelo de roteamento anônimo é a base do <strong>Tor</strong> (The Onion Router). A cifra de substituição é vulnerável à análise de frequência, mas ilustra perfeitamente o uso de hash maps em O(1).</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-hash" class="vis-container"></div>
+        <p class="graph-caption">Tabela Hash mapeia cada caractere em tempo O(1) — independente do tamanho da mensagem.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p5"><!-- PROBLEMA 5 -->
+    <section class="problem" id="p5">
+        <div class="problem-header">
+            <div class="problem-number">05</div>
+            <div class="problem-title-block">
+                <h2>Distribuição de Jornais com 3 Centros</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">K-means com K fixo (K=3)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Um bairro tem <em>n</em> bancas de jornal e 3 pontos de distribuição fixos em posições aleatórias. Otimize a distribuição alocando cada banca ao ponto mais próximo, minimizando a distância total percorrida.
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Como K=3 é uma <strong>constante fixa</strong>, o loop interno que compara cada banca com os 3 centros executa exatamente 3 vezes — um número constante, independente de n. Logo, O(K×n) = O(3×n) = <strong>O(n)</strong>. Esse é um padrão importante: quando K é fixo, o que parece quadrático colapsa para linear.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">distancia_euclidiana</span>(ponto_a, ponto_b):
+    <span class="kw">return</span> math.sqrt((ponto_a[<span class="num">0</span>] - ponto_b[<span class="num">0</span>])**<span class="num">2</span> + (ponto_a[<span class="num">1</span>] - ponto_b[<span class="num">1</span>])**<span class="num">2</span>)
+
+<span class="kw">def</span> <span class="fn">alocar_bancas</span>(bancas, centros):
+    alocacao = {c: [] <span class="kw">for</span> c <span class="kw">in</span> centros}
+    <span class="kw">for</span> banca <span class="kw">in</span> bancas:               <span class="cm"># Loop externo: O(n)</span>
+        melhor_centro = <span class="fn">min</span>(           <span class="cm"># Loop interno: O(K) = O(3) = O(1)</span>
+            centros,
+            key=<span class="kw">lambda</span> c: <span class="fn">distancia_euclidiana</span>(banca, c)
+        )
+        alocacao[melhor_centro].append(banca)
+    <span class="kw">return</span> alocacao
+
+centros = [(<span class="num">2</span>, <span class="num">3</span>), (<span class="num">8</span>, <span class="num">7</span>), (<span class="num">5</span>, <span class="num">1</span>)]
+bancas  = [(<span class="num">1</span>, <span class="num">2</span>), (<span class="num">9</span>, <span class="num">6</span>), (<span class="num">4</span>, <span class="num">1</span>), (<span class="num">7</span>, <span class="num">8</span>), (<span class="num">3</span>, <span class="num">4</span>)]
+resultado = <span class="fn">alocar_bancas</span>(bancas, centros)</code></pre>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-rotas" class="vis-container"></div>
+        <p class="graph-caption">Cada banca (azul) conecta ao centro de distribuição (vermelho) mais próximo.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p6"><!-- PROBLEMA 6 -->
+    <section class="problem" id="p6">
+        <div class="problem-header">
+            <div class="problem-number">06</div>
+            <div class="problem-title-block">
+                <h2>Fila de Prioridade com Prioridades Dinâmicas</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Extração: O(log n)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">Heap Binário (Min-Heap)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Um sistema de tarefas tem prioridades que mudam dinamicamente durante a execução. Como garantir que sempre executemos a tarefa de maior prioridade, mesmo com inserções e mudanças de prioridade frequentes?
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Uma lista simples exigiria O(n) para encontrar a tarefa de maior prioridade a cada extração. Um <strong>Heap Binário</strong> resolve isso em O(log n): é uma árvore binária quase-completa onde o pai <em>sempre</em> tem prioridade maior que os filhos. O elemento de maior prioridade está sempre na raiz — acesso em O(1). Inserção e remoção reorganizam a árvore em no máximo log₂n passos.
+        </div>
+
+        <div class="section-label">Passo a Passo</div>
+        <ul class="steps-list">
+            <li><span class="step-num">01</span><span><strong>Inserção:</strong> Adiciona ao fim do heap. Então "sobe" (heapify-up): compara com o pai e troca se necessário. Máximo de log n trocas.</span></li>
+            <li><span class="step-num">02</span><span><strong>Extração do máximo:</strong> Remove a raiz. Move o último elemento para a raiz. "Desce" (heapify-down): compara com filhos e troca com o maior. Máximo de log n trocas.</span></li>
+            <li><span class="step-num">03</span><span><strong>Atualização de prioridade:</strong> Localiza a tarefa (O(1) com dicionário auxiliar). Atualiza a prioridade. Se aumentou, sobe; se diminuiu, desce. O(log n).</span></li>
+        </ul>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">class</span> <span class="fn">FilaPrioridadeDinamica</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.heap   = []
+        self.index  = {}
+        self.contador = <span class="num">0</span>
+        self.REMOVIDA = <span class="st">'REMOVIDA'</span>
+
+    <span class="kw">def</span> <span class="fn">inserir</span>(self, tarefa, prioridade):
+        <span class="kw">if</span> tarefa <span class="kw">in</span> self.index:
+            self.<span class="fn">atualizar</span>(tarefa, prioridade)
+            <span class="kw">return</span>
+        entrada = [-prioridade, self.contador, tarefa]
+        self.index[tarefa] = entrada
+        heapq.heappush(self.heap, entrada)
+        self.contador += <span class="num">1</span>
+
+    <span class="kw">def</span> <span class="fn">atualizar</span>(self, tarefa, nova_prioridade):
+        entrada_antiga = self.index.pop(tarefa)
+        entrada_antiga[<span class="num">2</span>] = self.REMOVIDA
+        self.<span class="fn">inserir</span>(tarefa, nova_prioridade)
+
+    <span class="kw">def</span> <span class="fn">extrair_maior</span>(self):
+        <span class="kw">while</span> self.heap:
+            prioridade, _, tarefa = heapq.heappop(self.heap)
+            <span class="kw">if</span> tarefa != self.REMOVIDA:
+                <span class="kw">del</span> self.index[tarefa]
+                <span class="kw">return</span> tarefa, -prioridade
+
+fila = <span class="fn">FilaPrioridadeDinamica</span>()
+fila.<span class="fn">inserir</span>(<span class="st">"Relatório"</span>, <span class="num">3</span>)
+fila.<span class="fn">inserir</span>(<span class="st">"Email urgente"</span>, <span class="num">8</span>)
+fila.<span class="fn">atualizar</span>(<span class="st">"Relatório"</span>, <span class="num">10</span>)  <span class="cm"># Prazo se aproximou!</span>
+<span class="fn">print</span>(fila.<span class="fn">extrair_maior</span>())   <span class="cm"># → ("Relatório", 10)</span></code></pre>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-heap" class="vis-container"></div>
+        <p class="graph-caption">Heap Binário: o elemento de maior prioridade sempre está na raiz.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p7"><!-- PROBLEMA 7 -->
+    <section class="problem" id="p7">
+        <div class="problem-header">
+            <div class="problem-number">07</div>
+            <div class="problem-title-block">
+                <h2>Top-5 Funcionários por Produtividade</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n log 5) = O(n)</span>
+                    <span class="badge badge-space">Espaço: O(1)</span>
+                    <span class="badge badge-struct">Min-Heap de Tamanho Fixo</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Uma empresa quer selecionar os 5 funcionários mais produtivos de um total de <em>n</em> para premiação em um resort. Como fazer isso sem ordenar todos os funcionários?
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Ordenar todos os n funcionários custaria O(n log n). Mas precisamos apenas dos 5 melhores. A solução elegante é manter um <strong>min-heap de tamanho 5</strong>. A raiz guarda o <em>menor dos top-5</em>. Para cada novo funcionário, se ele for melhor que o pior do top-5, substituímos. Assim o heap sempre contém os 5 melhores vistos até agora, e cada atualização custa O(log 5) = O(1).
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">top_k_funcionarios</span>(funcionarios, k=<span class="num">5</span>):
+    heap = []
+
+    <span class="kw">for</span> nome, prod <span class="kw">in</span> funcionarios:        <span class="cm"># O(n)</span>
+        <span class="kw">if</span> <span class="fn">len</span>(heap) < k:
+            heapq.heappush(heap, (prod, nome))
+        <span class="kw">elif</span> prod > heap[<span class="num">0</span>][<span class="num">0</span>]:
+            heapq.heapreplace(heap, (prod, nome))  <span class="cm"># O(log k)</span>
+
+    <span class="kw">return</span> <span class="fn">sorted</span>(heap, key=<span class="kw">lambda</span> x: -x[<span class="num">0</span>])
+
+<span class="cm"># Complexidade Final: n × O(log k) = O(n log k)</span>
+<span class="cm"># k=5 constante → O(n log 5) = O(n). Muito melhor que O(n log n)!</span>
+
+funcionarios = [
+    (<span class="st">"Alice"</span>, <span class="num">92</span>), (<span class="st">"Bruno"</span>, <span class="num">87</span>), (<span class="st">"Carla"</span>, <span class="num">95</span>),
+    (<span class="st">"Diego"</span>, <span class="num">78</span>), (<span class="st">"Eva"</span>, <span class="num">99</span>), (<span class="st">"Fábio"</span>, <span class="num">88</span>),
+]
+premiados = <span class="fn">top_k_funcionarios</span>(funcionarios)</code></pre>
+
+        <div class="callout">
+            <span class="callout-icon">📊</span>
+            <span>Esse padrão (top-K com K fixo usando min-heap) é amplamente usado em sistemas de recomendação, rankings em tempo real e processamento de streams de dados onde não podemos armazenar tudo na memória.</span>
+        </div>
+
+        <div class="section-label">Visualização</div>
+        <div id="grafo-topk" class="vis-container"></div>
+        <p class="graph-caption">Min-heap de tamanho 5: a raiz é o menor dos top-5. Novos candidatos desafiam a raiz.</p>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p8"><!-- PROBLEMA 8 -->
+    <section class="problem" id="p8">
+        <div class="problem-header">
+            <div class="problem-number">08</div>
+            <div class="problem-title-block">
+                <h2>Linha de Montagem com Máquinas Heterogêneas</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(n × m)</span>
+                    <span class="badge badge-space">Espaço: O(n)</span>
+                    <span class="badge badge-struct">Fila de Prioridade + Escalonamento Greedy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Em situação emergencial, maximize a produção de uma fábrica com múltiplas linhas de montagem (<em>m</em> linhas), cada uma com máquinas modernas (rápidas) e antigas (lentas). Como escalonar a produção para maximizar o throughput?
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            Este é um problema de <strong>escalonamento de tarefas em máquinas paralelas heterogêneas</strong>. A estratégia gulosa ótima é: <strong>sempre alocar o próximo item à máquina que terminar primeiro</strong>. Isso evita que máquinas rápidas fiquem ociosas enquanto lentas acumulam trabalho.
+            <br><br>
+            Usamos um <strong>min-heap de disponibilidade</strong>: a raiz sempre aponta para a máquina que ficará livre primeiro.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">escalonar_producao</span>(n_pecas, linhas_maquinas):
+    heap = []
+    <span class="kw">for</span> linha_id, maquinas <span class="kw">in</span> <span class="fn">enumerate</span>(linhas_maquinas):
+        <span class="kw">for</span> maq_id, velocidade <span class="kw">in</span> <span class="fn">enumerate</span>(maquinas):
+            heapq.heappush(heap, (<span class="num">0</span>, linha_id, maq_id, velocidade))
+
+    tempo_final = <span class="num">0</span>
+    <span class="kw">for</span> peca <span class="kw">in</span> <span class="fn">range</span>(n_pecas):
+        tempo_livre, linha, maquina, vel = heapq.heappop(heap)
+        novo_tempo = tempo_livre + vel
+        tempo_final = <span class="fn">max</span>(tempo_final, novo_tempo)
+        heapq.heappush(heap, (novo_tempo, linha, maquina, vel))
+
+    <span class="kw">return</span> tempo_final
+
+<span class="cm"># 2 linhas: máquina moderna (vel=2) e antiga (vel=5) em cada</span>
+linhas = [[<span class="num">2</span>, <span class="num">5</span>], [<span class="num">3</span>, <span class="num">6</span>]]
+<span class="fn">print</span>(<span class="fn">escalonar_producao</span>(<span class="num">8</span>, linhas))</code></pre>
+
+        <table class="complexity-table">
+            <tr><th>Operação</th><th>Complexidade</th><th>Observação</th></tr>
+            <tr><td>Inicialização do heap</td><td><code>O(M log M)</code></td><td>M = total de máquinas</td></tr>
+            <tr><td>Por peça produzida</td><td><code>O(log M)</code></td><td>pop + push no heap</td></tr>
+            <tr><td><strong>Total</strong></td><td><code>O(n log M)</code></td><td>n peças, M máquinas</td></tr>
+        </table>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ --></div>
+    </div>
+
+    <!-- ─── MÓDULO 3 ─── -->
+    <div class="mod-panel" id="panel-m3">
+        <div class="content-panel active" id="panel-p9"><!-- PROBLEMA 9 -->
+    <section class="problem" id="p9">
+        <div class="problem-header">
+            <div class="problem-number">09</div>
+            <div class="problem-title-block">
+                <h2>Operações com Matrizes M×N</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Soma: O(M·N)</span>
+                    <span class="badge badge-time">Mult: O(M·N·P)</span>
+                    <span class="badge badge-struct">Álgebra Linear + Arrays 2D</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Implemente operações de soma e multiplicação de matrizes com análise de complexidade. Para a soma: A[M×N] + B[M×N] = C[M×N]. Para a multiplicação: A[M×N] × B[N×P] = C[M×P].
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">soma_matrizes</span>(A, B):
+    M, N = <span class="fn">len</span>(A), <span class="fn">len</span>(A[<span class="num">0</span>])
+    <span class="kw">return</span> [[A[i][j] + B[i][j] <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(N)] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(M)]  <span class="cm"># O(M·N)</span>
+
+<span class="kw">def</span> <span class="fn">mult_matrizes</span>(A, B):
+    M = <span class="fn">len</span>(A); N = <span class="fn">len</span>(A[<span class="num">0</span>]); P = <span class="fn">len</span>(B[<span class="num">0</span>])
+    C = [[<span class="num">0</span>]*P <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(M)]
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(M):       <span class="cm"># O(M)</span>
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(P):   <span class="cm"># O(P)</span>
+            <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(N): <span class="cm"># O(N)</span>
+                C[i][j] += A[i][k] * B[k][j]
+    <span class="kw">return</span> C  <span class="cm"># Complexidade total: O(M·N·P)</span></code></pre>
+
+        <div class="section-label orange">Demonstração Interativa</div>
+        <div class="matrix-controls">
+            <label>M=</label><input type="number" id="mat-m" value="3" min="1" max="5">
+            <label>N=</label><input type="number" id="mat-n" value="3" min="1" max="5">
+            <label>P=</label><input type="number" id="mat-p" value="3" min="1" max="5">
+            <button class="btn" onclick="gerarMatrizes()">↺ Gerar Matrizes</button>
+            <button class="btn green-btn" onclick="calcularSoma()">+ Soma A+B</button>
+            <button class="btn" style="color:var(--accent2);border-color:rgba(243,156,18,.4);" onclick="calcularMult()">× Multiplicar A×B</button>
+        </div>
+        <div id="matrix-display"></div>
+        <div id="matrix-info"></div>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p10"><!-- PROBLEMA 10 -->
+    <section class="problem" id="p10">
+        <div class="problem-header">
+            <div class="problem-number">10</div>
+            <div class="problem-title-block">
+                <h2>Torre de Hanói — Recursivo vs Iterativo</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(2ⁿ)</span>
+                    <span class="badge badge-space">Espaço Rec: O(n)</span>
+                    <span class="badge badge-struct">Recursão + Pilha explícita</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Mova n discos do pino A para o pino C usando o pino B como auxiliar. Nunca coloque um disco maior sobre um menor. Implemente e compare a versão recursiva com a iterativa (usando pilha explícita).
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            A recorrência é T(n) = 2T(n-1) + 1. Resolvendo: T(n) = <strong>2ⁿ - 1</strong>. Para n=10: 1.023 movimentos. Para n=64: mais de 18 quintilhões — <em>levaria bilhões de anos</em>. A versão iterativa usa uma pilha explícita para simular o call stack da recursão, com o mesmo número de movimentos mas sem overhead de chamadas de função.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <div class="tab-bar">
+            <button class="tab-btn" id="tab-btn-py-rec" onclick="switchTab('py-rec')" style="background:var(--code-bg);color:var(--accent)">Python Recursivo</button>
+            <button class="tab-btn" id="tab-btn-py-iter" onclick="switchTab('py-iter')">Python Iterativo</button>
+            <button class="tab-btn" id="tab-btn-cpp" onclick="switchTab('cpp')">C++ Recursivo</button>
+        </div>
+        <div id="tab-py-rec">
+<pre><code><span class="kw">def</span> <span class="fn">hanoi_rec</span>(n, origem, destino, auxiliar, movimentos=[]):
+    <span class="kw">if</span> n == <span class="num">1</span>:
+        movimentos.append((origem, destino))
+        <span class="kw">return</span>
+    <span class="fn">hanoi_rec</span>(n-<span class="num">1</span>, origem, auxiliar, destino, movimentos)   <span class="cm"># Move n-1 para aux</span>
+    movimentos.append((origem, destino))                        <span class="cm"># Move o maior</span>
+    <span class="fn">hanoi_rec</span>(n-<span class="num">1</span>, auxiliar, destino, origem, movimentos)   <span class="cm"># Move n-1 de aux → dest</span>
+    <span class="kw">return</span> movimentos
+
+<span class="cm"># T(n) = 2T(n-1) + 1  →  T(n) = 2ⁿ - 1 movimentos</span>
+<span class="cm"># Espaço: O(n) na call stack (profundidade da recursão)</span></code></pre>
+        </div>
+        <div id="tab-py-iter" style="display:none">
+<pre><code><span class="kw">def</span> <span class="fn">hanoi_iter</span>(n, origem, destino, auxiliar):
+    <span class="cm"># Pilha explícita simula o call stack da recursão</span>
+    pilha = [(<span class="num">n</span>, origem, destino, auxiliar)]
+    movimentos = []
+
+    <span class="kw">while</span> pilha:
+        n, o, d, a = pilha.pop()
+        <span class="kw">if</span> n == <span class="num">1</span>:
+            movimentos.append((o, d))
+            <span class="kw">continue</span>
+        <span class="cm"># Empilha em ordem inversa (pilha é LIFO)</span>
+        pilha.append((n-<span class="num">1</span>, a, d, o))    <span class="cm"># 3: move n-1 aux→dest</span>
+        pilha.append((<span class="num">1</span>, o, d, a))       <span class="cm"># 2: move disco maior</span>
+        pilha.append((n-<span class="num">1</span>, o, a, d))    <span class="cm"># 1: move n-1 orig→aux</span>
+
+    <span class="kw">return</span> movimentos  <span class="cm"># Mesmos 2ⁿ-1 movimentos, sem recursão!</span></code></pre>
+        </div>
+        <div id="tab-cpp" style="display:none">
+<pre><code><span class="cm">// C++ — versão recursiva clássica</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">void</span> <span class="fn">hanoi</span>(<span class="kw">int</span> n, <span class="kw">char</span> origem, <span class="kw">char</span> destino, <span class="kw">char</span> aux) {
+    <span class="kw">if</span> (n == <span class="num">1</span>) {
+        cout << <span class="st">"Mover disco 1 de "</span> << origem << <span class="st">" para "</span> << destino << endl;
+        <span class="kw">return</span>;
+    }
+    <span class="fn">hanoi</span>(n - <span class="num">1</span>, origem, aux, destino);
+    cout << <span class="st">"Mover disco "</span> << n << <span class="st">" de "</span> << origem << <span class="st">" para "</span> << destino << endl;
+    <span class="fn">hanoi</span>(n - <span class="num">1</span>, aux, destino, origem);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="fn">hanoi</span>(<span class="num">4</span>, <span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'B'</span>);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+        </div>
+
+        <div class="section-label orange">Animação Interativa</div>
+        <div class="hanoi-controls">
+            <label>Discos n=</label>
+            <input type="number" id="hanoi-n" value="4" min="1" max="8">
+            <label>Velocidade</label>
+            <input type="range" id="hanoi-speed" min="100" max="900" value="500">
+            <button class="btn green-btn" onclick="iniciarHanoi('rec')">▶ Recursivo</button>
+            <button class="btn" style="color:var(--accent2);border-color:rgba(243,156,18,.4);" onclick="iniciarHanoi('iter')">▶ Iterativo</button>
+            <button class="btn red-btn" onclick="resetHanoi()">↺ Reset</button>
+        </div>
+
+        <div class="hanoi-stats">
+            <div class="hstat"><div class="hk">Discos</div><div class="hv" id="stat-n">—</div></div>
+            <div class="hstat"><div class="hk">Total moves</div><div class="hv" id="stat-total">—</div></div>
+            <div class="hstat"><div class="hk">Move atual</div><div class="hv" id="stat-atual">0</div></div>
+            <div class="hstat"><div class="hk">Modo</div><div class="hv" id="stat-modo">—</div></div>
+        </div>
+
+        <canvas id="hanoi-canvas"></canvas>
+        <div id="hanoi-log">> Pressione ▶ para iniciar.</div>
+    </section></div>
+    </div>
+
+</div><!-- /page-wrap -->
+
+<!-- ── JavaScript Modules (ordem importa) ── -->
+<script src="js/nav.js"></script>
+<script src="js/bigo.js"></script>
+<script src="js/ds.js"></script>
+<script src="js/grafos.js"></script>
+<script src="js/matrix.js"></script>
+<script src="js/hanoi.js"></script>
+<script src="js/sort.js"></script>
+<script src="js/theme.js"></script>
+
+</body>
+</html>

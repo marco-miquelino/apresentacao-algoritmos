@@ -1,0 +1,17 @@
+/* ─── Variáveis CSS / Design Tokens ─── */
+:root {
+            --bg: #0d0f14;
+            --surface: #13161e;
+            --surface2: #1a1e28;
+            --border: #242836;
+            --text: #e8eaf0;
+            --muted: #7a8099;
+            --accent: #5dade2;
+            --accent2: #f39c12;
+            --accent3: #27ae60;
+            --accent4: #e74c3c;
+            --accent5: #9b59b6;
+            --danger: #e74c3c;
+            --code-bg: #0a0c10;
+            --gold: #f1c40f;
+        }

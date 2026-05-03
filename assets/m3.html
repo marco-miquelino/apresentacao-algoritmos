@@ -1,0 +1,151 @@
+<!-- ─── MÓDULO 3 ─── -->
+    <div class="mod-panel" id="panel-m3">
+        <div class="content-panel active" id="panel-p9"><!-- PROBLEMA 9 -->
+    <section class="problem" id="p9">
+        <div class="problem-header">
+            <div class="problem-number">09</div>
+            <div class="problem-title-block">
+                <h2>Operações com Matrizes M×N</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Soma: O(M·N)</span>
+                    <span class="badge badge-time">Mult: O(M·N·P)</span>
+                    <span class="badge badge-struct">Álgebra Linear + Arrays 2D</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Implemente operações de soma e multiplicação de matrizes com análise de complexidade. Para a soma: A[M×N] + B[M×N] = C[M×N]. Para a multiplicação: A[M×N] × B[N×P] = C[M×P].
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <pre><code><span class="kw">def</span> <span class="fn">soma_matrizes</span>(A, B):
+    M, N = <span class="fn">len</span>(A), <span class="fn">len</span>(A[<span class="num">0</span>])
+    <span class="kw">return</span> [[A[i][j] + B[i][j] <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(N)] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(M)]  <span class="cm"># O(M·N)</span>
+
+<span class="kw">def</span> <span class="fn">mult_matrizes</span>(A, B):
+    M = <span class="fn">len</span>(A); N = <span class="fn">len</span>(A[<span class="num">0</span>]); P = <span class="fn">len</span>(B[<span class="num">0</span>])
+    C = [[<span class="num">0</span>]*P <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(M)]
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(M):       <span class="cm"># O(M)</span>
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(P):   <span class="cm"># O(P)</span>
+            <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(N): <span class="cm"># O(N)</span>
+                C[i][j] += A[i][k] * B[k][j]
+    <span class="kw">return</span> C  <span class="cm"># Complexidade total: O(M·N·P)</span></code></pre>
+
+        <div class="section-label orange">Demonstração Interativa</div>
+        <div class="matrix-controls">
+            <label>M=</label><input type="number" id="mat-m" value="3" min="1" max="5">
+            <label>N=</label><input type="number" id="mat-n" value="3" min="1" max="5">
+            <label>P=</label><input type="number" id="mat-p" value="3" min="1" max="5">
+            <button class="btn" onclick="gerarMatrizes()">↺ Gerar Matrizes</button>
+            <button class="btn green-btn" onclick="calcularSoma()">+ Soma A+B</button>
+            <button class="btn" style="color:var(--accent2);border-color:rgba(243,156,18,.4);" onclick="calcularMult()">× Multiplicar A×B</button>
+        </div>
+        <div id="matrix-display"></div>
+        <div id="matrix-info"></div>
+    </section>
+
+    <hr class="divider"></div>
+        <div class="content-panel" id="panel-p10"><!-- PROBLEMA 10 -->
+    <section class="problem" id="p10">
+        <div class="problem-header">
+            <div class="problem-number">10</div>
+            <div class="problem-title-block">
+                <h2>Torre de Hanói — Recursivo vs Iterativo</h2>
+                <div class="badges">
+                    <span class="badge badge-time">Tempo: O(2ⁿ)</span>
+                    <span class="badge badge-space">Espaço Rec: O(n)</span>
+                    <span class="badge badge-struct">Recursão + Pilha explícita</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="enunciado">
+            <strong>Enunciado:</strong> Mova n discos do pino A para o pino C usando o pino B como auxiliar. Nunca coloque um disco maior sobre um menor. Implemente e compare a versão recursiva com a iterativa (usando pilha explícita).
+        </div>
+
+        <div class="section-label">Intuição</div>
+        <div class="insight-box">
+            A recorrência é T(n) = 2T(n-1) + 1. Resolvendo: T(n) = <strong>2ⁿ - 1</strong>. Para n=10: 1.023 movimentos. Para n=64: mais de 18 quintilhões — <em>levaria bilhões de anos</em>. A versão iterativa usa uma pilha explícita para simular o call stack da recursão, com o mesmo número de movimentos mas sem overhead de chamadas de função.
+        </div>
+
+        <div class="section-label">Implementação</div>
+        <div class="tab-bar">
+            <button class="tab-btn" id="tab-btn-py-rec" onclick="switchTab('py-rec')" style="background:var(--code-bg);color:var(--accent)">Python Recursivo</button>
+            <button class="tab-btn" id="tab-btn-py-iter" onclick="switchTab('py-iter')">Python Iterativo</button>
+            <button class="tab-btn" id="tab-btn-cpp" onclick="switchTab('cpp')">C++ Recursivo</button>
+        </div>
+        <div id="tab-py-rec">
+<pre><code><span class="kw">def</span> <span class="fn">hanoi_rec</span>(n, origem, destino, auxiliar, movimentos=[]):
+    <span class="kw">if</span> n == <span class="num">1</span>:
+        movimentos.append((origem, destino))
+        <span class="kw">return</span>
+    <span class="fn">hanoi_rec</span>(n-<span class="num">1</span>, origem, auxiliar, destino, movimentos)   <span class="cm"># Move n-1 para aux</span>
+    movimentos.append((origem, destino))                        <span class="cm"># Move o maior</span>
+    <span class="fn">hanoi_rec</span>(n-<span class="num">1</span>, auxiliar, destino, origem, movimentos)   <span class="cm"># Move n-1 de aux → dest</span>
+    <span class="kw">return</span> movimentos
+
+<span class="cm"># T(n) = 2T(n-1) + 1  →  T(n) = 2ⁿ - 1 movimentos</span>
+<span class="cm"># Espaço: O(n) na call stack (profundidade da recursão)</span></code></pre>
+        </div>
+        <div id="tab-py-iter" style="display:none">
+<pre><code><span class="kw">def</span> <span class="fn">hanoi_iter</span>(n, origem, destino, auxiliar):
+    <span class="cm"># Pilha explícita simula o call stack da recursão</span>
+    pilha = [(<span class="num">n</span>, origem, destino, auxiliar)]
+    movimentos = []
+
+    <span class="kw">while</span> pilha:
+        n, o, d, a = pilha.pop()
+        <span class="kw">if</span> n == <span class="num">1</span>:
+            movimentos.append((o, d))
+            <span class="kw">continue</span>
+        <span class="cm"># Empilha em ordem inversa (pilha é LIFO)</span>
+        pilha.append((n-<span class="num">1</span>, a, d, o))    <span class="cm"># 3: move n-1 aux→dest</span>
+        pilha.append((<span class="num">1</span>, o, d, a))       <span class="cm"># 2: move disco maior</span>
+        pilha.append((n-<span class="num">1</span>, o, a, d))    <span class="cm"># 1: move n-1 orig→aux</span>
+
+    <span class="kw">return</span> movimentos  <span class="cm"># Mesmos 2ⁿ-1 movimentos, sem recursão!</span></code></pre>
+        </div>
+        <div id="tab-cpp" style="display:none">
+<pre><code><span class="cm">// C++ — versão recursiva clássica</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">void</span> <span class="fn">hanoi</span>(<span class="kw">int</span> n, <span class="kw">char</span> origem, <span class="kw">char</span> destino, <span class="kw">char</span> aux) {
+    <span class="kw">if</span> (n == <span class="num">1</span>) {
+        cout << <span class="st">"Mover disco 1 de "</span> << origem << <span class="st">" para "</span> << destino << endl;
+        <span class="kw">return</span>;
+    }
+    <span class="fn">hanoi</span>(n - <span class="num">1</span>, origem, aux, destino);
+    cout << <span class="st">"Mover disco "</span> << n << <span class="st">" de "</span> << origem << <span class="st">" para "</span> << destino << endl;
+    <span class="fn">hanoi</span>(n - <span class="num">1</span>, aux, destino, origem);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="fn">hanoi</span>(<span class="num">4</span>, <span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'B'</span>);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+        </div>
+
+        <div class="section-label orange">Animação Interativa</div>
+        <div class="hanoi-controls">
+            <label>Discos n=</label>
+            <input type="number" id="hanoi-n" value="4" min="1" max="8">
+            <label>Velocidade</label>
+            <input type="range" id="hanoi-speed" min="100" max="900" value="500">
+            <button class="btn green-btn" onclick="iniciarHanoi('rec')">▶ Recursivo</button>
+            <button class="btn" style="color:var(--accent2);border-color:rgba(243,156,18,.4);" onclick="iniciarHanoi('iter')">▶ Iterativo</button>
+            <button class="btn red-btn" onclick="resetHanoi()">↺ Reset</button>
+        </div>
+
+        <div class="hanoi-stats">
+            <div class="hstat"><div class="hk">Discos</div><div class="hv" id="stat-n">—</div></div>
+            <div class="hstat"><div class="hk">Total moves</div><div class="hv" id="stat-total">—</div></div>
+            <div class="hstat"><div class="hk">Move atual</div><div class="hv" id="stat-atual">0</div></div>
+            <div class="hstat"><div class="hk">Modo</div><div class="hv" id="stat-modo">—</div></div>
+        </div>
+
+        <canvas id="hanoi-canvas"></canvas>
+        <div id="hanoi-log">> Pressione ▶ para iniciar.</div>
+    </section></div>
+    </div>

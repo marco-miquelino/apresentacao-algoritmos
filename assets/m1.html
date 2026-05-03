@@ -1,0 +1,541 @@
+<!-- ─── MÓDULO 1 ─── -->
+    <div class="mod-panel" id="panel-m1">
+        <!-- 1.1 Notações -->
+        <div class="content-panel active" id="panel-m1-notacoes">
+            <section class="problem" id="notacoes-intro">
+        <div class="section-label purple">Por que analisar complexidade?</div>
+        <div class="insight-box purple">
+            Antes de qualquer algoritmo, precisamos responder: <strong>quanto tempo e memória ele consome à medida que a entrada cresce?</strong> Um algoritmo que demora 1ms para n=100 pode demorar 11 dias para n=1.000.000 se for O(n²) — ou ainda 1 segundo se for O(n log n). As notações assintóticas são a linguagem matemática que nos permite comparar algoritmos <em>independentemente</em> do hardware, da linguagem e das constantes de implementação.
+        </div>
+
+        <!-- 3 cards -->
+        <div class="notation-grid">
+            <div class="notation-card omega">
+                <div class="notation-symbol">Ω</div>
+                <div class="notation-name">Ômega — Limite Inferior</div>
+                <div class="notation-meaning">O algoritmo precisa de <em>pelo menos</em> esse tempo. É o <strong>melhor caso</strong> assintótico — cota de baixo.</div>
+                <div class="notation-formal">f(n) = Ω(g(n))<br>∃ c,n₀: f(n) ≥ c·g(n), n≥n₀</div>
+            </div>
+            <div class="notation-card big-o">
+                <div class="notation-symbol">O</div>
+                <div class="notation-name">Big-O — Limite Superior</div>
+                <div class="notation-meaning">O algoritmo demora <em>no máximo</em> esse tempo. É o <strong>pior caso</strong> assintótico — cota de cima.</div>
+                <div class="notation-formal">f(n) = O(g(n))<br>∃ c,n₀: f(n) ≤ c·g(n), n≥n₀</div>
+            </div>
+            <div class="notation-card theta">
+                <div class="notation-symbol">Θ</div>
+                <div class="notation-name">Theta — Limite Exato</div>
+                <div class="notation-meaning">O algoritmo demora <em>exatamente</em> essa ordem. Limita superior <strong>e</strong> inferiormente — crescimento "sanduichado".</div>
+                <div class="notation-formal">f(n) = Θ(g(n))<br>f = O(g) e f = Ω(g)</div>
+            </div>
+        </div>
+
+        <div class="section-label purple">Definição formal e intuição</div>
+
+        <table class="complexity-table">
+            <tr><th>Notação</th><th>Leitura informal</th><th>Exemplo concreto</th><th>Uso</th></tr>
+            <tr>
+                <td><code style="color:#be90d4">Ω(n)</code></td>
+                <td>"cresce pelo menos tão rápido quanto n"</td>
+                <td>Ordenação por comparação: Ω(n log n)</td>
+                <td>Provar que não há algoritmo mais rápido</td>
+            </tr>
+            <tr>
+                <td><code style="color:var(--accent)">O(n²)</code></td>
+                <td>"cresce no máximo tão rápido quanto n²"</td>
+                <td>Bubble sort: O(n²) no pior caso</td>
+                <td>Garantir que o algoritmo caberá no tempo</td>
+            </tr>
+            <tr>
+                <td><code style="color:var(--accent2)">Θ(n log n)</code></td>
+                <td>"cresce exatamente nessa ordem"</td>
+                <td>Merge sort: Θ(n log n) em todos os casos</td>
+                <td>Caracterização completa do algoritmo</td>
+            </tr>
+        </table>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:#9b59b6;">📐</span>
+            <span><strong>Regra de ouro:</strong> Quando alguém diz "o algoritmo é O(n²)", normalmente querem dizer que o pior caso cresce quadraticamente. Big-O é a notação mais usada na prática por ser a mais conservadora — garante que o programa <em>nunca</em> ultrapassa aquele tempo.</span>
+        </div>
+
+        <!-- Interactive complexity comparator -->
+        <div class="section-label purple">Calculadora de Crescimento</div>
+        <div class="bigo-demo">
+            <label>Tamanho da entrada n = <strong id="n-val">100</strong></label>
+            <input type="range" min="1" max="500" value="100" oninput="updateBigoCalc(this.value)">
+            <div class="bigo-results">
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent3)">O(1)</div>
+                    <div class="bv-num cost-o1" id="bv-o1">1</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent)">O(log n)</div>
+                    <div class="bv-num cost-ologn" id="bv-logn">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent2)">O(n)</div>
+                    <div class="bv-num cost-on" id="bv-n">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label">O(n log n)</div>
+                    <div class="bv-num" style="color:#e8eaf0" id="bv-nlogn">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--accent2)">O(n²)</div>
+                    <div class="bv-num cost-on" id="bv-n2">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:var(--danger)">O(2ⁿ)</div>
+                    <div class="bv-num cost-on2" id="bv-2n">—</div>
+                </div>
+                <div class="bigo-val">
+                    <div class="bv-label" style="color:#7f8c8d">O(n!)</div>
+                    <div class="bv-num" style="color:#7f8c8d" id="bv-nfat">—</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Growth chart -->
+        <div class="section-label purple">Comparação Visual de Crescimento</div>
+        <div class="complexity-chart-wrap">
+            <canvas id="bigo-canvas"></canvas>
+            <div class="complexity-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div>O(1)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#5dade2"></div>O(log n)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#f39c12"></div>O(n)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#e8eaf0"></div>O(n log n)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>O(n²)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div>O(2ⁿ)</div>
+            </div>
+        </div>
+
+        <!-- Hierarchy of complexity classes -->
+        <div class="section-label purple">Hierarquia das Classes de Complexidade</div>
+        <div class="complexity-classes">
+            <div class="complexity-row">
+                <div class="cc-badge cost-o1">O(1)</div>
+                <div><div class="cc-name">Constante</div><div class="cc-ex">Acesso a array, hash map</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#27ae60,#27ae60); width:15px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-ologn">O(log n)</div>
+                <div><div class="cc-name">Logarítmico</div><div class="cc-ex">Busca binária, AVL tree</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#5dade2,#5dade2); width:30px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on">O(√n)</div>
+                <div><div class="cc-name">Raiz quadrada</div><div class="cc-ex">Crivo de Eratóstenes</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#1abc9c,#1abc9c); width:45px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on">O(n)</div>
+                <div><div class="cc-name">Linear</div><div class="cc-ex">Busca linear, Boyer-Moore</div></div>
+                <div class="cc-bar" style="background:linear-gradient(to right,#f39c12,#f39c12); width:70px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge" style="color:#e8eaf0">O(n log n)</div>
+                <div><div class="cc-name">Quase-linear</div><div class="cc-ex">Merge sort, Heap sort</div></div>
+                <div class="cc-bar" style="background:#7f8c8d; width:90px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on2">O(n²)</div>
+                <div><div class="cc-name">Quadrático</div><div class="cc-ex">Bubble sort, seleção</div></div>
+                <div class="cc-bar" style="background:#e74c3c; width:120px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on2">O(n³)</div>
+                <div><div class="cc-name">Cúbico</div><div class="cc-ex">Multiplicação naïve de matrizes</div></div>
+                <div class="cc-bar" style="background:#c0392b; width:150px"></div>
+            </div>
+            <div class="complexity-row">
+                <div class="cc-badge cost-on2">O(2ⁿ)</div>
+                <div><div class="cc-name">Exponencial</div><div class="cc-ex">Subconjuntos, força bruta</div></div>
+                <div class="cc-bar" style="background:#8e44ad; width:170px"></div>
+            </div>
+        </div>
+
+        <div class="section-label purple">Regras de Simplificação</div>
+        <pre><code><span class="cm"># Regra 1: Constantes são descartadas</span>
+f(n) = <span class="num">3</span>n² + <span class="num">5</span>n + <span class="num">100</span>  →  O(n²)  <span class="cm"># termo dominante</span>
+
+<span class="cm"># Regra 2: Multiplicação de loops aninhados</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(n):
+    <span class="kw">for</span> j <span class="kw">in</span> range(n):  <span class="cm"># → O(n²)</span>
+        fazer_algo()
+
+<span class="cm"># Regra 3: Soma de etapas sequenciais → maior domina</span>
+busca_linear(arr)   <span class="cm"># O(n)</span>
+ordenar(arr)        <span class="cm"># O(n log n)</span>
+<span class="cm"># Total: O(n + n log n) = O(n log n)</span>
+
+<span class="cm"># Regra 4: Ω(limite inferior) para ordenação por comparação</span>
+<span class="cm"># Qualquer algoritmo de ordenação por comparação: Ω(n log n)</span>
+<span class="cm"># Merge sort é Θ(n log n) → é ótimo nessa classe!</span>
+
+<span class="cm"># Regra 5: log n em qualquer base → mesma classe</span>
+O(log₂ n) = O(log₁₀ n) = O(log n)  <span class="cm"># diferença é só constante</span></code></pre>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:#9b59b6;">⚠</span>
+            <span><strong>Armadilha comum:</strong> O(n²) não significa "lento sempre". Para n=10, O(n²)=100 operações e O(n log n)≈33. A diferença é irrelevante. Complexidade importa para <em>grandes entradas</em>. Sempre pergunte: qual é o n do meu problema?</span>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+        </div>
+        <!-- 1.2 Estruturas -->
+        <div class="content-panel" id="panel-m1-estruturas">
+            <section class="problem">
+
+        <div class="section-label green">Visão Geral das Estruturas</div>
+        <div class="ds-grid">
+
+            <!-- Array -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">📦</div>
+                    <h3>Array / Vetor</h3>
+                    <span class="ds-tag">Sequencial</span>
+                </div>
+                <p class="ds-desc">Elementos armazenados em posições contíguas na memória. Acesso direto por índice em O(1). Base de quase todas as outras estruturas.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Acesso por índice</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca linear</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção/Remoção no fim</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção/Remoção no meio</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Linked List -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🔗</div>
+                    <h3>Lista Encadeada</h3>
+                    <span class="ds-tag" style="color:var(--accent2);border-color:rgba(243,156,18,.3)">Dinâmica</span>
+                </div>
+                <p class="ds-desc">Nós que apontam para o próximo. Sem índice direto — mas inserção/remoção no início é O(1). Sem alocação contígua.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Acesso por posição</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção/Remoção no início</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Espaço extra</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Stack -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">📚</div>
+                    <h3>Pilha (Stack)</h3>
+                    <span class="ds-tag" style="color:var(--accent2);border-color:rgba(243,156,18,.3)">LIFO</span>
+                </div>
+                <p class="ds-desc">Último a entrar, primeiro a sair (LIFO). Usada em recursão, desfazer ações, avaliação de expressões e backtracking.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Push (empilhar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Pop (desempilhar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Peek (topo)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Queue -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🚶</div>
+                    <h3>Fila (Queue)</h3>
+                    <span class="ds-tag" style="color:#be90d4;border-color:rgba(155,89,182,.3)">FIFO</span>
+                </div>
+                <p class="ds-desc">Primeiro a entrar, primeiro a sair (FIFO). Usada em BFS, escalonamento de processos, sistemas de eventos.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Enqueue (enfileirar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Dequeue (desenfileirar)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Peek (frente)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Busca</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Hash Table -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🗝</div>
+                    <h3>Tabela Hash</h3>
+                    <span class="ds-tag" style="color:var(--accent3);border-color:rgba(39,174,96,.25)">Chave-Valor</span>
+                </div>
+                <p class="ds-desc">Mapeamento chave→valor via função hash. Busca/inserção/remoção em O(1) amortizado. Base dos dicionários Python.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Busca por chave</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Remoção</span><span class="op-cost cost-o1">O(1)*</span></div>
+                    <div class="ds-op"><span class="op-name">Pior caso (colisões)</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Binary Tree -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🌲</div>
+                    <h3>Árvore Binária de Busca</h3>
+                    <span class="ds-tag" style="color:var(--danger);border-color:rgba(231,76,60,.25)">BST</span>
+                </div>
+                <p class="ds-desc">Nó raiz; filhos esquerdo (menor) e direito (maior). Balanceada: busca, inserção e remoção em O(log n).</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Busca (balanceada)</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção (balanceada)</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Pior caso (degenerada)</span><span class="op-cost cost-on">O(n)</span></div>
+                    <div class="ds-op"><span class="op-name">Percurso em ordem</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Heap -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">⛰</div>
+                    <h3>Heap Binário</h3>
+                    <span class="ds-tag">Prioridade</span>
+                </div>
+                <p class="ds-desc">Árvore binária completa onde o pai sempre é maior (max-heap) ou menor (min-heap). Usado em filas de prioridade e Heap Sort.</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">Ver máximo/mínimo</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Inserção</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Extração do topo</span><span class="op-cost cost-ologn">O(log n)</span></div>
+                    <div class="ds-op"><span class="op-name">Construção a partir de array</span><span class="op-cost cost-on">O(n)</span></div>
+                </div>
+            </div>
+
+            <!-- Graph -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <div class="ds-icon">🕸</div>
+                    <h3>Grafo</h3>
+                    <span class="ds-tag" style="color:#be90d4;border-color:rgba(155,89,182,.3)">G=(V,E)</span>
+                </div>
+                <p class="ds-desc">Conjunto de vértices e arestas. Representado por lista de adjacências (esparso) ou matriz de adjacências (denso).</p>
+                <div class="ds-ops">
+                    <div class="ds-op"><span class="op-name">BFS / DFS</span><span class="op-cost cost-on">O(V+E)</span></div>
+                    <div class="ds-op"><span class="op-name">Checar aresta (lista adj.)</span><span class="op-cost cost-on">O(grau)</span></div>
+                    <div class="ds-op"><span class="op-name">Checar aresta (matriz adj.)</span><span class="op-cost cost-o1">O(1)</span></div>
+                    <div class="ds-op"><span class="op-name">Espaço (lista adj.)</span><span class="op-cost cost-on">O(V+E)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive DS demos -->
+        <div class="section-label green">Demonstrações Interativas</div>
+
+        <div style="margin-bottom:12px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                <button class="btn active" onclick="switchDS('array')">📦 Array</button>
+                <button class="btn" onclick="switchDS('stack')">📚 Pilha</button>
+                <button class="btn" onclick="switchDS('queue')">🚶 Fila</button>
+                <button class="btn" onclick="switchDS('hash')">🗝 Hash Table</button>
+            </div>
+
+            <!-- Array demo -->
+            <div id="demo-array">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsArrayPush()">+ Inserir no fim</button>
+                    <button class="btn red-btn" onclick="dsArrayPop()">− Remover do fim</button>
+                    <button class="btn" onclick="dsArrayAccess()">🔍 Acessar índice 0</button>
+                    <button class="btn" onclick="dsReset('array')">↺ Resetar</button>
+                </div>
+                <div class="ds-anim-area" id="ds-arr-area"></div>
+                <div class="ds-log" id="ds-arr-log">Clique em um botão para começar.</div>
+            </div>
+
+            <!-- Stack demo -->
+            <div id="demo-stack" style="display:none">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsStackPush()">⬆ Push</button>
+                    <button class="btn red-btn" onclick="dsStackPop()">⬇ Pop</button>
+                    <button class="btn" onclick="dsStackPeek()">👁 Peek</button>
+                    <button class="btn" onclick="dsReset('stack')">↺ Resetar</button>
+                </div>
+                <div class="ds-anim-area" id="ds-stack-area" style="flex-direction:column-reverse;align-items:flex-start;"></div>
+                <div class="ds-log" id="ds-stack-log">Topo da pilha à esquerda.</div>
+            </div>
+
+            <!-- Queue demo -->
+            <div id="demo-queue" style="display:none">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsQueueEnq()">⟶ Enqueue</button>
+                    <button class="btn red-btn" onclick="dsQueueDeq()">⟵ Dequeue</button>
+                    <button class="btn" onclick="dsReset('queue')">↺ Resetar</button>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+                    <span style="font-size:11px;color:var(--accent3);font-family:JetBrains Mono,monospace;">FRENTE →</span>
+                    <div class="ds-anim-area" id="ds-queue-area" style="flex:1;margin-bottom:0;"></div>
+                    <span style="font-size:11px;color:var(--muted);font-family:JetBrains Mono,monospace;">← FIM</span>
+                </div>
+                <div class="ds-log" id="ds-queue-log">Primeiro a entrar, primeiro a sair.</div>
+            </div>
+
+            <!-- Hash demo -->
+            <div id="demo-hash" style="display:none">
+                <div class="ds-viz-controls">
+                    <button class="btn green-btn" onclick="dsHashSet()">+ set(chave, valor)</button>
+                    <button class="btn" onclick="dsHashGet()">🔍 get(chave)</button>
+                    <button class="btn red-btn" onclick="dsHashDel()">− del(chave)</button>
+                    <button class="btn" onclick="dsReset('hash')">↺ Resetar</button>
+                </div>
+                <div class="ds-anim-area" id="ds-hash-area" style="flex-wrap:wrap;gap:8px;"></div>
+                <div class="ds-log" id="ds-hash-log">Cada chave é mapeada em O(1) via função hash.</div>
+            </div>
+        </div>
+
+        <div class="callout green">
+            <span class="callout-icon" style="color:var(--accent3)">💡</span>
+            <span><strong>Como escolher a estrutura certa?</strong> Pergunte-se: (1) qual operação é mais frequente? (2) preciso de ordem? (3) tenho restrição de memória? A maioria dos problemas desta matéria é resolvida escolhendo a estrutura adequada — não inventing um algoritmo novo.</span>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════ -->
+        </div>
+        <!-- 1.3 Ordenação Sort -->
+        <div class="content-panel" id="panel-m1-sort">
+            <section class="problem">
+
+        <div class="section-label purple">O que são algoritmos de ordenação?</div>
+        <div class="intro-box">
+            <h3>🎯 Por que ordenar importa?</h3>
+            <p>
+                Imagine uma pilha de 1.000.000 de registros. Desordenados: busca em O(n) = 1.000.000 operações. Ordenados: busca binária em O(log n) = apenas 20 operações. Ordenar é uma das operações mais fundamentais da computação — e não existe "o melhor algoritmo": existe o certo para cada situação.
+            </p>
+        </div>
+
+        <div class="section-label purple">Escolha um algoritmo para explorar</div>
+        <div class="sort-layout">
+            <div class="sort-sidebar">
+                <div class="sort-category" id="cat-elementares">
+                    <div class="sort-category-line"></div>
+                    <div class="sort-category-line-accent" style="background:#e74c3c;top:0;bottom:0"></div>
+                    <div class="sort-cat-label" style="color:#e74c3c">Elementares</div>
+                    <div class="sort-cat-count">O(n²)</div>
+                </div>
+                <div class="sort-category" id="cat-eficientes" style="margin-top:12px">
+                    <div class="sort-category-line"></div>
+                    <div class="sort-category-line-accent" style="background:#5dade2;top:0;bottom:0"></div>
+                    <div class="sort-cat-label" style="color:#5dade2">Eficientes</div>
+                    <div class="sort-cat-count">O(n log n)</div>
+                </div>
+                <div class="sort-category" id="cat-lineares" style="margin-top:12px">
+                    <div class="sort-category-line"></div>
+                    <div class="sort-category-line-accent" style="background:#27ae60;top:0;bottom:64px"></div>
+                    <div class="sort-category-line-accent" style="background:#9b59b6;bottom:0;top:auto;height:60px"></div>
+                    <div class="sort-cat-label" style="color:#27ae60">Lineares</div>
+                    <div class="sort-cat-count" style="margin-bottom:auto">O(n+k)</div>
+                    <div class="sort-cat-label" style="color:#9b59b6;margin-top:0">Híbridos</div>
+                </div>
+            </div>
+            <div class="sort-cards-col">
+                <div class="sort-group">
+                    <div class="algo-card selected" id="ac-bubble" onclick="selectAlgo('bubble')">
+                        <div class="ac-left">
+                            <div class="ac-name">Bubble Sort</div>
+                            <div class="ac-time">O(n²) pior &nbsp;·&nbsp; O(n) melhor</div>
+                            <div class="ac-tag">Didático · Estável</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-selection" onclick="selectAlgo('selection')">
+                        <div class="ac-left">
+                            <div class="ac-name">Selection Sort</div>
+                            <div class="ac-time">O(n²) sempre</div>
+                            <div class="ac-tag">Mínimo de trocas · Instável</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-insertion" onclick="selectAlgo('insertion')">
+                        <div class="ac-left">
+                            <div class="ac-name">Insertion Sort</div>
+                            <div class="ac-time">O(n²) pior &nbsp;·&nbsp; O(n) melhor</div>
+                            <div class="ac-tag">Excelente para dados quase-ordenados</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                </div>
+                <div class="sort-group">
+                    <div class="algo-card" id="ac-merge" onclick="selectAlgo('merge')">
+                        <div class="ac-left">
+                            <div class="ac-name">Merge Sort</div>
+                            <div class="ac-time">Θ(n log n) sempre</div>
+                            <div class="ac-tag">Garantido · Estável · Externo</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-quick" onclick="selectAlgo('quick')">
+                        <div class="ac-left">
+                            <div class="ac-name">Quicksort</div>
+                            <div class="ac-time">O(n log n) médio &nbsp;·&nbsp; O(n²) pior</div>
+                            <div class="ac-tag">Mais rápido na prática</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-heap" onclick="selectAlgo('heap')">
+                        <div class="ac-left">
+                            <div class="ac-name">Heap Sort</div>
+                            <div class="ac-time">Θ(n log n) sempre</div>
+                            <div class="ac-tag">In-place · Não estável</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                </div>
+                <div class="sort-group">
+                    <div class="algo-card" id="ac-counting" onclick="selectAlgo('counting')">
+                        <div class="ac-left">
+                            <div class="ac-name">Counting Sort</div>
+                            <div class="ac-time">O(n + k) &nbsp;·&nbsp; k = intervalo</div>
+                            <div class="ac-tag">Linear · Quebra o limite O(n log n)</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-radix" onclick="selectAlgo('radix')">
+                        <div class="ac-left">
+                            <div class="ac-name">Radix Sort</div>
+                            <div class="ac-time">O(d × (n + k))</div>
+                            <div class="ac-tag">Para inteiros · Linear</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                    <div class="algo-card" id="ac-tim" onclick="selectAlgo('tim')">
+                        <div class="ac-left">
+                            <div class="ac-name">TimSort</div>
+                            <div class="ac-time">O(n) melhor &nbsp;·&nbsp; O(n log n) pior</div>
+                            <div class="ac-tag">Python list.sort() · Java Arrays.sort()</div>
+                        </div><div class="ac-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="algo-detail" id="algo-detail-area"></div>
+
+        <div class="section-label purple">Visualização Interativa</div>
+        <div class="sort-controls">
+            <button class="btn" style="color:var(--accent3);border-color:rgba(39,174,96,0.4)" onclick="sortRun()">&#9654; Animar</button>
+            <button class="btn" onclick="sortNewArr()">&#8634; Novo array</button>
+            <div class="sort-stat">Comparações: <span id="srt-comps">0</span></div>
+            <div class="sort-stat">Trocas/Escritas: <span id="srt-swaps">0</span></div>
+            <div class="sort-stat">Fase: <span id="srt-phase">—</span></div>
+        </div>
+        <div class="sort-bar-wrap" id="srt-bars"></div>
+        <div class="sort-log" id="srt-log">Selecione um algoritmo acima e clique em Animar.</div>
+
+        <div class="section-label purple">Tabela Comparativa Completa</div>
+        <table class="complexity-table">
+            <tr><th>Algoritmo</th><th>Melhor</th><th>Médio</th><th>Pior</th><th>Espaço</th><th>Estável</th><th>Uso Real</th></tr>
+            <tr><td>Bubble Sort</td><td><code>O(n)</code></td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(1)</code></td><td>Sim</td><td>Ensino</td></tr>
+            <tr><td>Selection Sort</td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(1)</code></td><td>Não</td><td>Memória flash</td></tr>
+            <tr><td>Insertion Sort</td><td><code>O(n)</code></td><td><code>O(n²)</code></td><td><code>O(n²)</code></td><td><code>O(1)</code></td><td>Sim</td><td>Dados quase-ord., TimSort</td></tr>
+            <tr><td><strong>Merge Sort</strong></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>O(n)</code></td><td>Sim</td><td>Listas, externo, MapReduce</td></tr>
+            <tr><td><strong>Quicksort</strong></td><td><code>O(n log n)</code></td><td><code>O(n log n)</code></td><td><code>O(n²)</code></td><td><code>O(log n)</code></td><td>Não</td><td>C++ std::sort, arrays RAM</td></tr>
+            <tr><td><strong>Heap Sort</strong></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>Θ(n log n)</code></td><td><code>O(1)</code></td><td>Não</td><td>Sistemas embarcados</td></tr>
+            <tr><td>Counting Sort</td><td><code>O(n+k)</code></td><td><code>O(n+k)</code></td><td><code>O(n+k)</code></td><td><code>O(k)</code></td><td>Sim</td><td>Inteiros pequenos, histograma</td></tr>
+            <tr><td>Radix Sort</td><td><code>O(d(n+k))</code></td><td><code>O(d(n+k))</code></td><td><code>O(d(n+k))</code></td><td><code>O(n+k)</code></td><td>Sim</td><td>Inteiros grandes, strings</td></tr>
+            <tr><td><strong>TimSort</strong></td><td><code>O(n)</code></td><td><code>O(n log n)</code></td><td><code>O(n log n)</code></td><td><code>O(n)</code></td><td>Sim</td><td>Python, Java, Android</td></tr>
+        </table>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:#9b59b6;">⚠</span>
+            <span><strong>Limite fundamental:</strong> Nenhum algoritmo de ordenação <em>por comparação</em> pode ser melhor que <strong>Ω(n log n)</strong>. Counting Sort e Radix Sort escapam porque não fazem comparações — exploram a estrutura dos valores.</span>
+        </div>
+
+    </section>
+        </div>
+    </div>

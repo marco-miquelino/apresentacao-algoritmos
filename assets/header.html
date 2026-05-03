@@ -1,0 +1,87 @@
+<!-- ═══════════════════════════════════════════════════
+     TOP BAR
+════════════════════════════════════════════════════ -->
+<header class="topbar" id="topbar">
+    <!-- Logo row -->
+    <div class="topbar-header">
+        <div class="topbar-brand">
+            <div>
+                <div class="brand-label">UFRJ · AED</div>
+                <h1>Algoritmos &amp; Estrutura de Dados</h1>
+            </div>
+            <div class="brand-sep"></div>
+            <div style="font-size:12px;color:var(--muted)">Prof. <strong style="color:var(--text)">Strauss</strong></div>
+        </div>
+        <div class="topbar-meta">
+            <div class="tm-item">Marco Aurélio Miquelino &nbsp;·&nbsp; Igor Eccard de Sá</div>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema claro/escuro"><span id="theme-icon">☾</span></button>
+            <div class="tm-item" style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:4px;color:var(--accent)">3 Módulos · Sort + Estruturas</div>
+        </div>
+    </div>
+
+    <!-- Module tab strip -->
+    <div class="module-tabs">
+        <button class="mod-tab active" data-mod="home" onclick="switchMod('home')">
+            <span class="tab-icon">⌂</span>
+            <span class="tab-label-wrap">
+                <span>Início</span>
+            </span>
+        </button>
+
+        <button class="mod-tab" data-mod="m1" onclick="switchMod('m1')">
+            <span class="tab-icon" style="color:#9b59b6">𝒪</span>
+            <span class="tab-label-wrap">
+                <span>Módulo 1 — Teoria</span>
+                <span class="tab-sub">Notações + Estruturas de Dados</span>
+            </span>
+            <span class="tab-count">3 seções</span>
+        </button>
+
+        <button class="mod-tab" data-mod="m2" onclick="switchMod('m2')">
+            <span class="tab-icon" style="color:var(--accent)">🧩</span>
+            <span class="tab-label-wrap">
+                <span>Módulo 2 — Problemas</span>
+                <span class="tab-sub">8 Problemas de Aula</span>
+            </span>
+            <span class="tab-count">8 problemas</span>
+        </button>
+
+        <button class="mod-tab" data-mod="m3" onclick="switchMod('m3')">
+            <span class="tab-icon" style="color:var(--accent2)">⚙</span>
+            <span class="tab-label-wrap">
+                <span>Módulo 3 — Exercícios</span>
+                <span class="tab-sub">Exercícios Complementares</span>
+            </span>
+            <span class="tab-count">2 exercícios</span>
+        </button>
+    </div>
+
+    <!-- Sub-tab bar (shown per module) -->
+    <div class="subtab-bar" id="subtab-m1">
+        <button class="sub-tab active" data-mod="m1" data-panel="m1-notacoes" onclick="switchPanel('m1','m1-notacoes')">
+            <span class="st-num">1.1</span> Notações &amp; Complexidade
+        </button>
+        <button class="sub-tab" data-mod="m1" data-panel="m1-estruturas" onclick="switchPanel('m1','m1-estruturas')">
+            <span class="st-num">1.2</span> Estruturas de Dados
+        </button>
+        <button class="sub-tab" data-mod="m1" data-panel="m1-sort" onclick="switchPanel('m1','m1-sort')">
+            <span class="st-num">1.3</span> Ordenação (Sort)
+        </button>
+    </div>
+
+    <div class="subtab-bar" id="subtab-m2">
+        <button class="sub-tab active" data-mod="m2" data-panel="p1" onclick="switchPanel('m2','p1')"><span class="st-num">01</span>Celebridade</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p2" onclick="switchPanel('m2','p2')"><span class="st-num">02</span>Votação</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p3" onclick="switchPanel('m2','p3')"><span class="st-num">03</span>Agenda</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p4" onclick="switchPanel('m2','p4')"><span class="st-num">04</span>Criptografia</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p5" onclick="switchPanel('m2','p5')"><span class="st-num">05</span>Jornais</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p6" onclick="switchPanel('m2','p6')"><span class="st-num">06</span>Fila Prior.</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p7" onclick="switchPanel('m2','p7')"><span class="st-num">07</span>Top-K</button>
+        <button class="sub-tab" data-mod="m2" data-panel="p8" onclick="switchPanel('m2','p8')"><span class="st-num">08</span>Montagem</button>
+    </div>
+
+    <div class="subtab-bar" id="subtab-m3">
+        <button class="sub-tab active" data-mod="m3" data-panel="p9" onclick="switchPanel('m3','p9')"><span class="st-num">09</span>Matrizes M×N</button>
+        <button class="sub-tab" data-mod="m3" data-panel="p10" onclick="switchPanel('m3','p10')"><span class="st-num">10</span>Torre de Hanói</button>
+    </div>
+</header>

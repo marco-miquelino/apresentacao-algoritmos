@@ -1,0 +1,87 @@
+/* ─── Tema Claro (Beige) + Responsivo ─── */
+/* ════════════════════════════════════════════
+           TEMA CLARO — Beige suave
+        ════════════════════════════════════════════ */
+        [data-theme="light"] {
+            --bg:       #f5f0e8;
+            --surface:  #ede8dc;
+            --surface2: #e5ded0;
+            --border:   #c8bfae;
+            --text:     #1e1a14;
+            --muted:    #5a5040;
+            --accent:   #2563a8;
+            --accent2:  #b86b00;
+            --accent3:  #1e7a3a;
+            --accent4:  #c0392b;
+            --accent5:  #6d3fb5;
+            --danger:   #c0392b;
+            --code-bg:  #ede4d4;
+            --gold:     #b8860b;
+        }
+
+        [data-theme="light"] body::before { opacity: 0.3; }
+
+        /* Beige theme — component adjustments */
+        [data-theme="light"] .insight-box {
+            background: rgba(0,0,0,0.04);
+            border-left-color: var(--accent);
+        }
+        [data-theme="light"] .insight-box.purple { border-left-color: var(--accent5); }
+        [data-theme="light"] .insight-box.orange { border-left-color: var(--accent2); }
+        [data-theme="light"] .insight-box.green  { border-left-color: var(--accent3); }
+        [data-theme="light"] .insight-box.red    { border-left-color: var(--accent4); }
+
+        [data-theme="light"] .callout {
+            background: rgba(37,99,168,0.07);
+            border-color: rgba(37,99,168,0.22);
+        }
+        [data-theme="light"] .callout.purple { background: rgba(109,63,181,0.07); border-color: rgba(109,63,181,0.22); }
+        [data-theme="light"] .callout.green  { background: rgba(30,122,58,0.07);  border-color: rgba(30,122,58,0.22); }
+        [data-theme="light"] .callout.orange { background: rgba(184,107,0,0.07);  border-color: rgba(184,107,0,0.22); }
+
+        [data-theme="light"] .enunciado { background: rgba(0,0,0,0.04); }
+        [data-theme="light"] .bigo-val  { background: rgba(0,0,0,0.05); }
+        [data-theme="light"] pre        { background: var(--code-bg); color: #2d2926; }
+        [data-theme="light"] .vis-container { background: var(--surface2); }
+        [data-theme="light"] .sort-bar-wrap { background: var(--code-bg); }
+        [data-theme="light"] .ds-anim-area  { background: var(--code-bg); }
+        [data-theme="light"] .complexity-chart-wrap { background: var(--code-bg); }
+        [data-theme="light"] .notation-formal { background: var(--code-bg); color: #2d2926; }
+        [data-theme="light"] .algo-detail { background: rgba(0,0,0,0.03); }
+        [data-theme="light"] .intro-box  { background: rgba(109,63,181,0.06); border-color: rgba(109,63,181,0.18); }
+        [data-theme="light"] .ds-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.10); }
+        [data-theme="light"] .mod-card   { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        [data-theme="light"] .mod-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        [data-theme="light"] #hanoi-log  { background: var(--code-bg); color: var(--accent3); }
+        [data-theme="light"] .hstat      { background: var(--surface2); }
+
+
+        [data-theme="light"] pre code   { color: #2d2926; }
+        [data-theme="light"] .kw        { color: #7c1fa8; }
+        [data-theme="light"] .fn        { color: #1a5fa8; }
+        [data-theme="light"] .st        { color: #1e7a3a; }
+        [data-theme="light"] .cm        { color: #8a7f70; font-style: italic; }
+        [data-theme="light"] .num       { color: #b86b00; }
+        [data-theme="light"] .op        { color: #006b8a; }
+
+        [data-theme="light"] .topbar {
+            box-shadow: 0 1px 8px rgba(0,0,0,0.10);
+        }
+        [data-theme="light"] .hero h1 em { color: var(--accent); }
+        [data-theme="light"] .notation-formal { color: #2d2926; }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 30px; height: 30px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            color: var(--muted);
+            transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
