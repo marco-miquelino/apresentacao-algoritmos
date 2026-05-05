@@ -2,12 +2,12 @@
 
 Site de monitoria da disciplina de Algoritmos e Estrutura de Dados da UFRJ.
 
-**Monitores:** Marco Aurélio Miquelino · Igor Eccard de Sá  
+**Aluno:** Marco Aurélio Miquelino  
 **Professor:** Strauss
 
 ## 🌐 Acesso
 
-Disponível em: `https://<usuario>.github.io/<repositorio>/`
+Disponível em: `https://<marco-miquelino>.github.io/<repositorio>/`
 
 ---
 
