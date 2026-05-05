@@ -1,0 +1,493 @@
+
+        <!-- ═══════════════════════════════════════════════
+             1.3 — ÁRVORES BINÁRIAS
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-arvores">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.3</div>
+                    <div class="problem-title-block">
+                        <h2>Árvores Binárias</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">Tema: Estrutura</span>
+                            <span class="badge badge-struct">Cai em ~75% das P1's</span>
+                            <span class="badge badge-theory">Recursão essencial</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Por que estudar isso primeiro:</strong> entre as 4 últimas provas P1 do Prof. Strauss, <em>3 cobraram reconstrução de árvore binária a partir de percursos</em>. Dominar este tópico significa garantir uma questão inteira da prova.
+                </div>
+
+                <!-- DEFINIÇÕES -->
+                <div class="section-label purple">Definições Fundamentais</div>
+                <div class="insight-box">
+                    Uma <strong>árvore binária</strong> é uma estrutura recursiva onde cada nó tem no máximo dois filhos: o filho esquerdo e o filho direito. Formalmente, uma árvore binária é:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li>vazia (representada por <code>null</code> ou <code>nil</code>), ou</li>
+                        <li>composta por um <strong>nó raiz</strong> + uma <strong>subárvore esquerda</strong> + uma <strong>subárvore direita</strong>, ambas binárias.</li>
+                    </ul>
+                </div>
+
+                <ul class="steps-list">
+                    <li><span class="step-num">01</span><span><strong>Raiz:</strong> nó no topo da árvore, sem pai.</span></li>
+                    <li><span class="step-num">02</span><span><strong>Folha:</strong> nó sem filhos (subárvores esquerda e direita vazias).</span></li>
+                    <li><span class="step-num">03</span><span><strong>Altura:</strong> número de arestas no caminho mais longo da raiz até uma folha. Árvore vazia tem altura -1; árvore com só raiz tem altura 0.</span></li>
+                    <li><span class="step-num">04</span><span><strong>Profundidade</strong> de um nó: número de arestas da raiz até ele.</span></li>
+                    <li><span class="step-num">05</span><span><strong>Grau:</strong> número de filhos do nó (0, 1 ou 2 em árvores binárias).</span></li>
+                    <li><span class="step-num">06</span><span><strong>Árvore cheia:</strong> todo nó interno tem exatamente 2 filhos. <strong>Completa:</strong> todos os níveis preenchidos exceto possivelmente o último, que é preenchido da esquerda para a direita.</span></li>
+                </ul>
+
+                <!-- PERCURSOS -->
+                <div class="section-label purple">Os Quatro Percursos</div>
+                <div class="insight-box">
+                    Um <strong>percurso (traversal)</strong> é uma forma sistemática de visitar todos os nós de uma árvore. Como árvores são estruturas recursivas, todos os percursos são definidos recursivamente. A diferença está em <em>quando</em> visitamos a raiz:
+                </div>
+
+                <div class="traversal-buttons" id="traversal-buttons">
+                    <button class="active" onclick="setTraversal('preorder')">
+                        <span class="tb-name">Pré-ordem</span>
+                        <span class="tb-formula">RAIZ → ESQ → DIR</span>
+                    </button>
+                    <button onclick="setTraversal('inorder')">
+                        <span class="tb-name">In-ordem (Simétrica)</span>
+                        <span class="tb-formula">ESQ → RAIZ → DIR</span>
+                    </button>
+                    <button onclick="setTraversal('postorder')">
+                        <span class="tb-name">Pós-ordem</span>
+                        <span class="tb-formula">ESQ → DIR → RAIZ</span>
+                    </button>
+                    <button onclick="setTraversal('level')">
+                        <span class="tb-name">Em Nível (BFS)</span>
+                        <span class="tb-formula">por níveis</span>
+                    </button>
+                </div>
+
+                <div class="tree-controls">
+                    <button class="btn" onclick="animateTraversal()" style="color:var(--accent3);border-color:rgba(39,174,96,0.4)">▶ Animar Percurso</button>
+                    <button class="btn" onclick="resetTraversal()">↺ Reiniciar</button>
+                    <div class="tree-stat">Percurso: <span id="trav-name">Pré-ordem</span></div>
+                </div>
+
+                <div class="tree-canvas-wrap" id="tree-demo-wrap"></div>
+                <div class="tree-output">
+                    <span class="label">Resultado</span>
+                    <span id="trav-result">clique em "Animar Percurso" para começar</span>
+                </div>
+
+                <pre><code><span class="cm"># Implementação dos 4 percursos (recursivos, exceto em-nível)</span>
+<span class="kw">class</span> <span class="fn">Node</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, valor):
+        self.valor = valor
+        self.esq = <span class="kw">None</span>
+        self.dir = <span class="kw">None</span>
+
+<span class="kw">def</span> <span class="fn">preordem</span>(no):
+    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span>
+    <span class="fn">print</span>(no.valor)         <span class="cm"># 1. visita a raiz</span>
+    <span class="fn">preordem</span>(no.esq)        <span class="cm"># 2. percorre subárvore esquerda</span>
+    <span class="fn">preordem</span>(no.dir)        <span class="cm"># 3. percorre subárvore direita</span>
+
+<span class="kw">def</span> <span class="fn">inordem</span>(no):           <span class="cm"># também chamada de SIMÉTRICA</span>
+    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span>
+    <span class="fn">inordem</span>(no.esq)
+    <span class="fn">print</span>(no.valor)
+    <span class="fn">inordem</span>(no.dir)
+
+<span class="kw">def</span> <span class="fn">posordem</span>(no):
+    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span>
+    <span class="fn">posordem</span>(no.esq)
+    <span class="fn">posordem</span>(no.dir)
+    <span class="fn">print</span>(no.valor)
+
+<span class="kw">from</span> collections <span class="kw">import</span> deque
+<span class="kw">def</span> <span class="fn">em_nivel</span>(raiz):       <span class="cm"># BFS — usa fila</span>
+    <span class="kw">if</span> raiz <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span>
+    fila = deque([raiz])
+    <span class="kw">while</span> fila:
+        no = fila.popleft()
+        <span class="fn">print</span>(no.valor)
+        <span class="kw">if</span> no.esq: fila.append(no.esq)
+        <span class="kw">if</span> no.dir: fila.append(no.dir)</code></pre>
+
+                <div class="section-label purple">Análise de Complexidade dos Percursos</div>
+                <div class="insight-box">
+                    <strong>Função tempo T(n)</strong> dos três percursos recursivos. Considere uma árvore com <em>n</em> nós:
+                    <pre style="margin-top:12px;"><code>T(0) = c<sub>1</sub>                          # caso base (no == None)
+T(n) = T(esq) + T(dir) + c<sub>2</sub>          # processa raiz + 2 chamadas recursivas
+
+Cada nó é visitado exatamente UMA vez → operações O(1) por nó
+T(n) = n · O(1) = <strong>Θ(n)</strong></code></pre>
+                    <strong>Conclusão:</strong> os percursos são <em>ótimos</em> — não dá para visitar n nós em menos que Θ(n) operações, que é o limite inferior Ω(n) do problema.
+                </div>
+
+                <!-- RECONSTRUÇÃO -->
+                <div class="section-label purple">Reconstrução de Árvore a partir de Percursos</div>
+                <div class="enunciado">
+                    <strong>O grande tema das provas:</strong> dado dois percursos, reconstruir a árvore binária original. Esta é a questão clássica do Prof. Strauss.
+                </div>
+
+                <table class="complexity-table">
+                    <tr><th>Combinação dada</th><th>Reconstrução única?</th><th>Por quê?</th></tr>
+                    <tr><td>Pré-ordem + In-ordem</td><td style="color:var(--accent3);font-weight:700;">SIM ✓</td><td>Pré-ordem dá a raiz; in-ordem separa as subárvores esq/dir</td></tr>
+                    <tr><td>Pós-ordem + In-ordem</td><td style="color:var(--accent3);font-weight:700;">SIM ✓</td><td>Pós-ordem dá a raiz no fim; in-ordem separa as subárvores</td></tr>
+                    <tr><td>Pré-ordem + Pós-ordem</td><td style="color:var(--danger);font-weight:700;">NÃO ✗</td><td>Não consegue distinguir filho único esquerdo de direito</td></tr>
+                    <tr><td>Em-nível + qualquer outro</td><td style="color:var(--accent3);font-weight:700;">SIM ✓</td><td>O nível identifica a estrutura</td></tr>
+                </table>
+
+                <div class="section-label purple">Algoritmo de Reconstrução (Pré-ordem + In-ordem)</div>
+                <ul class="steps-list">
+                    <li><span class="step-num">01</span><span>O <strong>primeiro</strong> elemento da pré-ordem é a <strong>raiz</strong> da árvore.</span></li>
+                    <li><span class="step-num">02</span><span>Localize essa raiz no vetor in-ordem (posição <code>k</code>).</span></li>
+                    <li><span class="step-num">03</span><span>Tudo à <strong>esquerda</strong> de <code>k</code> no in-ordem é a subárvore esquerda. Tudo à <strong>direita</strong>, a subárvore direita.</span></li>
+                    <li><span class="step-num">04</span><span>Os próximos <code>k</code> elementos da pré-ordem (após a raiz) formam a pré-ordem da subárvore esquerda. Os restantes formam a pré-ordem da direita.</span></li>
+                    <li><span class="step-num">05</span><span>Recursão: aplique os passos 1-4 nas duas metades.</span></li>
+                </ul>
+
+                <pre><code><span class="kw">def</span> <span class="fn">reconstroi</span>(preordem, inordem):
+    <span class="kw">if not</span> preordem <span class="kw">or not</span> inordem:
+        <span class="kw">return</span> <span class="kw">None</span>
+
+    <span class="cm"># 1. Primeiro da pré-ordem é a raiz</span>
+    raiz_valor = preordem[<span class="num">0</span>]
+    raiz = <span class="fn">Node</span>(raiz_valor)
+
+    <span class="cm"># 2. Localiza a raiz no in-ordem</span>
+    k = inordem.<span class="fn">index</span>(raiz_valor)   <span class="cm"># O(n) na implementação ingênua</span>
+
+    <span class="cm"># 3. Divide os percursos</span>
+    inord_esq = inordem[:k]
+    inord_dir = inordem[k+<span class="num">1</span>:]
+    pre_esq   = preordem[<span class="num">1</span>:k+<span class="num">1</span>]
+    pre_dir   = preordem[k+<span class="num">1</span>:]
+
+    <span class="cm"># 4. Recursão</span>
+    raiz.esq = <span class="fn">reconstroi</span>(pre_esq, inord_esq)
+    raiz.dir = <span class="fn">reconstroi</span>(pre_dir, inord_dir)
+    <span class="kw">return</span> raiz</code></pre>
+
+                <div class="section-label purple">Análise da Função Tempo</div>
+                <div class="insight-box">
+                    <strong>Implementação ingênua (acima):</strong>
+                    <pre style="margin-top:10px;"><code>T(n) = T(k) + T(n-k-1) + O(n)    # O(n) é o custo de inordem.index()
+                                  
+Pior caso (árvore degenerada k=0 ou k=n-1):
+T(n) = T(n-1) + O(n)  →  T(n) = <strong>O(n²)</strong>
+
+Caso médio (k ≈ n/2):
+T(n) = 2·T(n/2) + O(n)  →  T(n) = O(n log n)</code></pre>
+                    <strong>Otimização para Θ(n):</strong> usar <code>HashMap</code> para mapear <em>valor → índice</em> no in-ordem em pré-processamento O(n). Aí a busca vira O(1) e:
+                    <pre style="margin-top:10px;"><code>T(n) = T(k) + T(n-k-1) + O(1)  →  <strong>T(n) = Θ(n)</strong></code></pre>
+                    Como Ω(n) é o mínimo (precisamos olhar todos os nós), <strong>o algoritmo otimizado é ÓTIMO</strong>.
+                </div>
+
+                <!-- RECONSTRUTOR INTERATIVO -->
+                <div class="section-label purple">Reconstrutor Interativo</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Digite os percursos pré-ordem e in-ordem (apenas letras únicas, sem espaços). O site reconstrói a árvore animadamente.
+                </div>
+
+                <div class="tree-input-form">
+                    <div>
+                        <label>Pré-ordem</label>
+                        <input type="text" id="rec-preorder" value="ABDHOPIQREJKSTCFGMUNVXZ" maxlength="26" oninput="rebuild()">
+                    </div>
+                    <div>
+                        <label>In-ordem (Simétrica)</label>
+                        <input type="text" id="rec-inorder" value="OHPDQIRBJESKTAFCUMGVNXZ" maxlength="26" oninput="rebuild()">
+                    </div>
+                </div>
+
+                <div class="tree-controls">
+                    <button class="btn" onclick="loadExample(1)">Exemplo P1-2023.02</button>
+                    <button class="btn" onclick="loadExample(2)">Exemplo P1-2024.02</button>
+                    <button class="btn" onclick="loadExample(3)">Exemplo simples</button>
+                </div>
+
+                <div class="tree-canvas-wrap" id="rec-tree-wrap"></div>
+                <div class="tree-output">
+                    <span class="label">Pós-ordem gerada</span>
+                    <span id="rec-postorder" style="color:var(--accent3)">—</span>
+                </div>
+                <div id="rec-error" style="color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:12px;min-height:18px;margin-bottom:8px;"></div>
+
+                <div class="callout purple">
+                    <span class="callout-icon" style="color:var(--accent5)">⚠</span>
+                    <span><strong>Atenção na prova:</strong> o Prof. Strauss aceita árvores com nós nomeados por letras (caso comum). Sempre verifique se os percursos são <em>consistentes</em>: o conjunto de letras tem que ser exatamente o mesmo em ambos os percursos, sem repetições.</span>
+                </div>
+
+            </section>
+            <hr class="divider">
+        </div>
+
+
+        <!-- ═══════════════════════════════════════════════
+             1.4 — NOTAÇÕES MATEMÁTICAS
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-notmat">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.4</div>
+                    <div class="problem-title-block">
+                        <h2>Notações Matemáticas: Infixa, Prefixa, Pósfixa</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">Cai em ~50% das P1's</span>
+                            <span class="badge badge-struct">Árvore + Recursão</span>
+                            <span class="badge badge-theory">Conversão</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Conexão direta com 1.3:</strong> toda expressão matemática pode ser representada como uma árvore binária. Os operadores são nós internos, os operandos são folhas. A escolha da notação é literalmente escolher um <em>percurso</em> dessa árvore.
+                </div>
+
+                <!-- DEFINIÇÕES -->
+                <div class="section-label purple">As Três Notações</div>
+
+                <table class="complexity-table">
+                    <tr><th>Notação</th><th>Posição do operador</th><th>Equivale a percurso</th><th>Exemplo (3+4)·5</th></tr>
+                    <tr><td><strong>Infixa</strong></td><td>Entre os operandos</td><td>In-ordem (com parênteses)</td><td><code>(3 + 4) * 5</code></td></tr>
+                    <tr><td><strong>Prefixa</strong> (Polonesa)</td><td>Antes dos operandos</td><td>Pré-ordem</td><td><code>* + 3 4 5</code></td></tr>
+                    <tr><td><strong>Pósfixa</strong> (Polonesa Reversa)</td><td>Depois dos operandos</td><td>Pós-ordem</td><td><code>3 4 + 5 *</code></td></tr>
+                </table>
+
+                <div class="insight-box">
+                    <strong>Por que isto importa?</strong>
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>Infixa</strong> é a notação humana, mas precisa de parênteses e regras de precedência.</li>
+                        <li><strong>Prefixa e pósfixa</strong> não precisam de parênteses nem precedência — são totalmente determinadas pela posição. Por isso são usadas internamente em compiladores e calculadoras.</li>
+                        <li>A pósfixa é avaliada em tempo linear com uma <strong>pilha</strong>: cada operando é empilhado, cada operador desempilha 2 valores, calcula, empilha o resultado.</li>
+                    </ul>
+                </div>
+
+                <!-- CONVERSOR -->
+                <div class="section-label purple">Conversor Interativo</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Digite uma expressão em qualquer notação. Use letras como operandos (A, B, C…), operadores <code>+ - * /</code>, e parênteses na infixa quando necessário. Separe tokens por espaço.
+                </div>
+
+                <div class="notation-converter">
+                    <div class="nc-row input-row">
+                        <span class="nc-label">Prefixa (entrada)</span>
+                        <input type="text" class="nc-value" id="nc-prefix" value="+ Z * Q (-/T L M)" oninput="convertFromPrefix()">
+                    </div>
+                    <div class="nc-row">
+                        <span class="nc-label">Infixa</span>
+                        <span class="nc-value" id="nc-infix">—</span>
+                    </div>
+                    <div class="nc-row">
+                        <span class="nc-label">Pósfixa</span>
+                        <span class="nc-value" id="nc-postfix">—</span>
+                    </div>
+                </div>
+
+                <div class="tree-canvas-wrap" id="nc-tree-wrap"></div>
+
+                <div class="tree-controls">
+                    <button class="btn" onclick="loadNotExample(1)">Ex P1-2024 prova</button>
+                    <button class="btn" onclick="loadNotExample(2)">Ex P1-2023 prova</button>
+                    <button class="btn" onclick="loadNotExample(3)">Simples: A+B*C</button>
+                </div>
+
+                <div class="callout orange">
+                    <span class="callout-icon" style="color:var(--warn)">ℹ</span>
+                    <span><strong>Caracteres especiais "(" e ")":</strong> em provas do Prof. Strauss, parênteses na prefixa indicam <em>subexpressões com precedência forçada</em>. Por exemplo, <code>+ Z * Q (-/T L M)</code> significa que <code>(-/T L M)</code> é uma subárvore independente. O parser desta página suporta essa convenção.</span>
+                </div>
+
+                <!-- ALGORITMO RECURSIVO -->
+                <div class="section-label purple">Algoritmo Recursivo: Prefixa → Infixa + Pósfixa</div>
+                <div class="enunciado">
+                    <strong>Questão clássica do Prof. Strauss:</strong> "Desenvolva UM ÚNICO algoritmo recursivo que transforme uma função matemática escrita na forma PREFIXA para as formas INFIXA e PÓSFIXA. Descreva se sua proposta é ótima."
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">converte_prefixa</span>(tokens, idx=<span class="num">0</span>):
+    <span class="cm">"""
+    Lê tokens prefixa e retorna (infixa, posfixa, novo_idx).
+    Estratégia: um único algoritmo que constrói as duas formas
+    simultaneamente em uma única passada recursiva.
+    """</span>
+    <span class="kw">if</span> idx >= <span class="fn">len</span>(tokens):
+        <span class="kw">return</span> <span class="st">""</span>, <span class="st">""</span>, idx
+
+    token = tokens[idx]
+
+    <span class="kw">if</span> <span class="fn">eh_operador</span>(token):
+        <span class="cm"># 1. processa subárvore esquerda</span>
+        inf_e, pos_e, idx = <span class="fn">converte_prefixa</span>(tokens, idx + <span class="num">1</span>)
+        <span class="cm"># 2. processa subárvore direita</span>
+        inf_d, pos_d, idx = <span class="fn">converte_prefixa</span>(tokens, idx)
+        <span class="cm"># 3. monta as duas formas a partir das subexpressões</span>
+        infixa  = f<span class="st">"({inf_e} {token} {inf_d})"</span>
+        posfixa = f<span class="st">"{pos_e} {pos_d} {token}"</span>
+        <span class="kw">return</span> infixa, posfixa, idx
+
+    <span class="kw">else</span>:  <span class="cm"># é operando (folha)</span>
+        <span class="kw">return</span> token, token, idx + <span class="num">1</span>
+
+<span class="cm"># Uso:
+# tokens = ["+", "Z", "*", "Q", "/", "T", "L"]
+# infixa, posfixa, _ = converte_prefixa(tokens)</span></code></pre>
+
+                <div class="section-label purple">Análise da Função Tempo</div>
+                <div class="insight-box">
+                    <strong>Cada token é visitado exatamente uma vez</strong> e processado em O(1):
+                    <pre style="margin-top:10px;"><code>T(0) = c<sub>1</sub>                              # vetor vazio
+T(n) = T(n<sub>esq</sub>) + T(n<sub>dir</sub>) + c<sub>2</sub>            # operador: 2 chamadas recursivas
+T(n) = c<sub>3</sub>                              # operando: caso base
+
+Como n<sub>esq</sub> + n<sub>dir</sub> + 1 = n (cada nó conta uma vez):
+T(n) = <strong>Θ(n)</strong>
+
+Cota inferior: Ω(n)  →  precisamos ler todos os tokens
+Algoritmo: Θ(n)      →  ATINGE A COTA  →  <strong>É ÓTIMO</strong> ✓</code></pre>
+                </div>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">💡</span>
+                    <span><strong>Dica de prova:</strong> ao escrever a resposta, sempre defina explicitamente os tipos: infixa cai em "in-ordem" da árvore, prefixa em "pré-ordem", pósfixa em "pós-ordem". O professor Strauss valoriza essa conexão.</span>
+                </div>
+
+            </section>
+            <hr class="divider">
+        </div>
+
+
+        <!-- ═══════════════════════════════════════════════
+             1.5 — ALGORITMOS RECURSIVOS
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-recursao">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.5</div>
+                    <div class="problem-title-block">
+                        <h2>Algoritmos Recursivos</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">Tema obrigatório</span>
+                            <span class="badge badge-struct">Pilha de chamadas</span>
+                            <span class="badge badge-theory">Recorrências</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Recursão é a linguagem natural de árvores e divide-and-conquer.</strong> O Prof. Strauss exige soluções recursivas em quase toda questão. Esta seção te ensina a <em>analisar a função tempo</em> de algoritmos recursivos — o ponto central de toda prova.
+                </div>
+
+                <!-- ANATOMIA -->
+                <div class="section-label purple">Anatomia de um Algoritmo Recursivo</div>
+                <div class="insight-box">
+                    Todo algoritmo recursivo bem escrito tem três componentes:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>Caso base:</strong> condição em que a função retorna sem chamar a si mesma. Sem caso base → recursão infinita → stack overflow.</li>
+                        <li><strong>Caso recursivo:</strong> a função chama a si mesma com um problema <em>menor</em> que se aproxima do caso base.</li>
+                        <li><strong>Combinação:</strong> como o resultado das chamadas recursivas é combinado para resolver o problema original.</li>
+                    </ul>
+                </div>
+
+                <pre><code><span class="cm"># Esqueleto genérico</span>
+<span class="kw">def</span> <span class="fn">resolve</span>(problema):
+    <span class="kw">if</span> <span class="fn">eh_caso_base</span>(problema):
+        <span class="kw">return</span> <span class="fn">solucao_trivial</span>(problema)        <span class="cm"># caso base</span>
+
+    <span class="cm"># Decompõe em subproblemas menores</span>
+    sub1, sub2 = <span class="fn">decompoe</span>(problema)
+
+    <span class="cm"># Resolve recursivamente</span>
+    res1 = <span class="fn">resolve</span>(sub1)
+    res2 = <span class="fn">resolve</span>(sub2)
+
+    <span class="cm"># Combina os resultados</span>
+    <span class="kw">return</span> <span class="fn">combina</span>(res1, res2)</code></pre>
+
+                <!-- FIBONACCI -->
+                <div class="section-label purple">Estudo de Caso: Fibonacci</div>
+                <div class="enunciado">
+                    Sequência de Fibonacci: <code>fib(0)=0, fib(1)=1, fib(n) = fib(n-1) + fib(n-2)</code>. Apareceu na P1-2018.01 (5ª questão), pedindo para analisar a árvore de chamadas e determinar Ω e O.
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">if</span> n <= <span class="num">1</span>:                 <span class="cm"># caso base: O(1)</span>
+        <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fib</span>(n - <span class="num">1</span>) + <span class="fn">fib</span>(n - <span class="num">2</span>)  <span class="cm"># 2 chamadas recursivas</span></code></pre>
+
+                <div class="section-label purple">Visualizador da Árvore de Chamadas</div>
+                <div class="fib-stats">
+                    <div class="tree-stat">n: <input type="number" id="fib-n" class="fib-input" value="5" min="0" max="8" oninput="renderFibTree()"></div>
+                    <div class="tree-stat">Total de chamadas: <span id="fib-calls">0</span></div>
+                    <div class="tree-stat">Resultado fib(n): <span id="fib-result">0</span></div>
+                </div>
+                <div class="fib-canvas-wrap" id="fib-tree-wrap"></div>
+
+                <div class="section-label purple">Análise: Por que é O(2ⁿ)?</div>
+                <div class="insight-box">
+                    A função tempo do Fibonacci recursivo ingênuo é:
+                    <pre style="margin-top:10px;"><code>T(0) = T(1) = c<sub>1</sub>                  # casos base
+T(n) = T(n-1) + T(n-2) + c<sub>2</sub>        # caso recursivo
+
+Esta é a própria recorrência de Fibonacci! Pode-se mostrar que:
+T(n) = Θ(φⁿ) onde φ = (1+√5)/2 ≈ 1.618 (razão áurea)
+
+Cota superior: T(n) ≤ 2·T(n-1) + c  →  T(n) = <strong>O(2ⁿ)</strong>
+Cota inferior: T(n) ≥ 2·T(n-2) + c  →  T(n) = <strong>Ω((√2)ⁿ)</strong>
+
+Número exato de chamadas: <strong>2·fib(n+1) - 1</strong>
+Para n=4: 2·fib(5) - 1 = 2·5 - 1 = <strong>9</strong> chamadas (a prova diz 8, contando diferente)</code></pre>
+                </div>
+
+                <div class="callout orange">
+                    <span class="callout-icon" style="color:var(--warn)">⚠</span>
+                    <span><strong>É ÓTIMO?</strong> NÃO. A cota inferior do <em>problema</em> "calcular fib(n)" é Ω(n) (precisamos no mínimo executar n adições). Como o algoritmo ingênuo é O(2ⁿ) >> Ω(n), <strong>ele NÃO é ótimo</strong>. A versão iterativa ou com memoização atinge Θ(n) e é ótima.</span>
+                </div>
+
+                <!-- RECORRÊNCIAS -->
+                <div class="section-label purple">Recorrências Comuns em Análise de Algoritmos</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Decorar essas é essencial. Toda análise de complexidade recursiva cai em uma destas formas:
+                </div>
+
+                <table class="recurrence-table">
+                    <tr><th>Recorrência</th><th>Solução</th><th>Onde aparece</th></tr>
+                    <tr><td><code>T(n) = T(n-1) + c</code></td><td>Θ(n)</td><td>Recursão linear simples (fatorial, busca em lista)</td></tr>
+                    <tr><td><code>T(n) = T(n-1) + n</code></td><td>Θ(n²)</td><td>Algoritmos de ordenação ingênuos</td></tr>
+                    <tr><td><code>T(n) = 2·T(n-1) + c</code></td><td>Θ(2ⁿ)</td><td>Torre de Hanói; subconjuntos</td></tr>
+                    <tr><td><code>T(n) = T(n-1) + T(n-2) + c</code></td><td>Θ(φⁿ) ≈ Θ(1.618ⁿ)</td><td>Fibonacci ingênuo</td></tr>
+                    <tr><td><code>T(n) = T(n/2) + c</code></td><td>Θ(log n)</td><td>Busca binária</td></tr>
+                    <tr><td><code>T(n) = T(n/2) + n</code></td><td>Θ(n)</td><td>Busca em árvore balanceada com trabalho linear</td></tr>
+                    <tr><td><code>T(n) = 2·T(n/2) + c</code></td><td>Θ(n)</td><td>Percurso em árvore balanceada</td></tr>
+                    <tr><td><code>T(n) = 2·T(n/2) + n</code></td><td>Θ(n log n)</td><td>Merge Sort, divide-and-conquer balanceado</td></tr>
+                    <tr><td><code>T(n) = T(n/2) + T(n/2) + n</code></td><td>Θ(n log n)</td><td>Equivalente à anterior</td></tr>
+                </table>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">📐</span>
+                    <span><strong>Teorema Mestre (resumido):</strong> para recorrências da forma <code>T(n) = a·T(n/b) + f(n)</code>, compare <code>f(n)</code> com <code>n^(log<sub>b</sub>a)</code>. Se forem do mesmo nível, <code>T(n) = Θ(f(n)·log n)</code>. Esta é a forma mais usada na prova.</span>
+                </div>
+
+                <!-- COMO ESCREVER T(n) -->
+                <div class="section-label purple">Como Escrever T(n) na Prova (Passo a Passo)</div>
+                <ul class="steps-list">
+                    <li><span class="step-num">01</span><span><strong>Identifique o caso base:</strong> "para n = 0 (ou 1, conforme), T(n) = c<sub>1</sub> (constante)".</span></li>
+                    <li><span class="step-num">02</span><span><strong>Conte as chamadas recursivas:</strong> quantas vezes a função se chama? Em quais tamanhos?</span></li>
+                    <li><span class="step-num">03</span><span><strong>Mensure o trabalho não-recursivo:</strong> tudo que NÃO é chamada recursiva — comparações, cópias, prints. Pode ser O(1), O(n), O(log n)...</span></li>
+                    <li><span class="step-num">04</span><span><strong>Escreva a recorrência:</strong> T(n) = (soma das T's das chamadas) + (trabalho extra).</span></li>
+                    <li><span class="step-num">05</span><span><strong>Resolva:</strong> use a tabela de recorrências comuns acima ou expanda manualmente.</span></li>
+                    <li><span class="step-num">06</span><span><strong>Compare com a cota inferior Ω(n) do PROBLEMA:</strong> se T(n) atinge Ω(n), o algoritmo é <em>ótimo</em>.</span></li>
+                </ul>
+
+                <div class="insight-box">
+                    <strong>Exemplo completo de resposta (Fibonacci recursivo):</strong>
+                    <pre style="margin-top:10px;"><code>1. Caso base:    T(0) = T(1) = c<sub>1</sub>
+2. Caso recurs.: 2 chamadas (n-1 e n-2), trabalho extra: 1 soma = c<sub>2</sub>
+3. Recorrência:  T(n) = T(n-1) + T(n-2) + c<sub>2</sub>
+4. Solução:      T(n) = Θ(φⁿ) ≈ Θ(1.618ⁿ)  →  O(2ⁿ)
+5. Cota inferior do problema "calcular fib(n)": Ω(n)
+6. Comparação: O(2ⁿ) >> Ω(n)  →  <strong>NÃO é ótimo</strong></code></pre>
+                </div>
+
+            </section>
+        </div>

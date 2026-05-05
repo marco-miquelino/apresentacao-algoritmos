@@ -1,0 +1,348 @@
+
+        <!-- ═══════════════════════════════════════════════
+             1.6 — STRINGS E PADRÕES
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-strings">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.6</div>
+                    <div class="problem-title-block">
+                        <h2>Strings e Padrões</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">Cai em ~25% das P1's</span>
+                            <span class="badge badge-struct">Dois ponteiros</span>
+                            <span class="badge badge-theory">Pré-processamento</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Questão clássica do Prof. Strauss:</strong> "Desenvolva um algoritmo que, dado um texto, faça a identificação do total de palíndromos existentes de palavra e de frases, separadamente." (P1-2023.02 — Q2)
+                </div>
+
+                <!-- O QUE É PALÍNDROMO -->
+                <div class="section-label purple">Definição</div>
+                <div class="insight-box">
+                    Um <strong>palíndromo</strong> é uma sequência de caracteres que se lê igual da esquerda para a direita e da direita para a esquerda. Existem dois níveis de palíndromo importantes na prova:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>Palíndromo de palavra:</strong> a palavra inteira é palíndromo. Ex: <code>HANNAH</code>, <code>OSSO</code>, <code>RADAR</code>.</li>
+                        <li><strong>Palíndromo de frase:</strong> a frase, ignorando espaços, pontuação e capitalização, é palíndromo. Ex: <code>ROMA ME TEM AMOR</code> → <code>ROMAMETEMAMOR</code> é palíndromo.</li>
+                    </ul>
+                </div>
+
+                <div class="callout orange">
+                    <span class="callout-icon" style="color:var(--warn)">⚠</span>
+                    <span><strong>Pegadinha:</strong> em frases, é necessário <em>pré-processar</em> removendo espaços, acentos e pontuação. Sem isso, "ROMA ME TEM AMOR" tem 17 caracteres, mas "ROMA" começa com R e "AMOR" termina com R — só funciona se você ignorar os espaços.</span>
+                </div>
+
+                <!-- ALGORITMO DOIS PONTEIROS -->
+                <div class="section-label purple">Algoritmo de Dois Ponteiros</div>
+                <ul class="steps-list">
+                    <li><span class="step-num">01</span><span><strong>Pré-processe</strong> a string: converta para maiúsculas, remova espaços e pontuação.</span></li>
+                    <li><span class="step-num">02</span><span>Crie dois ponteiros: <code>i</code> no início (0) e <code>j</code> no final (n-1).</span></li>
+                    <li><span class="step-num">03</span><span>Compare <code>s[i]</code> com <code>s[j]</code>. Se diferentes, <strong>não é palíndromo</strong>.</span></li>
+                    <li><span class="step-num">04</span><span>Se iguais, avance: <code>i++</code> e <code>j--</code>.</span></li>
+                    <li><span class="step-num">05</span><span>Repita até <code>i ≥ j</code>. Se chegou aqui, <strong>é palíndromo</strong>.</span></li>
+                </ul>
+
+                <pre><code><span class="kw">def</span> <span class="fn">eh_palindromo</span>(s):
+    <span class="cm"># 1. Pré-processa</span>
+    s = <span class="st">''</span>.<span class="fn">join</span>(c.<span class="fn">upper</span>() <span class="kw">for</span> c <span class="kw">in</span> s <span class="kw">if</span> c.<span class="fn">isalnum</span>())
+
+    <span class="cm"># 2. Dois ponteiros</span>
+    i, j = <span class="num">0</span>, <span class="fn">len</span>(s) - <span class="num">1</span>
+    <span class="kw">while</span> i < j:
+        <span class="kw">if</span> s[i] != s[j]:
+            <span class="kw">return</span> <span class="kw">False</span>
+        i += <span class="num">1</span>
+        j -= <span class="num">1</span>
+    <span class="kw">return</span> <span class="kw">True</span>
+
+<span class="cm"># Identificação de palíndromos no texto:</span>
+<span class="kw">def</span> <span class="fn">conta_palindromos</span>(texto):
+    palavras = texto.<span class="fn">split</span>()
+    <span class="cm"># palavra-palíndromo: cada palavra individual</span>
+    pal_palavras = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> w <span class="kw">in</span> palavras <span class="kw">if</span> <span class="fn">eh_palindromo</span>(w) <span class="kw">and</span> <span class="fn">len</span>(w) > <span class="num">1</span>)
+    <span class="cm"># frase-palíndromo: testa cada frase (separadas por . ! ?)</span>
+    <span class="kw">import</span> re
+    frases = re.<span class="fn">split</span>(<span class="st">r'[.!?]'</span>, texto)
+    pal_frases = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> f <span class="kw">in</span> frases <span class="kw">if</span> f.<span class="fn">strip</span>() <span class="kw">and</span> <span class="fn">eh_palindromo</span>(f))
+    <span class="kw">return</span> pal_palavras, pal_frases</code></pre>
+
+                <!-- VISUALIZADOR -->
+                <div class="section-label purple">Visualizador Interativo</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Digite uma palavra ou frase. O detector roda o algoritmo de dois ponteiros e mostra a animação.
+                </div>
+
+                <input type="text" class="str-input" id="pal-input" value="ROMA ME TEM AMOR" maxlength="40" oninput="onPalInput()">
+
+                <div class="tree-controls">
+                    <button class="btn" onclick="animatePal()" style="color:var(--accent3);border-color:rgba(39,174,96,0.4)">▶ Detectar</button>
+                    <button class="btn" onclick="loadPalEx(1)">HANNAH</button>
+                    <button class="btn" onclick="loadPalEx(2)">ROMA ME TEM AMOR</button>
+                    <button class="btn" onclick="loadPalEx(3)">SOCORRAM-ME, SUBI NO ÔNIBUS EM MARROCOS</button>
+                    <button class="btn" onclick="loadPalEx(4)">ALGORITMO</button>
+                </div>
+
+                <div class="str-status" id="pal-status">Pronto. Clique em "Detectar" para iniciar.</div>
+                <div class="str-canvas" id="pal-canvas"></div>
+
+                <!-- ANÁLISE -->
+                <div class="section-label purple">Análise da Função Tempo</div>
+                <div class="insight-box">
+                    <strong>Algoritmo de dois ponteiros:</strong>
+                    <pre style="margin-top:10px;"><code>Pré-processamento: percorre n caracteres = O(n)
+Dois ponteiros:    cada caractere é visitado no máximo 1 vez = O(n/2) = O(n)
+Total: T(n) = c<sub>1</sub>·n + c<sub>2</sub>·n = <strong>Θ(n)</strong>
+
+Cota inferior: Ω(n) — precisamos olhar todos os caracteres
+Algoritmo: Θ(n) → atinge Ω(n) → <strong>É ÓTIMO</strong> ✓</code></pre>
+                </div>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">📐</span>
+                    <span><strong>Estrutura de dados usada:</strong> apenas dois ponteiros inteiros + a string original (vetor de caracteres). Não há necessidade de pilhas, filas ou árvores. Esse é um ponto importante para responder à exigência do Strauss "descreva qual estrutura de dados sua proposta utiliza".</span>
+                </div>
+
+            </section>
+            <hr class="divider">
+        </div>
+
+
+        <!-- ═══════════════════════════════════════════════
+             1.7 — TEORIA DOS NÚMEROS
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-numeros">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.7</div>
+                    <div class="problem-title-block">
+                        <h2>Teoria dos Números</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">MDC + Primos</span>
+                            <span class="badge badge-struct">Cai em P1-2018.01</span>
+                            <span class="badge badge-theory">Recursão clássica</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Questão clássica:</strong> "Determine o maior divisor comum entre dois valores X e Y" (P1-2018.01 Q3) e "Determine se um número N é primo, e se sim, encontre os dois primos antecessores e sucessores" (P1-2018.01 Q4).
+                </div>
+
+                <!-- ALGORITMO DE EUCLIDES -->
+                <div class="section-label purple">Algoritmo de Euclides — MDC</div>
+                <div class="insight-box">
+                    O <strong>algoritmo de Euclides</strong> calcula o Máximo Divisor Comum (MDC, ou GCD em inglês) entre dois inteiros. É um dos algoritmos mais antigos da matemática, descrito por Euclides em ~300 a.C., e ainda assim é o mais eficiente conhecido.
+                    <pre style="margin-top:10px;"><code><strong>Identidade fundamental:</strong> mdc(a, b) = mdc(b, a mod b), com mdc(a, 0) = a</code></pre>
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">mdc</span>(a, b):
+    <span class="cm"># Recursivo (mais elegante)</span>
+    <span class="kw">if</span> b == <span class="num">0</span>:
+        <span class="kw">return</span> a
+    <span class="kw">return</span> <span class="fn">mdc</span>(b, a % b)
+
+<span class="kw">def</span> <span class="fn">mdc_iterativo</span>(a, b):
+    <span class="cm"># Iterativo (mais rápido na prática)</span>
+    <span class="kw">while</span> b != <span class="num">0</span>:
+        a, b = b, a % b
+    <span class="kw">return</span> a
+
+<span class="cm"># Exemplo do problema dos credores (P1-2018.01 Q3):
+# X = 24, Y = 36 → mdc(24,36) = 12
+# Cada credor recebe X/Z + Y/Z = 24/12 + 36/12 = 2+3 = 5
+# Número de credores beneficiados: Z = 12</span></code></pre>
+
+                <!-- CALCULADORA INTERATIVA -->
+                <div class="section-label purple">Calculadora Interativa do Euclides</div>
+                <div class="euclid-input-row">
+                    <label style="font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;">a:</label>
+                    <input type="number" id="euclid-a" value="48" min="1" max="9999" oninput="runEuclid()">
+                    <label style="font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;">b:</label>
+                    <input type="number" id="euclid-b" value="36" min="1" max="9999" oninput="runEuclid()">
+                    <button class="btn" onclick="loadEuclidEx(1)">24, 36</button>
+                    <button class="btn" onclick="loadEuclidEx(2)">120, 144</button>
+                    <button class="btn" onclick="loadEuclidEx(3)">17, 13</button>
+                </div>
+
+                <div class="euclid-steps" id="euclid-steps"></div>
+
+                <div class="section-label purple">Análise da Função Tempo do Euclides</div>
+                <div class="insight-box">
+                    <pre style="margin-top:0;"><code>T(a, b) = T(b, a mod b) + c<sub>1</sub>           # 1 chamada recursiva
+T(a, 0) = c<sub>2</sub>                            # caso base
+
+Lema (Lamé, 1844): se Euclides faz k passos para mdc(a,b),
+então a ≥ F<sub>k+2</sub> (k-ésimo Fibonacci).
+Portanto: k = O(log<sub>φ</sub> a) = <strong>O(log a)</strong>
+
+Total: T(a, b) = <strong>O(log min(a, b))</strong>
+
+Cota inferior: Ω(log a) — precisa-se reduzir o problema log a vezes
+<strong>Algoritmo é ÓTIMO</strong> ✓</code></pre>
+                </div>
+
+                <!-- PRIMOS -->
+                <div class="section-label purple">Teste de Primalidade</div>
+                <div class="insight-box">
+                    Um número <strong>n é primo</strong> se ele só tem dois divisores: 1 e ele mesmo. Existem três níveis de algoritmo:
+                </div>
+
+                <table class="complexity-table">
+                    <tr><th>Algoritmo</th><th>Tempo</th><th>Quando usar</th></tr>
+                    <tr><td>Ingênuo: testar todos i de 2 até n-1</td><td><code>O(n)</code></td><td>Nunca — é desnecessariamente lento</td></tr>
+                    <tr><td>Otimizado: testar i de 2 até √n</td><td><code>O(√n)</code></td><td>Teste de um único número</td></tr>
+                    <tr><td>Crivo de Eratóstenes</td><td><code>O(n log log n)</code></td><td>Listar TODOS os primos até n</td></tr>
+                </table>
+
+                <pre><code><span class="kw">def</span> <span class="fn">eh_primo</span>(n):
+    <span class="cm"># Caso base</span>
+    <span class="kw">if</span> n < <span class="num">2</span>: <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">if</span> n == <span class="num">2</span>: <span class="kw">return</span> <span class="kw">True</span>
+    <span class="kw">if</span> n % <span class="num">2</span> == <span class="num">0</span>: <span class="kw">return</span> <span class="kw">False</span>
+
+    <span class="cm"># Testa só ímpares de 3 até √n</span>
+    i = <span class="num">3</span>
+    <span class="kw">while</span> i * i <= n:
+        <span class="kw">if</span> n % i == <span class="num">0</span>: <span class="kw">return</span> <span class="kw">False</span>
+        i += <span class="num">2</span>
+    <span class="kw">return</span> <span class="kw">True</span>
+
+<span class="kw">def</span> <span class="fn">primos_vizinhos</span>(n):
+    <span class="cm">"""Encontra os 2 primos antes e os 2 depois de n"""</span>
+    antecessores = []
+    p = n - <span class="num">1</span>
+    <span class="kw">while</span> <span class="fn">len</span>(antecessores) < <span class="num">2</span> <span class="kw">and</span> p >= <span class="num">2</span>:
+        <span class="kw">if</span> <span class="fn">eh_primo</span>(p): antecessores.append(p)
+        p -= <span class="num">1</span>
+    sucessores = []
+    p = n + <span class="num">1</span>
+    <span class="kw">while</span> <span class="fn">len</span>(sucessores) < <span class="num">2</span>:
+        <span class="kw">if</span> <span class="fn">eh_primo</span>(p): sucessores.append(p)
+        p += <span class="num">1</span>
+    <span class="kw">return</span> antecessores, sucessores</code></pre>
+
+                <!-- CRIVO -->
+                <div class="section-label purple">Crivo de Eratóstenes (Animado)</div>
+                <div class="enunciado">
+                    Para listar todos os primos até <code>N</code>, o crivo é o método mais eficiente. <strong>Ideia:</strong> começa com lista de 2 a N. O primeiro não-marcado é primo (2). Marca todos os múltiplos de 2 como compostos. Próximo não-marcado (3) é primo. Marca múltiplos de 3. E assim por diante.
+                </div>
+
+                <div class="tree-controls">
+                    <button class="btn" onclick="runSieve()" style="color:var(--accent3);border-color:rgba(39,174,96,0.4)">▶ Animar Crivo</button>
+                    <button class="btn" onclick="resetSieve()">↺ Reiniciar</button>
+                    <div class="tree-stat">Primos encontrados: <span id="sieve-count">0</span></div>
+                </div>
+
+                <div class="sieve-grid" id="sieve-grid"></div>
+
+                <div class="callout purple">
+                    <span class="callout-icon" style="color:var(--accent5)">📐</span>
+                    <span><strong>Por que √n no teste?</strong> Se n = p · q com ambos p, q > √n, então p·q > n — contradição. Logo todo divisor não-trivial de n é ≤ √n. Basta procurar até essa cota.</span>
+                </div>
+
+            </section>
+            <hr class="divider">
+        </div>
+
+
+        <!-- ═══════════════════════════════════════════════
+             1.8 — GEOMETRIA COMPUTACIONAL
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-geometria">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.8</div>
+                    <div class="problem-title-block">
+                        <h2>Geometria Computacional Básica</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">P1-Museu (sem data)</span>
+                            <span class="badge badge-struct">Cobertura por círculos</span>
+                            <span class="badge badge-theory">Aplicação prática</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Problema do Museu (P1-Strauss):</strong> Dada uma sala N×M com câmeras de raio R<sub>i</sub> nas posições (X<sub>i</sub>, Y<sub>i</sub>), determine se um quadro na posição (N, M) está protegido. Comprove se o algoritmo é ótimo.
+                </div>
+
+                <!-- DISTÂNCIA -->
+                <div class="section-label purple">Fundamentos: Distância e Cobertura</div>
+                <div class="insight-box">
+                    <strong>Distância entre dois pontos</strong> (Pitágoras):
+                    <pre style="margin-top:10px;margin-bottom:10px;"><code>d((x<sub>1</sub>,y<sub>1</sub>), (x<sub>2</sub>,y<sub>2</sub>)) = √((x<sub>2</sub>-x<sub>1</sub>)² + (y<sub>2</sub>-y<sub>1</sub>)²)</code></pre>
+                    <strong>Truque importante:</strong> para verificar se um ponto P está dentro de um círculo C de centro (x<sub>c</sub>, y<sub>c</sub>) e raio R, NÃO é necessário calcular a raiz quadrada. Basta comparar quadrados:
+                    <pre style="margin-top:10px;"><code>(x - x<sub>c</sub>)² + (y - y<sub>c</sub>)² ≤ R²    →    P está DENTRO do círculo</code></pre>
+                    Isso evita uma operação cara (sqrt) e o resultado é exato com inteiros.
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">ponto_dentro_circulo</span>(px, py, cx, cy, raio):
+    <span class="cm"># SEM raiz — compara quadrados</span>
+    dx = px - cx
+    dy = py - cy
+    <span class="kw">return</span> dx*dx + dy*dy <= raio*raio
+
+<span class="kw">def</span> <span class="fn">quadro_seguro</span>(quadro, cameras):
+    <span class="cm">"""
+    Retorna True se o quadro está coberto por AO MENOS uma câmera.
+    quadro: (px, py)
+    cameras: lista de (cx, cy, raio)
+    """</span>
+    px, py = quadro
+    <span class="kw">for</span> cx, cy, raio <span class="kw">in</span> cameras:
+        <span class="kw">if</span> <span class="fn">ponto_dentro_circulo</span>(px, py, cx, cy, raio):
+            <span class="kw">return</span> <span class="kw">True</span>   <span class="cm"># basta UMA câmera cobrir</span>
+    <span class="kw">return</span> <span class="kw">False</span></code></pre>
+
+                <!-- VISUALIZADOR -->
+                <div class="section-label purple">Visualizador do Museu</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Esta é a configuração da P1 (sem data) do Prof. Strauss. Você pode mover o quadro arrastando-o ou clicando na sala. O sistema avalia se ele está coberto por alguma câmera.
+                </div>
+
+                <div class="geo-controls">
+                    <button class="btn" onclick="loadGeoEx(1)">Configuração padrão</button>
+                    <button class="btn" onclick="loadGeoEx(2)">Quadro descoberto</button>
+                    <button class="btn" onclick="loadGeoEx(3)">Quadro coberto</button>
+                </div>
+
+                <div class="geo-status" id="geo-status">Carregando...</div>
+                <div class="geo-wrap" id="geo-wrap"></div>
+
+                <div class="geo-legend">
+                    <div class="geo-legend-item"><div class="geo-legend-dot" style="background:rgba(243,156,18,0.2);border-color:#f39c12"></div>Câmera (raio de cobertura)</div>
+                    <div class="geo-legend-item"><div class="geo-legend-dot" style="background:#e74c3c"></div>Quadro Valioso</div>
+                    <div class="geo-legend-item"><div class="geo-legend-dot" style="background:#27ae60"></div>Entrada da Sala</div>
+                </div>
+
+                <!-- ANÁLISE -->
+                <div class="section-label purple">Análise da Função Tempo</div>
+                <div class="insight-box">
+                    <strong>Algoritmo "está coberto?":</strong>
+                    <pre style="margin-top:10px;"><code>Para cada uma das K câmeras:
+    Verifica se ponto está dentro = O(1)  (subtração + multiplicação + comparação)
+T(K) = K · O(1) = <strong>Θ(K)</strong>
+
+Cota inferior: Ω(K) — precisamos consultar TODAS as câmeras (no pior caso,
+                       a única que cobre é a última que checamos)
+Algoritmo: Θ(K) atinge Ω(K) → <strong>É ÓTIMO</strong> ✓</code></pre>
+                </div>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">📐</span>
+                    <span><strong>Estrutura de dados:</strong> vetor de tuplas <code>(cx, cy, raio)</code> de tamanho K. Não há necessidade de estruturas mais sofisticadas porque K (número de câmeras) é pequeno na prática.</span>
+                </div>
+
+                <div class="callout purple">
+                    <span class="callout-icon" style="color:var(--accent5)">🚪</span>
+                    <span><strong>Parte 2 da prova (trajetória do ladrão):</strong> se o quadro NÃO está coberto, descreva a melhor trajetória do ladrão evitando as áreas das câmeras. Esse é um problema de <em>caminho mínimo</em> em um grafo geométrico — assunto da seção 1.9 (Onda 3).</span>
+                </div>
+
+            </section>
+        </div>

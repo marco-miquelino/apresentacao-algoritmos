@@ -1,0 +1,201 @@
+/* ─── Módulo 1 — Strings, Números, Geometria (Onda 2) ─── */
+
+/* String char visualizer */
+.str-canvas {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 16px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    text-align: center;
+}
+.str-row {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+}
+.str-cell {
+    width: 32px;
+    height: 38px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+    position: relative;
+}
+.str-cell .str-idx {
+    position: absolute;
+    top: -16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 9px;
+    color: var(--muted);
+    font-weight: 400;
+}
+.str-cell.compare-l { background: rgba(93,173,226,0.18); border-color: var(--accent); color: var(--accent); }
+.str-cell.compare-r { background: rgba(243,156,18,0.18); border-color: var(--accent2); color: var(--accent2); }
+.str-cell.match    { background: rgba(39,174,96,0.18); border-color: var(--accent3); color: var(--accent3); }
+.str-cell.fail     { background: rgba(231,76,60,0.18); border-color: var(--danger); color: var(--danger); }
+.str-cell.skip     { opacity: 0.3; }
+
+.str-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.str-input:focus { border-color: var(--accent); }
+
+.str-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    min-height: 38px;
+}
+.str-status.ok    { border-color: var(--accent3); color: var(--accent3); background: rgba(39,174,96,0.07); }
+.str-status.fail  { border-color: var(--danger); color: var(--danger); background: rgba(231,76,60,0.07); }
+
+/* Number theory: Euclid steps */
+.euclid-steps {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    overflow-x: auto;
+}
+.euclid-step {
+    padding: 6px 0;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    border-bottom: 1px dashed var(--border);
+}
+.euclid-step:last-child { border-bottom: none; }
+.euclid-step .es-num { color: var(--muted); font-size: 10px; min-width: 24px; }
+.euclid-step .es-eq  { color: var(--accent); }
+.euclid-step.final { color: var(--accent3); font-weight: 700; padding-top: 10px; }
+.euclid-input-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    align-items: center;
+}
+.euclid-input-row input {
+    width: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+}
+
+/* Sieve */
+.sieve-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+.sieve-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    transition: all 0.2s;
+    min-height: 32px;
+}
+.sieve-cell.prime    { background: rgba(39,174,96,0.18); border-color: var(--accent3); color: var(--accent3); font-weight: 700; }
+.sieve-cell.composite{ background: rgba(231,76,60,0.06); border-color: var(--border); color: var(--muted); text-decoration: line-through; }
+.sieve-cell.current  { background: rgba(243,156,18,0.20); border-color: var(--accent2); color: var(--accent2); transform: scale(1.08); }
+.sieve-cell.marking  { background: rgba(93,173,226,0.18); border-color: var(--accent); color: var(--accent); }
+@media (max-width: 700px) {
+    .sieve-grid { grid-template-columns: repeat(8, 1fr); }
+    .sieve-cell { font-size: 10px; }
+}
+
+/* Geometry canvas — museum */
+.geo-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+.geo-wrap svg { display: block; margin: 0 auto; max-width: 100%; }
+.geo-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    align-items: center;
+}
+.geo-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+.geo-legend-item { display: flex; align-items: center; gap: 6px; }
+.geo-legend-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--border);
+}
+
+.geo-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+.geo-status.safe { border-left-color: var(--accent3); color: var(--accent3); }
+.geo-status.unsafe { border-left-color: var(--danger); color: var(--danger); }

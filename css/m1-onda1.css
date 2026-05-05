@@ -1,0 +1,225 @@
+/* ─── Módulo 1 — Árvores, Notações, Recursão (Onda 1) ─── */
+
+/* Tree visualizer */
+.tree-canvas-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 8px;
+    overflow-x: auto;
+}
+.tree-canvas-wrap svg { display: block; margin: 0 auto; max-width: 100%; }
+.tree-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    align-items: center;
+}
+.tree-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: var(--muted);
+}
+.tree-stat span { color: var(--text); font-weight: 700; }
+.tree-output {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    color: var(--text);
+    word-break: break-all;
+}
+.tree-output .label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-right: 8px;
+}
+
+/* Tree input form */
+.tree-input-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+.tree-input-form label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+.tree-input-form input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+    text-transform: uppercase;
+}
+.tree-input-form input:focus { border-color: var(--accent); }
+@media (max-width: 700px) { .tree-input-form { grid-template-columns: 1fr; } }
+
+/* Notation converter */
+.notation-converter {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+}
+.notation-converter .nc-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.notation-converter .nc-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: right;
+}
+.notation-converter .nc-value {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 8px 12px;
+    word-break: break-all;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+}
+.notation-converter input.nc-value { color: var(--text); outline: none; }
+.notation-converter input.nc-value:focus { border-color: var(--accent); }
+.notation-converter .nc-row.input-row .nc-label { color: var(--accent3); }
+@media (max-width: 700px) {
+    .notation-converter .nc-row { grid-template-columns: 1fr; }
+    .notation-converter .nc-label { text-align: left; }
+}
+
+/* Recursion call tree visualizer */
+.fib-canvas-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    min-height: 220px;
+}
+.fib-canvas-wrap svg { display: block; margin: 0 auto; }
+.fib-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.fib-input {
+    width: 60px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+    text-align: center;
+}
+
+/* Traversal animation buttons grid */
+.traversal-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.traversal-buttons button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+.traversal-buttons button:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    background: rgba(93,173,226,0.08);
+}
+.traversal-buttons button.active {
+    color: var(--accent3);
+    border-color: var(--accent3);
+    background: rgba(39,174,96,0.1);
+}
+.traversal-buttons .tb-name { display: block; margin-bottom: 2px; font-size: 12px; }
+.traversal-buttons .tb-formula { display: block; color: var(--muted); font-size: 9px; }
+@media (max-width: 700px) { .traversal-buttons { grid-template-columns: repeat(2, 1fr); } }
+
+/* Recurrence table */
+.recurrence-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.recurrence-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.recurrence-table td {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+}
+.recurrence-table td code {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 13px;
+}
+.recurrence-table td:nth-child(2) { color: var(--accent3); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.recurrence-table td:nth-child(3) { color: var(--muted); font-size: 13px; }

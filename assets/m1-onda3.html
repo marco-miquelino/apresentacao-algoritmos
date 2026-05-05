@@ -1,0 +1,348 @@
+
+        <!-- ═══════════════════════════════════════════════
+             1.10 — GRAFOS (TEORIA)
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-grafos-teoria">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.10</div>
+                    <div class="problem-title-block">
+                        <h2>Grafos — Teoria e Algoritmos</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">Aplicação: Rede e Museu Pt.2</span>
+                            <span class="badge badge-struct">BFS · DFS · Dijkstra</span>
+                            <span class="badge badge-theory">Estrutura universal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Onde cai na P1:</strong> a P1-2018.01 (Q1) pediu uma estrutura para representar uma "GRID NETWORK" e detectar a "máquina gestora" (nó central). A P1-Strauss (Museu Pt.2) pede a melhor trajetória do ladrão evitando câmeras — clássico problema de caminho mínimo em grafo.
+                </div>
+
+                <!-- DEFINIÇÕES -->
+                <div class="section-label purple">Definições Fundamentais</div>
+                <div class="insight-box">
+                    Um <strong>grafo</strong> G = (V, E) é uma estrutura formada por:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>V</strong>: conjunto de <em>vértices</em> (nós).</li>
+                        <li><strong>E</strong>: conjunto de <em>arestas</em>, onde cada aresta conecta um par de vértices.</li>
+                    </ul>
+                    <strong>Tipos de grafos:</strong>
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>Direcionado:</strong> arestas têm direção (u → v ≠ v → u).</li>
+                        <li><strong>Não-direcionado:</strong> arestas são bidirecionais.</li>
+                        <li><strong>Ponderado:</strong> cada aresta tem um peso (ex: distância, custo).</li>
+                        <li><strong>Conexo:</strong> existe caminho entre todo par de vértices.</li>
+                    </ul>
+                </div>
+
+                <ul class="steps-list">
+                    <li><span class="step-num">01</span><span><strong>Grau</strong> de um vértice: número de arestas incidentes a ele. Em grafos direcionados, há <em>grau de entrada</em> (in-degree) e <em>grau de saída</em> (out-degree).</span></li>
+                    <li><span class="step-num">02</span><span><strong>Caminho:</strong> sequência de vértices onde cada par consecutivo é conectado por aresta. <strong>Comprimento</strong> = nº de arestas.</span></li>
+                    <li><span class="step-num">03</span><span><strong>Ciclo:</strong> caminho fechado (vértice inicial = final).</span></li>
+                    <li><span class="step-num">04</span><span><strong>Árvore:</strong> grafo conexo, não-direcionado, sem ciclos. Tem exatamente <code>V−1</code> arestas.</span></li>
+                </ul>
+
+                <!-- REPRESENTAÇÕES -->
+                <div class="section-label purple">Representações em Memória</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Existem duas representações principais. A escolha depende do problema:
+                </div>
+
+                <div class="graph-rep-grid">
+                    <div class="graph-rep-card">
+                        <h4>Matriz de Adjacência</h4>
+                        <div class="rc-tag">M[u][v] = 1 se aresta uv existe</div>
+                        <pre><code><span class="cm"># Vetor 2D V × V</span>
+adj = [[<span class="num">0</span>] * V <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(V)]
+adj[u][v] = <span class="num">1</span>
+adj[v][u] = <span class="num">1</span>  <span class="cm"># não-direcionado</span></code></pre>
+                        <p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.7;">
+                            <strong>Espaço:</strong> Θ(V²) sempre.<br>
+                            <strong>Adjacência?</strong> O(1).<br>
+                            <strong>Vizinhos de u?</strong> O(V).<br>
+                            <strong>Use quando:</strong> grafos densos, ou quando V é pequeno.
+                        </p>
+                    </div>
+
+                    <div class="graph-rep-card">
+                        <h4>Lista de Adjacência</h4>
+                        <div class="rc-tag">adj[u] = [vizinhos de u]</div>
+                        <pre><code><span class="cm"># Vetor de listas</span>
+adj = [[] <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(V)]
+adj[u].<span class="fn">append</span>(v)
+adj[v].<span class="fn">append</span>(u)  <span class="cm"># não-direcionado</span></code></pre>
+                        <p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.7;">
+                            <strong>Espaço:</strong> Θ(V + E).<br>
+                            <strong>Adjacência?</strong> O(grau(u)).<br>
+                            <strong>Vizinhos de u?</strong> O(grau(u)).<br>
+                            <strong>Use quando:</strong> grafos esparsos (E &lt;&lt; V²), ou para BFS/DFS.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- BFS -->
+                <div class="section-label purple">Busca em Largura (BFS)</div>
+                <div class="insight-box">
+                    Visita os vértices em ordem de <strong>distância</strong> a partir da origem. Encontra o caminho com <em>menor número de arestas</em> em grafos não-ponderados. Usa <strong>fila</strong> (FIFO).
+                </div>
+
+                <pre><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+<span class="kw">def</span> <span class="fn">bfs</span>(adj, origem):
+    visitados = {origem}
+    fila = deque([origem])
+    ordem = []
+    <span class="kw">while</span> fila:
+        u = fila.popleft()
+        ordem.append(u)
+        <span class="kw">for</span> v <span class="kw">in</span> adj[u]:
+            <span class="kw">if</span> v <span class="kw">not in</span> visitados:
+                visitados.add(v)
+                fila.append(v)
+    <span class="kw">return</span> ordem
+
+<span class="cm"># Complexidade: cada vértice é visitado 1 vez (V) e cada aresta também (E)
+# T(V, E) = Θ(V + E)</span></code></pre>
+
+                <!-- DFS -->
+                <div class="section-label purple">Busca em Profundidade (DFS)</div>
+                <div class="insight-box">
+                    Vai o mais fundo possível antes de retroceder. Usa <strong>pilha</strong> (LIFO) — implementação recursiva é a mais natural. Útil para detectar ciclos, ordenação topológica, componentes conexos.
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">dfs</span>(adj, u, visitados=<span class="kw">None</span>, ordem=<span class="kw">None</span>):
+    <span class="kw">if</span> visitados <span class="kw">is</span> <span class="kw">None</span>: visitados = <span class="fn">set</span>()
+    <span class="kw">if</span> ordem <span class="kw">is</span> <span class="kw">None</span>: ordem = []
+    visitados.add(u)
+    ordem.append(u)
+    <span class="kw">for</span> v <span class="kw">in</span> adj[u]:
+        <span class="kw">if</span> v <span class="kw">not in</span> visitados:
+            <span class="fn">dfs</span>(adj, v, visitados, ordem)
+    <span class="kw">return</span> ordem
+
+<span class="cm"># Complexidade: Θ(V + E) — mesma análise da BFS</span></code></pre>
+
+                <!-- VISUALIZADOR -->
+                <div class="section-label purple">Visualizador Interativo</div>
+                <div class="graph-controls">
+                    <button class="btn" onclick="runBfs()" style="color:var(--accent3);border-color:rgba(39,174,96,0.4)">▶ BFS</button>
+                    <button class="btn" onclick="runDfs()" style="color:var(--accent5);border-color:rgba(155,89,182,0.4)">▶ DFS</button>
+                    <button class="btn" onclick="resetGraph()">↺ Reset</button>
+                    <div class="tree-stat">Vértice de origem: <span style="color:var(--text);font-weight:700">A</span></div>
+                </div>
+
+                <div class="graph-wrap" id="graph-vis-wrap"></div>
+                <div class="graph-log" id="graph-log">Clique em ▶ BFS ou ▶ DFS para ver a busca em ação.</div>
+
+                <!-- APLICAÇÃO REDE -->
+                <div class="section-label purple">Aplicação: Identificar a Máquina Gestora (P1-2018.01 Q1)</div>
+                <div class="enunciado">
+                    <strong>Problema:</strong> dada uma rede de N máquinas com protocolos GRID e NÃO-GRID, identifique qual é a "máquina gestora" — aquela que conhece TODAS as outras (tem grau = N-1 no subgrafo de comunicações GRID).
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">acha_gestora</span>(adj, n):
+    <span class="cm">"""
+    adj: lista de adjacência das comunicações GRID
+    Retorna o índice da máquina gestora ou None.
+    """</span>
+    <span class="kw">for</span> u <span class="kw">in</span> <span class="fn">range</span>(n):
+        <span class="kw">if</span> <span class="fn">len</span>(adj[u]) == n - <span class="num">1</span>:
+            <span class="kw">return</span> u
+    <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="cm"># Análise:
+# T(n) = Σ verifica_grau(u) = Σ O(1) = O(n)
+# Cota inferior: Ω(n) — precisamos olhar todas as máquinas
+# É ÓTIMO ✓</span></code></pre>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">📐</span>
+                    <span><strong>Estrutura de dados ideal:</strong> lista de adjacência, pois grafos de rede são esparsos. Para detectar a gestora basta uma varredura linear nos graus dos vértices — não precisa de DFS/BFS, basta contar conexões.</span>
+                </div>
+
+                <!-- DIJKSTRA -->
+                <div class="section-label purple">Caminho Mínimo (Dijkstra) — Aplicação no Museu</div>
+                <div class="insight-box">
+                    Para a Parte 2 do problema do Museu (trajetória do ladrão evitando câmeras), modelamos a sala como um grafo: pontos seguros (não cobertos por câmera) são vértices conectados por arestas com peso = distância. <strong>Dijkstra</strong> encontra o caminho mais curto.
+                </div>
+
+                <pre><code><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">dijkstra</span>(adj, origem, n):
+    <span class="cm">"""
+    adj: dict {u: [(v, peso), ...]}
+    Retorna lista dist[v] = menor distância de origem a v.
+    """</span>
+    dist = [<span class="fn">float</span>(<span class="st">'inf'</span>)] * n
+    dist[origem] = <span class="num">0</span>
+    heap = [(<span class="num">0</span>, origem)]   <span class="cm"># (distância, vértice)</span>
+
+    <span class="kw">while</span> heap:
+        d, u = heapq.heappop(heap)
+        <span class="kw">if</span> d > dist[u]: <span class="kw">continue</span>   <span class="cm"># versão obsoleta</span>
+        <span class="kw">for</span> v, peso <span class="kw">in</span> adj[u]:
+            nd = d + peso
+            <span class="kw">if</span> nd < dist[v]:
+                dist[v] = nd
+                heapq.heappush(heap, (nd, v))
+    <span class="kw">return</span> dist
+
+<span class="cm"># Complexidade: O((V + E) log V) com heap binário</span></code></pre>
+
+            </section>
+            <hr class="divider">
+        </div>
+
+
+        <!-- ═══════════════════════════════════════════════
+             1.11 — TÁTICA DE PROVA P1
+        ═══════════════════════════════════════════════ -->
+        <div class="content-panel" id="panel-m1-tatica">
+            <section class="problem">
+
+                <div class="problem-header">
+                    <div class="problem-number">1.11</div>
+                    <div class="problem-title-block">
+                        <h2>Tática para a P1 do Prof. Strauss</h2>
+                        <div class="badges">
+                            <span class="badge badge-theory">Guia de prova</span>
+                            <span class="badge badge-struct">Modelo de resposta</span>
+                            <span class="badge badge-time">Erros comuns</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    <strong>Análise das 4 últimas P1's do Prof. Strauss:</strong> esta seção condensa o que invariavelmente cai e como o professor avalia. Use como checklist final antes de entregar.
+                </div>
+
+                <!-- ANATOMIA -->
+                <div class="section-label purple">Anatomia da Resposta Ideal</div>
+                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+                    Toda resposta a uma questão da P1 deve seguir esta estrutura. A ordem e completude valem nota.
+                </div>
+
+                <div class="tactic-checklist">
+                    <div class="tactic-item">
+                        <div class="tactic-num">1</div>
+                        <div class="tactic-content">
+                            <div class="tactic-title">Modelagem do Problema</div>
+                            <div class="tactic-desc">Descreva em palavras qual é o problema, identifique entradas e saídas. Indique <em>explicitamente</em> qual estrutura de dados você usará e <strong>justifique a escolha</strong>. Exemplo: <code>"Usarei lista de adjacência porque o grafo é esparso (E &lt;&lt; V²) e precisarei iterar pelos vizinhos."</code></div>
+                        </div>
+                    </div>
+                    <div class="tactic-item">
+                        <div class="tactic-num">2</div>
+                        <div class="tactic-content">
+                            <div class="tactic-title">Algoritmo (Pseudocódigo ou Python)</div>
+                            <div class="tactic-desc">Use <strong>recursão sempre que possível</strong> — Strauss valoriza. Comente o que cada bloco faz. Identifique caso base e caso recursivo. Para problemas iterativos, descreva a invariante do laço.</div>
+                        </div>
+                    </div>
+                    <div class="tactic-item">
+                        <div class="tactic-num">3</div>
+                        <div class="tactic-content">
+                            <div class="tactic-title">Função Tempo T(n) — OBRIGATÓRIO</div>
+                            <div class="tactic-desc">Strauss SEMPRE escreve <em>"Lembre-se de obrigatoriamente definir a função tempo!"</em>. Escreva a recorrência: <code>T(n) = T(...) + ...</code>. Identifique cada termo: caso base, chamadas recursivas, trabalho não-recursivo. Resolva com a tabela de recorrências.</div>
+                        </div>
+                    </div>
+                    <div class="tactic-item">
+                        <div class="tactic-num">4</div>
+                        <div class="tactic-content">
+                            <div class="tactic-title">Cota Inferior Ω(n) do Problema</div>
+                            <div class="tactic-desc">Pense: <em>"qual é o mínimo de operações que QUALQUER algoritmo precisa fazer?"</em>. Geralmente é Ω(n) (precisa ler a entrada toda) ou Ω(log n) (busca binária). Justifique.</div>
+                        </div>
+                    </div>
+                    <div class="tactic-item">
+                        <div class="tactic-num">5</div>
+                        <div class="tactic-content">
+                            <div class="tactic-title">Comparação e Conclusão de Otimalidade</div>
+                            <div class="tactic-desc">Compare T(n) com Ω(n). Se atingem a mesma classe, escreva: <code>"O algoritmo é Θ(n) e a cota inferior do problema é Ω(n). Portanto, o algoritmo é ÓTIMO."</code> Caso contrário, é honesto dizer: <code>"Não é ótimo, pois T(n) = O(2ⁿ) >> Ω(n)."</code></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEMPLATE -->
+                <div class="section-label purple">Modelo de Resposta (Copie e Adapte)</div>
+                <div class="response-template"><span class="rt-section">// 1. MODELAGEM</span>
+O problema pede [resumir em 1 linha].
+Entrada: [descrever]. Saída: [descrever].
+<em>Estrutura de dados:</em> usarei [escolha], pois [justificativa].
+
+<span class="rt-section">// 2. ALGORITMO</span>
+def resolve(...):
+    if caso_base:
+        return ...                    # caso trivial
+    # caso recursivo
+    sub1 = resolve(parte_menor)
+    sub2 = resolve(outra_parte_menor)
+    return combina(sub1, sub2)
+
+<span class="rt-section">// 3. FUNÇÃO TEMPO</span>
+T(0) = c₁                            # caso base
+T(n) = T(n_esq) + T(n_dir) + c₂      # 2 chamadas recursivas + trabalho extra
+
+Resolução:
+[Aplique a tabela de recorrências da seção 1.5]
+T(n) = <em>Θ(...)</em>
+
+<span class="rt-section">// 4. COTA INFERIOR DO PROBLEMA</span>
+Para resolver este problema é necessário [argumento].
+Logo, <em>Ω(n)</em> é a cota inferior.
+
+<span class="rt-section">// 5. CONCLUSÃO</span>
+Algoritmo: T(n) = Θ(...)
+Cota inferior: Ω(...)
+Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</div>
+
+                <!-- ERROS -->
+                <div class="section-label purple">Erros Comuns que Descontam Nota</div>
+                <div class="errors-grid">
+                    <div class="error-row">
+                        <div class="er-title">✗ Esquecer de definir T(n)</div>
+                        <div class="er-desc">O Strauss <em>literalmente</em> escreve "Lembre-se de obrigatoriamente definir a função tempo!" em quase toda questão. Não definir T(n) é perder pontos automaticamente.</div>
+                    </div>
+                    <div class="error-row">
+                        <div class="er-title">✗ Confundir complexidade do algoritmo com Ω do problema</div>
+                        <div class="er-desc">"Meu algoritmo é Θ(n log n), portanto o problema é Ω(n log n)" — isto é um erro grave. A cota inferior é uma propriedade do <em>problema</em>, não do seu algoritmo. Para Fibonacci, o algoritmo é O(2ⁿ) mas Ω do problema é apenas Ω(n).</div>
+                    </div>
+                    <div class="error-row">
+                        <div class="er-title">✗ Não justificar a escolha da estrutura de dados</div>
+                        <div class="er-desc">"Usarei uma lista de adjacência" não basta. Sempre adicione: "...porque o grafo é esparso e preciso iterar nos vizinhos em O(grau(u))."</div>
+                    </div>
+                    <div class="error-row">
+                        <div class="er-title">✗ Algoritmo iterativo onde se pede recursivo</div>
+                        <div class="er-desc">As questões com "Desenvolva UM ÚNICO algoritmo RECURSIVO" exigem solução recursiva. Iterativa = nota zero na questão.</div>
+                    </div>
+                    <div class="error-row">
+                        <div class="er-title">✗ Pseudocódigo vago ou sem caso base</div>
+                        <div class="er-desc">Toda recursão precisa de caso base explícito. Faltando = recursão infinita = nota zero. Sempre escreva o <code>if caso_base: return ...</code> primeiro.</div>
+                    </div>
+                    <div class="error-row">
+                        <div class="er-title">✗ Não testar manualmente o algoritmo</div>
+                        <div class="er-desc">Quando a questão pede "aplique o algoritmo para [exemplo concreto]", você precisa <em>realmente</em> executar passo a passo, não apenas escrever o algoritmo. Mostre as iterações.</div>
+                    </div>
+                </div>
+
+                <!-- TABELA RESUMO -->
+                <div class="section-label purple">Tabela: Tema × Probabilidade × Onde Estudar</div>
+                <table class="complexity-table">
+                    <tr><th>Tema</th><th>Probabilidade</th><th>Estude em</th></tr>
+                    <tr><td>Reconstrução de árvore (pré + in-ordem)</td><td style="color:var(--accent3);font-weight:700">~75%</td><td>Seção 1.3</td></tr>
+                    <tr><td>Conversão prefixa ↔ infixa ↔ pósfixa (recursivo)</td><td style="color:var(--accent3);font-weight:700">~50%</td><td>Seção 1.4</td></tr>
+                    <tr><td>Análise de complexidade (T(n), Ω, O, ótimo)</td><td style="color:var(--accent3);font-weight:700">100%</td><td>Seções 1.1 e 1.5</td></tr>
+                    <tr><td>Recursão clássica (Fibonacci, Hanoi)</td><td style="color:var(--accent3);font-weight:700">~40%</td><td>Seção 1.5</td></tr>
+                    <tr><td>Strings / Palíndromos</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.6</td></tr>
+                    <tr><td>Teoria dos Números (MDC, primos)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.7</td></tr>
+                    <tr><td>Geometria computacional (cobertura)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.8</td></tr>
+                    <tr><td>Grafos (rede de máquinas, trajetória)</td><td style="color:var(--warn);font-weight:700">~30%</td><td>Seção 1.10</td></tr>
+                </table>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">🎯</span>
+                    <span><strong>Estratégia de revisão sugerida:</strong> 1) domine a tática (esta seção). 2) Revise <em>árvores e notações</em> (1.3 e 1.4) — são quase certeza. 3) Pratique <em>análise de complexidade</em> (1.1 e 1.5). 4) Faça uma passada nos tópicos específicos (1.6 a 1.10). 5) Revise os algoritmos clássicos (busca binária, Euclides, dois ponteiros).</span>
+                </div>
+
+            </section>
+        </div>
