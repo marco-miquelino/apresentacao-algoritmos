@@ -39,9 +39,8 @@
             <div style="font-size:12px;color:var(--muted)">Prof. <strong style="color:var(--text)">Strauss</strong></div>
         </div>
         <div class="topbar-meta">
-            <div class="tm-item">Marco Aurélio Miquelino &nbsp;·&nbsp; Igor Eccard de Sá</div>
+            <div class="tm-item">Marco Aurélio Miquelino</div>
             <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema claro/escuro"><span id="theme-icon">☾</span></button>
-            <div class="tm-item" style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:4px;color:var(--accent)">3 Módulos · Sort + Estruturas</div>
         </div>
     </div>
 
@@ -1990,8 +1989,14 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
         </div>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-celebridade" class="vis-container"></div>
-        <p class="graph-caption">Todos apontam para a celebridade (dourado). Nenhuma aresta sai dela.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="celebPlay()">▶ Animar Eliminação</button>
+            <button class="btn" onclick="celebStep()">Passo a Passo</button>
+            <button class="btn" onclick="celebReset()">↺ Reset</button>
+        </div>
+        <div id="grafo-celebridade" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="celeb-log">Pressione ▶ Animar para ver a eliminação passo-a-passo.</div>
+        <p class="graph-caption">Setas mostram quem conhece quem. Alice (dourado) é a celebridade — todos apontam para ela.</p>
     </section>
 
     <hr class="divider"></div>
@@ -2058,8 +2063,14 @@ votos = [<span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="
         </div>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-votacao" class="vis-container"></div>
-        <p class="graph-caption">Votos do mesmo candidato somam; votos diferentes se cancelam mutuamente.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="votPlay()">▶ Animar Contagem</button>
+            <button class="btn" onclick="votStep()">Passo a Passo</button>
+            <button class="btn" onclick="votReset()">↺ Reset</button>
+        </div>
+        <div id="grafo-votacao" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="vot-log">Pressione ▶ Animar para ver a contagem de Boyer-Moore.</div>
+        <p class="graph-caption">Boyer-Moore em ação: o contador sobe com votos iguais ao candidato, desce com diferentes.</p>
     </section>
 
     <hr class="divider"></div>
@@ -2121,8 +2132,14 @@ votos = [<span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="
             self.contatos.pop(pos)</code></pre>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-agenda" class="vis-container"></div>
-        <p class="graph-caption">Lista ordenada alfabeticamente. A busca binária elimina metade dos contatos a cada comparação.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="busPlay()">▶ Buscar "Hugo"</button>
+            <button class="btn" onclick="busStep()">Passo a Passo</button>
+            <button class="btn" onclick="busReset()">↺ Reset</button>
+        </div>
+        <div id="grafo-agenda" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="bus-log">Pressione ▶ Animar para buscar "Hugo" via busca binária.</div>
+        <p class="graph-caption">Em cada passo, metade da agenda é descartada (vermelho). O ponteiro mid (laranja) compara com o alvo.</p>
     </section>
 
     <hr class="divider"></div>
@@ -2181,8 +2198,14 @@ msg_cifrada    = <span class="fn">criptografar</span>(msg_original, chave)
         </div>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-hash" class="vis-container"></div>
-        <p class="graph-caption">Tabela Hash mapeia cada caractere em tempo O(1) — independente do tamanho da mensagem.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="criptPlay()">▶ Cifrar Mensagem</button>
+            <button class="btn" onclick="criptStep()">Passo a Passo</button>
+            <button class="btn" onclick="criptReset()">↺ Reset</button>
+        </div>
+        <div id="grafo-hash" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="cript-log">Pressione ▶ Animar para ver a cifragem letra por letra (cada uma em O(1)).</div>
+        <p class="graph-caption">Caractere por caractere: hash converte cada letra em tempo constante. O resultado se acumula na linha CIFRADO.</p>
     </section>
 
     <hr class="divider"></div>
@@ -2230,8 +2253,12 @@ bancas  = [(<span class="num">1</span>, <span class="num">2</span>), (<span clas
 resultado = <span class="fn">alocar_bancas</span>(bancas, centros)</code></pre>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-rotas" class="vis-container"></div>
-        <p class="graph-caption">Cada banca (azul) conecta ao centro de distribuição (vermelho) mais próximo.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="jornToggle()">↔ Atribuir ao Mais Próximo</button>
+        </div>
+        <div id="grafo-rotas" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="jorn-log">Sem atribuição: 15 bancas e 3 centros isolados. Pressione "Atribuir ao mais próximo" para ver o algoritmo em ação.</div>
+        <p class="graph-caption">Cada banca calcula a distância para todos os 3 centros e escolhe o mais próximo. Cores indicam o cluster.</p>
     </section>
 
     <hr class="divider"></div>
@@ -2303,8 +2330,13 @@ fila.<span class="fn">atualizar</span>(<span class="st">"Relatório"</span>, <sp
 <span class="fn">print</span>(fila.<span class="fn">extrair_maior</span>())   <span class="cm"># → ("Relatório", 10)</span></code></pre>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-heap" class="vis-container"></div>
-        <p class="graph-caption">Heap Binário: o elemento de maior prioridade sempre está na raiz.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="heapInsert()">▶ Inserir 9 (Sift-Up)</button>
+            <button class="btn" onclick="heapReset()">↺ Reset</button>
+        </div>
+        <div id="grafo-heap" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="heap-log">Heap inicial. Pressione ▶ para inserir o valor 9 e ver o sift-up.</div>
+        <p class="graph-caption">Inserção em max-heap: novo elemento entra no fim e "sobe" trocando com o pai até restaurar a propriedade. Custo O(log n).</p>
     </section>
 
     <hr class="divider"></div>
@@ -2360,8 +2392,14 @@ premiados = <span class="fn">top_k_funcionarios</span>(funcionarios)</code></pre
         </div>
 
         <div class="section-label">Visualização</div>
-        <div id="grafo-topk" class="vis-container"></div>
-        <p class="graph-caption">Min-heap de tamanho 5: a raiz é o menor dos top-5. Novos candidatos desafiam a raiz.</p>
+        <div class="m2-controls">
+            <button class="btn btn-primary" onclick="topkPlay()">▶ Selecionar Top-5</button>
+            <button class="btn" onclick="topkStep()">Passo a Passo</button>
+            <button class="btn" onclick="topkReset()">↺ Reset</button>
+        </div>
+        <div id="grafo-topk" class="m2-svg-wrap"></div>
+        <div class="m2-log" id="topk-log">Pressione ▶ Animar para selecionar os 5 melhores funcionários (one-pass com min-heap).</div>
+        <p class="graph-caption">Cada candidato é comparado com a raiz (mín). Se for maior, substitui. Caso contrário, é descartado em O(1).</p>
     </section>
 
     <hr class="divider"></div>
