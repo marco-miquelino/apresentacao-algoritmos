@@ -58,10 +58,10 @@
 
         .mod-card.card-m1 { border-top: 3px solid #9b59b6; }
         .mod-card.card-m1:hover { border-color: #9b59b6; }
+        .mod-card.card-prova { border-top: 3px solid #f1c40f; }
+        .mod-card.card-prova:hover { border-color: #f1c40f; }
         .mod-card.card-m2 { border-top: 3px solid var(--accent); }
         .mod-card.card-m2:hover { border-color: var(--accent); }
-        .mod-card.card-m3 { border-top: 3px solid var(--accent2); }
-        .mod-card.card-m3:hover { border-color: var(--accent2); }
 
         .mod-card .mc-icon { font-size: 32px; margin-bottom: 12px; }
 
@@ -73,9 +73,9 @@
             margin-bottom: 6px;
         }
 
-        .card-m1 .mc-num { color: #9b59b6; }
-        .card-m2 .mc-num { color: var(--accent); }
-        .card-m3 .mc-num { color: var(--accent2); }
+        .card-m1 .mc-num    { color: #9b59b6; }
+        .card-prova .mc-num { color: #f7dc6f; }
+        .card-m2 .mc-num    { color: var(--accent); }
 
         .mod-card h3 {
             font-family: 'DM Serif Display', serif;

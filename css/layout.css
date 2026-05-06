@@ -117,8 +117,8 @@
 
         .mod-tab[data-mod="home"].active   { border-bottom-color: var(--muted); }
         .mod-tab[data-mod="m1"].active     { border-bottom-color: #9b59b6; color: #be90d4; }
+        .mod-tab[data-mod="prova"].active  { border-bottom-color: #f1c40f; color: #f7dc6f; }
         .mod-tab[data-mod="m2"].active     { border-bottom-color: var(--accent); color: var(--accent); }
-        .mod-tab[data-mod="m3"].active     { border-bottom-color: var(--accent2); color: var(--accent2); }
 
         .mod-tab .tab-icon {
             font-size: 16px;
@@ -152,9 +152,9 @@
             transition: all 0.18s;
         }
 
-        .mod-tab[data-mod="m1"].active .tab-count { background: rgba(155,89,182,0.25); color: #be90d4; }
-        .mod-tab[data-mod="m2"].active .tab-count { background: rgba(93,173,226,0.18); color: var(--accent); }
-        .mod-tab[data-mod="m3"].active .tab-count { background: rgba(243,156,18,0.15); color: var(--accent2); }
+        .mod-tab[data-mod="m1"].active .tab-count    { background: rgba(155,89,182,0.25); color: #be90d4; }
+        .mod-tab[data-mod="prova"].active .tab-count { background: rgba(241,196,15,0.20); color: #f7dc6f; }
+        .mod-tab[data-mod="m2"].active .tab-count    { background: rgba(93,173,226,0.18); color: var(--accent); }
 
         /* Sub-tabs (problem list inside a module) */
         .subtab-bar {
@@ -172,10 +172,10 @@
         .subtab-bar.visible { display: flex; }
 
         .sub-tab {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 14px;
+            padding: 8px 11px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             font-weight: 600;
@@ -190,12 +190,21 @@
 
         .sub-tab:hover { color: var(--text); }
         .sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .sub-tab[data-mod="m1"].active { color: #be90d4; border-bottom-color: #9b59b6; }
-        .sub-tab[data-mod="m3"].active { color: var(--accent2); border-bottom-color: var(--accent2); }
 
-        .sub-tab .st-num {
-            font-size: 9px;
-            opacity: 0.6;
+        .sub-tab .st-num    { font-size: 10px; font-weight: 700; opacity: 0.7; }
+        .sub-tab .st-short  { display: none; font-weight: 600; letter-spacing: 0.2px; }
+        .sub-tab.active .st-num   { opacity: 1; }
+        .sub-tab.active .st-short { display: inline; }
+        .sub-tab:hover .st-num    { opacity: 1; }
+
+        /* Divisória vertical fina entre blocos */
+        .st-divider {
+            display: inline-block;
+            width: 1px;
+            height: 16px;
+            margin: 0 6px;
+            background: var(--border);
+            align-self: center;
         }
 
         /* ═══════════════════════════════════════════════
@@ -233,4 +242,204 @@
 
         .content-panel.active {
             display: block;
+        }
+
+        /* ═══════════════════════════════════════════════
+           CORES DA SUB-TAB ATIVA · por bloco (M1) e grupo (M2)
+        ═══════════════════════════════════════════════ */
+        /* M1 — 5 blocos pedagógicos */
+        .sub-tab.block-fundamentos.active     { color: #be90d4; border-bottom-color: #9b59b6; }
+        .sub-tab.block-lineares.active        { color: #58d68d; border-bottom-color: #27ae60; }
+        .sub-tab.block-naolineares.active     { color: #5dade2; border-bottom-color: #5dade2; }
+        .sub-tab.block-classicos.active       { color: #f5b041; border-bottom-color: #f39c12; }
+        .sub-tab.block-especializados.active  { color: #aab7b8; border-bottom-color: #aab7b8; }
+
+        /* Prova — tema gold */
+        .sub-tab.block-prova.active           { color: #f7dc6f; border-bottom-color: #f1c40f; }
+
+        /* M2 — 4 grupos de problemas */
+        .sub-tab.grp-estruturas.active        { color: #5dade2; border-bottom-color: #5dade2; }
+        .sub-tab.grp-heap.active              { color: #f5b041; border-bottom-color: #f39c12; }
+        .sub-tab.grp-recursao.active          { color: #ec7063; border-bottom-color: #e74c3c; }
+        .sub-tab.grp-aplicacoes.active        { color: #76d7c4; border-bottom-color: #1abc9c; }
+
+        /* ═══════════════════════════════════════════════
+           HOME · atalho rápido (Tática de P1)
+        ═══════════════════════════════════════════════ */
+        .home-quick {
+            max-width: 960px;
+            margin: 24px auto 0;
+            padding: 0 52px;
+        }
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, rgba(241,196,15,0.08), rgba(243,156,18,0.04));
+            border: 1px solid rgba(241,196,15,0.25);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            cursor: pointer;
+            transition: all 0.18s;
+            text-align: left;
+        }
+        .quick-link:hover {
+            border-color: rgba(241,196,15,0.5);
+            background: linear-gradient(135deg, rgba(241,196,15,0.14), rgba(243,156,18,0.07));
+            transform: translateY(-1px);
+        }
+        .quick-link .ql-icon { font-size: 26px; line-height: 1; }
+        .quick-link .ql-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .quick-link .ql-text strong { font-size: 14px; color: #f7dc6f; letter-spacing: 0.5px; }
+        .quick-link .ql-text small { font-size: 11px; color: var(--muted); }
+        .quick-link .ql-arrow { font-size: 22px; color: #f7dc6f; transition: transform 0.18s; }
+        .quick-link:hover .ql-arrow { transform: translateX(4px); }
+
+        /* ═══════════════════════════════════════════════
+           PRÉ-REQUISITOS dentro dos problemas (M2)
+           (link: "Antes: revise §X.Y Tema")
+        ═══════════════════════════════════════════════ */
+        .prereq {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0 18px;
+            padding: 6px 12px;
+            background: rgba(155,89,182,0.06);
+            border: 1px solid rgba(155,89,182,0.18);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+        .prereq .pr-label {
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .prereq .pr-link {
+            color: #be90d4;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(190,144,212,0.4);
+            cursor: pointer;
+        }
+        .prereq .pr-link:hover {
+            color: #d2b4de;
+            border-bottom-color: #d2b4de;
+        }
+        .prereq .pr-tag {
+            font-size: 9px;
+            padding: 2px 7px;
+            background: rgba(155,89,182,0.15);
+            border-radius: 10px;
+            color: #be90d4;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* ═══════════════════════════════════════════════
+           BREADCRUMB no topo de cada painel
+           (Módulo › Bloco › Número e título da seção)
+        ═══════════════════════════════════════════════ */
+        .panel-crumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: -16px 0 28px;
+            padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            line-height: 1.4;
+        }
+        .panel-crumb .pc-mod {
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .panel-crumb .pc-arrow {
+            opacity: 0.4;
+            font-size: 13px;
+        }
+        .panel-crumb .pc-block {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-size: 9.5px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+        }
+        .panel-crumb .pc-step {
+            color: var(--text);
+        }
+        .panel-crumb .pc-step strong {
+            font-size: 12.5px;
+            margin-right: 4px;
+            color: var(--text);
+        }
+
+        /* ═══════════════════════════════════════════════
+           NAVEGAÇÃO Anterior/Próximo no rodapé do painel
+        ═══════════════════════════════════════════════ */
+        .panel-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px dashed var(--border);
+        }
+        .panel-nav .pn-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 14px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'Syne', sans-serif;
+            text-align: left;
+            transition: all 0.18s;
+        }
+        .panel-nav .pn-btn:hover {
+            border-color: var(--accent);
+            background: var(--surface2);
+            transform: translateY(-1px);
+        }
+        .panel-nav .pn-prev { text-align: left; }
+        .panel-nav .pn-next { text-align: right; align-items: flex-end; }
+        .panel-nav .pn-dir {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+        .panel-nav .pn-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .panel-nav .pn-name .pn-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            opacity: 0.6;
+            margin-right: 6px;
+        }
+        .panel-nav .pn-empty {
+            opacity: 0.3;
+            pointer-events: none;
         }

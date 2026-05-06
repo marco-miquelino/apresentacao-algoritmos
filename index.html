@@ -57,81 +57,71 @@
             <span class="tab-icon" style="color:#9b59b6">𝒪</span>
             <span class="tab-label-wrap">
                 <span>Módulo 1 — Teoria</span>
-                <span class="tab-sub">Notações + Estruturas de Dados</span>
+                <span class="tab-sub">Fundamentos · ED · Algoritmos</span>
             </span>
-            <span class="tab-count">3 seções</span>
+            <span class="tab-count">10 seções</span>
+        </button>
+
+        <button class="mod-tab" data-mod="prova" onclick="switchMod('prova')">
+            <span class="tab-icon" style="color:#f1c40f">🎯</span>
+            <span class="tab-label-wrap">
+                <span>Prova</span>
+                <span class="tab-sub">Tática para a P1 do Strauss</span>
+            </span>
+            <span class="tab-count">4 cartões</span>
         </button>
 
         <button class="mod-tab" data-mod="m2" onclick="switchMod('m2')">
             <span class="tab-icon" style="color:var(--accent)">🧩</span>
             <span class="tab-label-wrap">
                 <span>Módulo 2 — Problemas</span>
-                <span class="tab-sub">8 Problemas de Aula</span>
+                <span class="tab-sub">Gabarito (consulta opcional)</span>
             </span>
-            <span class="tab-count">8 problemas</span>
-        </button>
-
-        <button class="mod-tab" data-mod="m3" onclick="switchMod('m3')">
-            <span class="tab-icon" style="color:var(--accent2)">⚙</span>
-            <span class="tab-label-wrap">
-                <span>Módulo 3 — Exercícios</span>
-                <span class="tab-sub">Exercícios Complementares</span>
-            </span>
-            <span class="tab-count">2 exercícios</span>
+            <span class="tab-count">10 problemas</span>
         </button>
     </div>
 
-    <!-- Sub-tab bar (shown per module) -->
+    <!-- Sub-tab bar M1 — compact: número + nome curto, ativo expande -->
     <div class="subtab-bar" id="subtab-m1">
-        <button class="sub-tab active" data-mod="m1" data-panel="m1-notacoes" onclick="switchPanel('m1','m1-notacoes')">
-            <span class="st-num">1.1</span> Notações &amp; Complexidade
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-estruturas" onclick="switchPanel('m1','m1-estruturas')">
-            <span class="st-num">1.2</span> Estruturas de Dados
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-arvores" onclick="switchPanel('m1','m1-arvores')">
-            <span class="st-num">1.3</span> Árvores Binárias
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-notmat" onclick="switchPanel('m1','m1-notmat')">
-            <span class="st-num">1.4</span> Notações Matemáticas
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-recursao" onclick="switchPanel('m1','m1-recursao')">
-            <span class="st-num">1.5</span> Recursão
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-strings" onclick="switchPanel('m1','m1-strings')">
-            <span class="st-num">1.6</span> Strings
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-numeros" onclick="switchPanel('m1','m1-numeros')">
-            <span class="st-num">1.7</span> Teoria dos Números
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-geometria" onclick="switchPanel('m1','m1-geometria')">
-            <span class="st-num">1.8</span> Geometria
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-sort" onclick="switchPanel('m1','m1-sort')">
-            <span class="st-num">1.9</span> Ordenação (Sort)
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-grafos-teoria" onclick="switchPanel('m1','m1-grafos-teoria')">
-            <span class="st-num">1.10</span> Grafos
-        </button>
-        <button class="sub-tab" data-mod="m1" data-panel="m1-tatica" onclick="switchPanel('m1','m1-tatica')">
-            <span class="st-num">1.11</span> Tática de Prova
-        </button>
+        <button class="sub-tab active block-fundamentos" data-mod="m1" data-panel="m1-notacoes" title="1.1 — Notações &amp; Complexidade" onclick="switchPanel('m1','m1-notacoes')"><span class="st-num">1.1</span><span class="st-short">Notações</span></button>
+        <button class="sub-tab block-fundamentos" data-mod="m1" data-panel="m1-recursao" title="1.2 — Recursão" onclick="switchPanel('m1','m1-recursao')"><span class="st-num">1.2</span><span class="st-short">Recursão</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab block-lineares" data-mod="m1" data-panel="m1-estruturas" title="1.3 — Estruturas de Dados" onclick="switchPanel('m1','m1-estruturas')"><span class="st-num">1.3</span><span class="st-short">ED</span></button>
+        <button class="sub-tab block-lineares" data-mod="m1" data-panel="m1-notmat" title="1.4 — Notações Matemáticas (in/pré/pós-fixa)" onclick="switchPanel('m1','m1-notmat')"><span class="st-num">1.4</span><span class="st-short">Not. Mat.</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab block-naolineares" data-mod="m1" data-panel="m1-arvores" title="1.5 — Árvores Binárias" onclick="switchPanel('m1','m1-arvores')"><span class="st-num">1.5</span><span class="st-short">Árvores</span></button>
+        <button class="sub-tab block-naolineares" data-mod="m1" data-panel="m1-grafos-teoria" title="1.6 — Grafos" onclick="switchPanel('m1','m1-grafos-teoria')"><span class="st-num">1.6</span><span class="st-short">Grafos</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab block-classicos" data-mod="m1" data-panel="m1-sort" title="1.7 — Ordenação" onclick="switchPanel('m1','m1-sort')"><span class="st-num">1.7</span><span class="st-short">Sort</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab block-especializados" data-mod="m1" data-panel="m1-strings" title="1.8 — Strings" onclick="switchPanel('m1','m1-strings')"><span class="st-num">1.8</span><span class="st-short">Strings</span></button>
+        <button class="sub-tab block-especializados" data-mod="m1" data-panel="m1-numeros" title="1.9 — Teoria dos Números" onclick="switchPanel('m1','m1-numeros')"><span class="st-num">1.9</span><span class="st-short">Núm.</span></button>
+        <button class="sub-tab block-especializados" data-mod="m1" data-panel="m1-geometria" title="1.10 — Geometria" onclick="switchPanel('m1','m1-geometria')"><span class="st-num">1.10</span><span class="st-short">Geom.</span></button>
     </div>
 
+    <!-- Sub-tab bar PROVA — 4 cartões de preparo para a P1 -->
+    <div class="subtab-bar" id="subtab-prova">
+        <button class="sub-tab active block-prova" data-mod="prova" data-panel="pr-anatomia" title="Anatomia da Resposta Ideal" onclick="switchPanel('prova','pr-anatomia')"><span class="st-num">P1</span><span class="st-short">Anatomia</span></button>
+        <button class="sub-tab block-prova" data-mod="prova" data-panel="pr-modelo" title="Modelo de Resposta (template)" onclick="switchPanel('prova','pr-modelo')"><span class="st-num">P2</span><span class="st-short">Modelo</span></button>
+        <button class="sub-tab block-prova" data-mod="prova" data-panel="pr-erros" title="Erros Comuns que Descontam Nota" onclick="switchPanel('prova','pr-erros')"><span class="st-num">P3</span><span class="st-short">Erros</span></button>
+        <button class="sub-tab block-prova" data-mod="prova" data-panel="pr-temas" title="Temas × Probabilidade × Onde Estudar" onclick="switchPanel('prova','pr-temas')"><span class="st-num">P4</span><span class="st-short">Temas</span></button>
+    </div>
+
+    <!-- Sub-tab bar M2 — compact: 10 problemas em 4 grupos -->
     <div class="subtab-bar" id="subtab-m2">
-        <button class="sub-tab active" data-mod="m2" data-panel="p1" onclick="switchPanel('m2','p1')"><span class="st-num">01</span>Celebridade</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p2" onclick="switchPanel('m2','p2')"><span class="st-num">02</span>Votação</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p3" onclick="switchPanel('m2','p3')"><span class="st-num">03</span>Agenda</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p4" onclick="switchPanel('m2','p4')"><span class="st-num">04</span>Criptografia</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p5" onclick="switchPanel('m2','p5')"><span class="st-num">05</span>Jornais</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p6" onclick="switchPanel('m2','p6')"><span class="st-num">06</span>Fila Prior.</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p7" onclick="switchPanel('m2','p7')"><span class="st-num">07</span>Top-K</button>
-        <button class="sub-tab" data-mod="m2" data-panel="p8" onclick="switchPanel('m2','p8')"><span class="st-num">08</span>Montagem</button>
-    </div>
-
-    <div class="subtab-bar" id="subtab-m3">
-        <button class="sub-tab active" data-mod="m3" data-panel="p9" onclick="switchPanel('m3','p9')"><span class="st-num">09</span>Matrizes M×N</button>
-        <button class="sub-tab" data-mod="m3" data-panel="p10" onclick="switchPanel('m3','p10')"><span class="st-num">10</span>Torre de Hanói</button>
+        <button class="sub-tab active grp-estruturas" data-mod="m2" data-panel="p1" title="01 — Celebridade (Pilha)" onclick="switchPanel('m2','p1')"><span class="st-num">01</span><span class="st-short">Celebridade</span></button>
+        <button class="sub-tab grp-estruturas" data-mod="m2" data-panel="p3" title="02 — Agenda Binária (Busca)" onclick="switchPanel('m2','p3')"><span class="st-num">02</span><span class="st-short">Agenda</span></button>
+        <button class="sub-tab grp-estruturas" data-mod="m2" data-panel="p7" title="03 — Top-K (Heap/Quickselect)" onclick="switchPanel('m2','p7')"><span class="st-num">03</span><span class="st-short">Top-K</span></button>
+        <button class="sub-tab grp-estruturas" data-mod="m2" data-panel="p2" title="04 — Votação Boyer-Moore (Hash/Contagem)" onclick="switchPanel('m2','p2')"><span class="st-num">04</span><span class="st-short">Votação</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab grp-heap" data-mod="m2" data-panel="p6" title="05 — Fila de Prioridade Dinâmica (Heap)" onclick="switchPanel('m2','p6')"><span class="st-num">05</span><span class="st-short">F. Prior.</span></button>
+        <button class="sub-tab grp-heap" data-mod="m2" data-panel="p8" title="06 — Linha de Montagem (Heap + Greedy)" onclick="switchPanel('m2','p8')"><span class="st-num">06</span><span class="st-short">Montagem</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab grp-recursao" data-mod="m2" data-panel="p10" title="07 — Torre de Hanói (Recursão)" onclick="switchPanel('m2','p10')"><span class="st-num">07</span><span class="st-short">Hanói</span></button>
+        <span class="st-divider"></span>
+        <button class="sub-tab grp-aplicacoes" data-mod="m2" data-panel="p4" title="08 — Criptografia (Mat. Modular)" onclick="switchPanel('m2','p4')"><span class="st-num">08</span><span class="st-short">Cripto</span></button>
+        <button class="sub-tab grp-aplicacoes" data-mod="m2" data-panel="p5" title="09 — Distribuição de Jornais (k-means)" onclick="switchPanel('m2','p5')"><span class="st-num">09</span><span class="st-short">Jornais</span></button>
+        <button class="sub-tab grp-aplicacoes" data-mod="m2" data-panel="p9" title="10 — Operações com Matrizes M×N" onclick="switchPanel('m2','p9')"><span class="st-num">10</span><span class="st-short">Matrizes</span></button>
     </div>
 </header>
 
@@ -149,39 +139,40 @@
                 <div class="mod-card card-m1" onclick="switchMod('m1')">
                     <div class="mc-icon">𝒪</div>
                     <div class="mc-num">Módulo 1 · Teoria</div>
-                    <h3>Notações &amp; Estruturas</h3>
-                    <p>Fundamentos teóricos: Big-O, Theta, Omega e as 8 estruturas de dados essenciais.</p>
+                    <h3>Fundamentos · ED · Algoritmos</h3>
+                    <p>Trilha pedagógica em 5 blocos — da análise de complexidade aos tópicos especializados.</p>
                     <div class="mc-items">
-                        <div class="mc-item">Notações assintóticas e hierarquia</div>
-                        <div class="mc-item">Calculadora de crescimento interativa</div>
-                        <div class="mc-item">8 estruturas de dados com complexidades</div>
-                        <div class="mc-item">Demos interativos de Array, Pilha, Fila, Hash</div>
-                        <div class="mc-item">9 Algoritmos de Ordenação com animações</div>
+                        <div class="mc-item"><strong>Fundamentos</strong> · Notações assintóticas, Recursão</div>
+                        <div class="mc-item"><strong>ED Lineares</strong> · Array, Pilha, Fila, Hash, Notações Mat.</div>
+                        <div class="mc-item"><strong>ED Não-Lineares</strong> · Árvores BST, Grafos (BFS/DFS)</div>
+                        <div class="mc-item"><strong>Clássicos</strong> · 9 Algoritmos de Ordenação</div>
+                        <div class="mc-item"><strong>Especializados</strong> · Strings, Números, Geometria</div>
                     </div>
                     <div class="mc-cta">Acessar Módulo →</div>
+                </div>
+                <div class="mod-card card-prova" onclick="switchMod('prova')">
+                    <div class="mc-icon">🎯</div>
+                    <div class="mc-num">Prova · P1 do Strauss</div>
+                    <h3>Tática em 4 Cartões</h3>
+                    <p>Preparo direto para a P1: como estruturar a resposta, modelo pronto, erros que descontam nota e estatísticas dos temas.</p>
+                    <div class="mc-items">
+                        <div class="mc-item"><strong>Anatomia</strong> · 5 passos da resposta ideal</div>
+                        <div class="mc-item"><strong>Modelo</strong> · template em 5 blocos para copiar</div>
+                        <div class="mc-item"><strong>Erros</strong> · 6 armadilhas que descontam nota</div>
+                        <div class="mc-item"><strong>Temas</strong> · probabilidade × onde estudar</div>
+                    </div>
+                    <div class="mc-cta">Acessar Prova →</div>
                 </div>
                 <div class="mod-card card-m2" onclick="switchMod('m2')">
                     <div class="mc-icon">🧩</div>
-                    <div class="mc-num">Módulo 2 · Problemas de Aula</div>
-                    <h3>8 Problemas Clássicos</h3>
-                    <p>Cada problema com enunciado, intuição, análise completa e implementação comentada.</p>
+                    <div class="mc-num">Módulo 2 · Problemas (gabarito)</div>
+                    <h3>10 Problemas Aplicados</h3>
+                    <p>Os exercícios de aula resolvidos. Use como referência ou consulta opcional depois de dominar a teoria e a tática.</p>
                     <div class="mc-items">
-                        <div class="mc-item">Celebridade · Votação · Agenda</div>
-                        <div class="mc-item">Criptografia · Jornais · Fila Prior.</div>
-                        <div class="mc-item">Top-K · Linha de Montagem</div>
-                        <div class="mc-item">Visualizações com grafos interativos</div>
-                    </div>
-                    <div class="mc-cta">Acessar Módulo →</div>
-                </div>
-                <div class="mod-card card-m3" onclick="switchMod('m3')">
-                    <div class="mc-icon">⚙</div>
-                    <div class="mc-num">Módulo 3 · Exercícios</div>
-                    <h3>Exercícios Complementares</h3>
-                    <p>Implementações adicionais com visualizações interativas e análise de complexidade.</p>
-                    <div class="mc-items">
-                        <div class="mc-item">Operações com Matrizes M×N</div>
-                        <div class="mc-item">Torre de Hanói — Rec vs Iterativo</div>
-                        <div class="mc-item">Animações passo a passo</div>
+                        <div class="mc-item"><strong>Estruturas</strong> · Celebridade, Agenda, Top-K, Votação</div>
+                        <div class="mc-item"><strong>Heap</strong> · Fila Prior., Linha de Montagem</div>
+                        <div class="mc-item"><strong>Recursão</strong> · Torre de Hanói</div>
+                        <div class="mc-item"><strong>Aplicações</strong> · Cripto, Jornais, Matrizes M×N</div>
                     </div>
                     <div class="mc-cta">Acessar Módulo →</div>
                 </div>
@@ -1421,7 +1412,7 @@ Algoritmo: Θ(K) atinge Ω(K) → <strong>É ÓTIMO</strong> ✓</code></pre>
 
                 <div class="callout purple">
                     <span class="callout-icon" style="color:var(--accent5)">🚪</span>
-                    <span><strong>Parte 2 da prova (trajetória do ladrão):</strong> se o quadro NÃO está coberto, descreva a melhor trajetória do ladrão evitando as áreas das câmeras. Esse é um problema de <em>caminho mínimo</em> em um grafo geométrico — assunto da seção 1.9 (Onda 3).</span>
+                    <span><strong>Parte 2 da prova (trajetória do ladrão):</strong> se o quadro NÃO está coberto, descreva a melhor trajetória do ladrão evitando as áreas das câmeras. Esse é um problema de <em>caminho mínimo</em> em um grafo geométrico — assunto da seção 1.6 (Grafos).</span>
                 </div>
 
             </section>
@@ -1768,34 +1759,32 @@ adj[v].<span class="fn">append</span>(u)  <span class="cm"># não-direcionado</s
         </div>
 
 
-        <!-- ═══════════════════════════════════════════════
-             1.11 — TÁTICA DE PROVA P1
-        ═══════════════════════════════════════════════ -->
-        <div class="content-panel" id="panel-m1-tatica">
-            <section class="problem">
+    </div>
 
+    <!-- ═══════════════════════════════════════════════
+         MÓDULO PROVA — Tática para a P1 do Prof. Strauss
+    ═══════════════════════════════════════════════ -->
+    <div class="mod-panel" id="panel-prova">
+
+        <!-- 1. ANATOMIA — os 5 passos da resposta ideal -->
+        <div class="content-panel active" id="panel-pr-anatomia">
+            <section class="problem">
                 <div class="problem-header">
-                    <div class="problem-number">1.11</div>
+                    <div class="problem-number">P1</div>
                     <div class="problem-title-block">
-                        <h2>Tática para a P1 do Prof. Strauss</h2>
+                        <h2>Anatomia da Resposta Ideal</h2>
                         <div class="badges">
-                            <span class="badge badge-theory">Guia de prova</span>
-                            <span class="badge badge-struct">Modelo de resposta</span>
-                            <span class="badge badge-time">Erros comuns</span>
+                            <span class="badge badge-theory">Estrutura em 5 passos</span>
+                            <span class="badge badge-struct">Checklist de prova</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="enunciado">
-                    <strong>Análise das 4 últimas P1's do Prof. Strauss:</strong> esta seção condensa o que invariavelmente cai e como o professor avalia. Use como checklist final antes de entregar.
+                    <strong>Análise das 4 últimas P1's do Prof. Strauss:</strong> toda resposta a uma questão da P1 deve seguir esta estrutura. A ordem e a completude valem nota.
                 </div>
 
-                <!-- ANATOMIA -->
-                <div class="section-label purple">Anatomia da Resposta Ideal</div>
-                <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
-                    Toda resposta a uma questão da P1 deve seguir esta estrutura. A ordem e completude valem nota.
-                </div>
-
+                <div class="section-label purple">Os 5 passos obrigatórios</div>
                 <div class="tactic-checklist">
                     <div class="tactic-item">
                         <div class="tactic-num">1</div>
@@ -1833,9 +1822,28 @@ adj[v].<span class="fn">append</span>(u)  <span class="cm"># não-direcionado</s
                         </div>
                     </div>
                 </div>
+            </section>
+        </div>
 
-                <!-- TEMPLATE -->
-                <div class="section-label purple">Modelo de Resposta (Copie e Adapte)</div>
+        <!-- 2. MODELO — template copy-paste -->
+        <div class="content-panel" id="panel-pr-modelo">
+            <section class="problem">
+                <div class="problem-header">
+                    <div class="problem-number">P1</div>
+                    <div class="problem-title-block">
+                        <h2>Modelo de Resposta (Copie e Adapte)</h2>
+                        <div class="badges">
+                            <span class="badge badge-theory">Template pronto</span>
+                            <span class="badge badge-struct">5 blocos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    Esqueleto que você pode levar à prova como referência mental. Adapte cada bloco ao problema concreto e os 5 passos da Anatomia já estarão cobertos.
+                </div>
+
+                <div class="section-label purple">Template em 5 blocos</div>
                 <div class="response-template"><span class="rt-section">// 1. MODELAGEM</span>
 O problema pede [resumir em 1 linha].
 Entrada: [descrever]. Saída: [descrever].
@@ -1855,7 +1863,7 @@ T(0) = c₁                            # caso base
 T(n) = T(n_esq) + T(n_dir) + c₂      # 2 chamadas recursivas + trabalho extra
 
 Resolução:
-[Aplique a tabela de recorrências da seção 1.5]
+[Aplique a tabela de recorrências da seção 1.2]
 T(n) = <em>Θ(...)</em>
 
 <span class="rt-section">// 4. COTA INFERIOR DO PROBLEMA</span>
@@ -1866,9 +1874,28 @@ Logo, <em>Ω(n)</em> é a cota inferior.
 Algoritmo: T(n) = Θ(...)
 Cota inferior: Ω(...)
 Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</div>
+            </section>
+        </div>
 
-                <!-- ERROS -->
-                <div class="section-label purple">Erros Comuns que Descontam Nota</div>
+        <!-- 3. ERROS — armadilhas que descontam nota -->
+        <div class="content-panel" id="panel-pr-erros">
+            <section class="problem">
+                <div class="problem-header">
+                    <div class="problem-number">P1</div>
+                    <div class="problem-title-block">
+                        <h2>Erros Comuns que Descontam Nota</h2>
+                        <div class="badges">
+                            <span class="badge badge-time">6 armadilhas</span>
+                            <span class="badge badge-struct">Coletado das correções</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    Padrões coletados das correções do Prof. Strauss. Repassar antes de entregar reduz perdas óbvias.
+                </div>
+
+                <div class="section-label purple">Não cometa estes erros</div>
                 <div class="errors-grid">
                     <div class="error-row">
                         <div class="er-title">✗ Esquecer de definir T(n)</div>
@@ -1895,28 +1922,47 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
                         <div class="er-desc">Quando a questão pede "aplique o algoritmo para [exemplo concreto]", você precisa <em>realmente</em> executar passo a passo, não apenas escrever o algoritmo. Mostre as iterações.</div>
                     </div>
                 </div>
-
-                <!-- TABELA RESUMO -->
-                <div class="section-label purple">Tabela: Tema × Probabilidade × Onde Estudar</div>
-                <table class="complexity-table">
-                    <tr><th>Tema</th><th>Probabilidade</th><th>Estude em</th></tr>
-                    <tr><td>Reconstrução de árvore (pré + in-ordem)</td><td style="color:var(--accent3);font-weight:700">~75%</td><td>Seção 1.3</td></tr>
-                    <tr><td>Conversão prefixa ↔ infixa ↔ pósfixa (recursivo)</td><td style="color:var(--accent3);font-weight:700">~50%</td><td>Seção 1.4</td></tr>
-                    <tr><td>Análise de complexidade (T(n), Ω, O, ótimo)</td><td style="color:var(--accent3);font-weight:700">100%</td><td>Seções 1.1 e 1.5</td></tr>
-                    <tr><td>Recursão clássica (Fibonacci, Hanoi)</td><td style="color:var(--accent3);font-weight:700">~40%</td><td>Seção 1.5</td></tr>
-                    <tr><td>Strings / Palíndromos</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.6</td></tr>
-                    <tr><td>Teoria dos Números (MDC, primos)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.7</td></tr>
-                    <tr><td>Geometria computacional (cobertura)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.8</td></tr>
-                    <tr><td>Grafos (rede de máquinas, trajetória)</td><td style="color:var(--warn);font-weight:700">~30%</td><td>Seção 1.10</td></tr>
-                </table>
-
-                <div class="callout green">
-                    <span class="callout-icon" style="color:var(--accent3)">🎯</span>
-                    <span><strong>Estratégia de revisão sugerida:</strong> 1) domine a tática (esta seção). 2) Revise <em>árvores e notações</em> (1.3 e 1.4) — são quase certeza. 3) Pratique <em>análise de complexidade</em> (1.1 e 1.5). 4) Faça uma passada nos tópicos específicos (1.6 a 1.10). 5) Revise os algoritmos clássicos (busca binária, Euclides, dois ponteiros).</span>
-                </div>
-
             </section>
         </div>
+
+        <!-- 4. TEMAS — probabilidade × onde estudar -->
+        <div class="content-panel" id="panel-pr-temas">
+            <section class="problem">
+                <div class="problem-header">
+                    <div class="problem-number">P1</div>
+                    <div class="problem-title-block">
+                        <h2>Temas × Probabilidade × Onde Estudar</h2>
+                        <div class="badges">
+                            <span class="badge badge-struct">Estatísticas das 4 últimas P1's</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enunciado">
+                    Distribuição empírica dos temas que aparecem na P1 do Strauss. Cada linha aponta direto para a seção do Módulo 1 onde revisar.
+                </div>
+
+                <div class="section-label purple">Tabela de probabilidade</div>
+                <table class="complexity-table">
+                    <tr><th>Tema</th><th>Probabilidade</th><th>Estude em</th></tr>
+                    <tr><td>Reconstrução de árvore (pré + in-ordem)</td><td style="color:var(--accent3);font-weight:700">~75%</td><td>Seção 1.5</td></tr>
+                    <tr><td>Conversão prefixa ↔ infixa ↔ pósfixa (recursivo)</td><td style="color:var(--accent3);font-weight:700">~50%</td><td>Seção 1.4</td></tr>
+                    <tr><td>Análise de complexidade (T(n), Ω, O, ótimo)</td><td style="color:var(--accent3);font-weight:700">100%</td><td>Seções 1.1 e 1.2</td></tr>
+                    <tr><td>Recursão clássica (Fibonacci, Hanoi)</td><td style="color:var(--accent3);font-weight:700">~40%</td><td>Seção 1.2</td></tr>
+                    <tr><td>Strings / Palíndromos</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.8</td></tr>
+                    <tr><td>Teoria dos Números (MDC, primos)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.9</td></tr>
+                    <tr><td>Geometria computacional (cobertura)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.10</td></tr>
+                    <tr><td>Grafos (rede de máquinas, trajetória)</td><td style="color:var(--warn);font-weight:700">~30%</td><td>Seção 1.6</td></tr>
+                </table>
+
+                <div class="section-label purple">Estratégia de revisão sugerida</div>
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">🎯</span>
+                    <span>1) Domine a <strong>Anatomia</strong> e o <strong>Modelo</strong> deste módulo. 2) Revise <em>árvores e notações</em> (§1.5 e §1.4) — são quase certeza. 3) Pratique <em>análise de complexidade e recursão</em> (§1.1 e §1.2). 4) Revise <em>grafos</em> (§1.6) e <em>ordenação</em> (§1.7). 5) Faça uma passada nos tópicos especializados (§1.8 a §1.10).</span>
+                </div>
+            </section>
+        </div>
+
     </div>
 
     <!-- ─── MÓDULO 2 ─── -->
@@ -1933,6 +1979,12 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
                     <span class="badge badge-struct">Eliminação por candidato</span>
                 </div>
             </div>
+        </div>
+
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 Estruturas de Dados</a>
+            <span class="pr-tag">Pilha</span>
         </div>
 
         <div class="enunciado">
@@ -2014,6 +2066,12 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
             </div>
         </div>
 
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 Estruturas de Dados</a>
+            <span class="pr-tag">Contagem</span>
+        </div>
+
         <div class="enunciado">
             <strong>Enunciado:</strong> Dado o histórico de votos de uma eleição, determine se existe um candidato com maioria absoluta (mais de 50% dos votos + 1). Se existir, retorne-o. Use espaço constante.
         </div>
@@ -2088,6 +2146,12 @@ votos = [<span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="
             </div>
         </div>
 
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 Estruturas de Dados</a>
+            <span class="pr-tag">Busca Binária</span>
+        </div>
+
         <div class="enunciado">
             <strong>Enunciado:</strong> Como o celular armazena e encontra um contato na agenda de forma eficiente? Modele a estrutura de dados ideal considerando as operações: adicionar contato, remover contato, buscar por nome e listar em ordem alfabética.
         </div>
@@ -2157,6 +2221,12 @@ votos = [<span class="st">'X'</span>, <span class="st">'Y'</span>, <span class="
             </div>
         </div>
 
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-numeros'),50)">§1.9 Teoria dos Números</a>
+            <span class="pr-tag">Mat. Modular</span>
+        </div>
+
         <div class="enunciado">
             <strong>Enunciado:</strong> Envie uma mensagem de modo que somente o receptor final saiba o conteúdo e ninguém saiba quem enviou. Modele o mecanismo de criptografia da mensagem e anonimização do remetente.
         </div>
@@ -2223,6 +2293,12 @@ msg_cifrada    = <span class="fn">criptografar</span>(msg_original, chave)
             </div>
         </div>
 
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-geometria'),50)">§1.10 Geometria</a>
+            <span class="pr-tag">Clustering</span>
+        </div>
+
         <div class="enunciado">
             <strong>Enunciado:</strong> Um bairro tem <em>n</em> bancas de jornal e 3 pontos de distribuição fixos em posições aleatórias. Otimize a distribuição alocando cada banca ao ponto mais próximo, minimizando a distância total percorrida.
         </div>
@@ -2274,6 +2350,12 @@ resultado = <span class="fn">alocar_bancas</span>(bancas, centros)</code></pre>
                     <span class="badge badge-struct">Heap Binário (Min-Heap)</span>
                 </div>
             </div>
+        </div>
+
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 Estruturas de Dados</a>
+            <span class="pr-tag">Heap</span>
         </div>
 
         <div class="enunciado">
@@ -2354,6 +2436,12 @@ fila.<span class="fn">atualizar</span>(<span class="st">"Relatório"</span>, <sp
             </div>
         </div>
 
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 Estruturas de Dados</a>
+            <span class="pr-tag">Heap</span>
+        </div>
+
         <div class="enunciado">
             <strong>Enunciado:</strong> Uma empresa quer selecionar os 5 funcionários mais produtivos de um total de <em>n</em> para premiação em um resort. Como fazer isso sem ordenar todos os funcionários?
         </div>
@@ -2417,6 +2505,12 @@ premiados = <span class="fn">top_k_funcionarios</span>(funcionarios)</code></pre
             </div>
         </div>
 
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 Estruturas de Dados</a>
+            <span class="pr-tag">Heap · Greedy</span>
+        </div>
+
         <div class="enunciado">
             <strong>Enunciado:</strong> Em situação emergencial, maximize a produção de uma fábrica com múltiplas linhas de montagem (<em>m</em> linhas), cada uma com máquinas modernas (rápidas) e antigas (lentas). Como escalonar a produção para maximizar o throughput?
         </div>
@@ -2461,11 +2555,9 @@ linhas = [[<span class="num">2</span>, <span class="num">5</span>], [<span class
     <hr class="divider">
 
     <!-- ══════════════════════════════════════════════ --></div>
-    </div>
 
-    <!-- ─── MÓDULO 3 ─── -->
-    <div class="mod-panel" id="panel-m3">
-        <div class="content-panel active" id="panel-p9"><!-- PROBLEMA 9 -->
+        <!-- ─── EX-MÓDULO 3 (mesclado em M2) ─── -->
+        <div class="content-panel" id="panel-p9"><!-- PROBLEMA 9 -->
     <section class="problem" id="p9">
         <div class="problem-header">
             <div class="problem-number">09</div>
@@ -2477,6 +2569,12 @@ linhas = [[<span class="num">2</span>, <span class="num">5</span>], [<span class
                     <span class="badge badge-struct">Álgebra Linear + Arrays 2D</span>
                 </div>
             </div>
+        </div>
+
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-notacoes'),50)">§1.1 Notações &amp; Complexidade</a>
+            <span class="pr-tag">Arrays 2D</span>
         </div>
 
         <div class="enunciado">
@@ -2523,6 +2621,12 @@ linhas = [[<span class="num">2</span>, <span class="num">5</span>], [<span class
                     <span class="badge badge-struct">Recursão + Pilha explícita</span>
                 </div>
             </div>
+        </div>
+
+        <div class="prereq">
+            <span class="pr-label">Antes:</span>
+            <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-recursao'),50)">§1.2 Recursão</a>
+            <span class="pr-tag">Recursão</span>
         </div>
 
         <div class="enunciado">
