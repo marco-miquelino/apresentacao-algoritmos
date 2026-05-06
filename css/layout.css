@@ -174,10 +174,10 @@
         .sub-tab {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 11px;
+            gap: 5px;
+            padding: 7px 9px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 600;
             color: var(--muted);
             background: none;
@@ -191,18 +191,18 @@
         .sub-tab:hover { color: var(--text); }
         .sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-        .sub-tab .st-num    { font-size: 10px; font-weight: 700; opacity: 0.7; }
-        .sub-tab .st-short  { display: none; font-weight: 600; letter-spacing: 0.2px; }
+        .sub-tab .st-num    { font-size: 9.5px; font-weight: 700; opacity: 0.55; }
+        .sub-tab .st-short  { display: inline; font-weight: 600; letter-spacing: 0.1px; }
+        .sub-tab:hover .st-num    { opacity: 0.85; }
         .sub-tab.active .st-num   { opacity: 1; }
-        .sub-tab.active .st-short { display: inline; }
-        .sub-tab:hover .st-num    { opacity: 1; }
+        .sub-tab.active .st-short { font-weight: 700; }
 
         /* Divisória vertical fina entre blocos */
         .st-divider {
             display: inline-block;
             width: 1px;
-            height: 16px;
-            margin: 0 6px;
+            height: 14px;
+            margin: 0 4px;
             background: var(--border);
             align-self: center;
         }
