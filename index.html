@@ -589,14 +589,14 @@ O(log₂ n) = O(log₁₀ n) = O(log n)  <span class="cm"># diferença é só co
                         <h2>Árvores Binárias</h2>
                         <div class="badges">
                             <span class="badge badge-time">Tema: Estrutura</span>
-                            <span class="badge badge-struct">Cai em ~75% das P1's</span>
+                            <span class="badge badge-struct">Cai em 67% das P1's coletadas</span>
                             <span class="badge badge-theory">Recursão essencial</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="enunciado">
-                    <strong>Por que estudar isso primeiro:</strong> entre as 4 últimas provas P1 do Prof. Strauss, <em>3 cobraram reconstrução de árvore binária a partir de percursos</em>. Dominar este tópico significa garantir uma questão inteira da prova.
+                    <strong>Por que estudar isso primeiro:</strong> entre as 6 P1's mapeadas do Prof. Strauss (2020.1, 2020.2, 2021.1, 2024.1, 2025.1, 2025.2), <em>4 envolvem árvores binárias</em> — reconstrução de percursos (2020.1, 2021.1), árvore ótima por programação dinâmica (2020.1, 2021.1) e árvore graduada/AVL (2020.1). Dominar este tópico significa garantir <strong>até 7,0 pontos</strong> da prova.
                 </div>
 
                 <!-- DEFINIÇÕES -->
@@ -796,6 +796,187 @@ T(n) = 2·T(n/2) + O(n)  →  T(n) = O(n log n)</code></pre>
                     <span><strong>Atenção na prova:</strong> o Prof. Strauss aceita árvores com nós nomeados por letras (caso comum). Sempre verifique se os percursos são <em>consistentes</em>: o conjunto de letras tem que ser exatamente o mesmo em ambos os percursos, sem repetições.</span>
                 </div>
 
+                <!-- ═══════════════════════════════════════════════
+                     ÁRVORE ÓTIMA DE BUSCA — Programação Dinâmica
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Árvore Ótima de Busca (Programação Dinâmica)</div>
+                <div class="enunciado">
+                    <strong>Questão clássica de 3,5 pontos:</strong> "Descreva a árvore ótima, usando o algoritmo baseado na programação dinâmica para a geração de árvores ótimas, a partir das frequências apresentadas. Usando o mapa descrito pela matriz K, esquematize a árvore (não esqueça dos nós referentes aos insucessos de busca) e calcule o custo TOTAL." (P1-2020.1 Q3 · P1-2021.1 Q1)
+                </div>
+
+                <div class="insight-box">
+                    Dado um conjunto de <strong>n chaves</strong> com frequências de busca com sucesso <code>F<sub>j</sub></code> (j = 1..n) e frequências de busca com <strong>insucesso</strong> <code>F'<sub>j</sub></code> (j = 0..n) — os nós-folha que representam "chave não encontrada" entre as chaves — a meta é construir a BST com <strong>menor custo médio ponderado</strong> de busca:
+                    <pre style="margin-top:10px;margin-bottom:6px;"><code>custo(T) = Σ F<sub>j</sub>·(prof(j) + 1)  +  Σ F'<sub>j</sub>·prof(folha_j)</code></pre>
+                    Nós próximos à raiz devem ser os mais frequentes. Tentar todas as <em>n-ésimas formas de Catalan</em> de árvores binárias é Ω(4ⁿ/n<sup>3/2</sup>) — inviável. A solução é <strong>programação dinâmica em O(n³)</strong>.
+                </div>
+
+                <div class="section-label purple">As três matrizes (C, P, K)</div>
+                <table class="complexity-table">
+                    <tr><th>Matriz</th><th>Tamanho</th><th>O que armazena</th></tr>
+                    <tr><td><code>C[i][j]</code></td><td>(n+1)×(n+1)</td><td><strong>Custo</strong> mínimo da subárvore ótima contendo as chaves de índice i+1 até j</td></tr>
+                    <tr><td><code>P[i][j]</code></td><td>(n+1)×(n+1)</td><td><strong>Peso</strong> total do intervalo: F'<sub>i</sub> + Σ<sub>k=i+1..j</sub> (F<sub>k</sub> + F'<sub>k</sub>)</td></tr>
+                    <tr><td><code>K[i][j]</code></td><td>(n+1)×(n+1)</td><td><strong>Raiz</strong> da subárvore ótima do intervalo (i, j] — o índice k que minimizou o custo</td></tr>
+                </table>
+
+                <div class="section-label purple">Recorrência fundamental</div>
+                <div class="insight-box">
+                    Para cada intervalo (i, j] de tamanho crescente <code>d = j - i</code>:
+                    <pre style="margin-top:10px;margin-bottom:6px;"><code>C[i][i] = 0                                      <span class="cm"># nenhuma chave: só folha de insucesso</span>
+P[i][j] = P[i][j-1] + F<sub>j</sub> + F'<sub>j</sub>                 <span class="cm"># peso é cumulativo</span>
+
+<strong>C[i][j] = P[i][j]  +  min<sub>i&lt;k≤j</sub> { C[i][k-1] + C[k][j] }</strong>
+K[i][j] = arg min  (o k que ganhou)</code></pre>
+                    Interpretação: a raiz da subárvore ótima sobre (i, j] é a chave <code>k</code> que minimiza a soma dos custos das duas subárvores. O termo <code>P[i][j]</code> é o "tributo" — cada nó do intervalo ganha um nível extra de profundidade ao ser colocado sob a nova raiz.
+                </div>
+
+                <div class="section-label purple">Esqueleto do algoritmo</div>
+                <pre><code><span class="kw">def</span> <span class="fn">arvore_otima</span>(F, Flinha):
+    <span class="cm">"""F[1..n] = freq sucesso, Flinha[0..n] = freq insucesso"""</span>
+    n = <span class="fn">len</span>(F) - <span class="num">1</span>
+    C = [[<span class="num">0</span>]*(n+<span class="num">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n+<span class="num">1</span>)]
+    P = [[<span class="num">0</span>]*(n+<span class="num">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n+<span class="num">1</span>)]
+    K = [[<span class="num">0</span>]*(n+<span class="num">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n+<span class="num">1</span>)]
+
+    <span class="cm"># Caso base: intervalos de tamanho 0 (sem chaves, só insucesso)</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n+<span class="num">1</span>):
+        P[i][i] = Flinha[i]
+
+    <span class="cm"># Preenche por diagonais (intervalos de tamanho d crescente)</span>
+    <span class="kw">for</span> d <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n+<span class="num">1</span>):
+        <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, n-d+<span class="num">1</span>):
+            j = i + d
+            P[i][j] = P[i][j-<span class="num">1</span>] + F[j] + Flinha[j]
+            melhor, k_otimo = <span class="fn">float</span>(<span class="st">'inf'</span>), i+<span class="num">1</span>
+            <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(i+<span class="num">1</span>, j+<span class="num">1</span>):
+                custo = C[i][k-<span class="num">1</span>] + C[k][j]
+                <span class="kw">if</span> custo &lt; melhor:
+                    melhor, k_otimo = custo, k
+            C[i][j] = P[i][j] + melhor
+            K[i][j] = k_otimo
+    <span class="kw">return</span> C, K  <span class="cm"># C[0][n] = custo total ótimo; K reconstrói a árvore</span>
+
+<span class="kw">def</span> <span class="fn">reconstroi</span>(K, i, j):
+    <span class="kw">if</span> i == j: <span class="kw">return</span> <span class="kw">None</span>          <span class="cm"># nó de insucesso (folha)</span>
+    raiz = K[i][j]
+    no = <span class="fn">Node</span>(raiz)
+    no.esq = <span class="fn">reconstroi</span>(K, i, raiz-<span class="num">1</span>)
+    no.dir = <span class="fn">reconstroi</span>(K, raiz, j)
+    <span class="kw">return</span> no</code></pre>
+
+                <div class="section-label purple">Como ler a matriz K na prova</div>
+                <div class="insight-box">
+                    A matriz K é o <em>"mapa"</em> da árvore. <strong>K[0][n]</strong> é a raiz global. Depois, recursivamente:
+                    <pre style="margin-top:10px;margin-bottom:6px;"><code>raiz global = K[0][n]
+filho esq da raiz = K[0][ K[0][n] - 1 ]
+filho dir da raiz = K[ K[0][n] ][n]
+… e assim por diante</code></pre>
+                    Em qualquer ponto onde <code>i = j</code>, em vez de uma chave, desenhe a <strong>folha de insucesso</strong> rotulada <code>F'<sub>i</sub></code>.
+                </div>
+
+                <div class="section-label purple">Exemplo trabalhado (P1-2021.1)</div>
+                <div class="enunciado">
+                    Dados <code>F = [_, 1, 2, 3, 4, 1, 2, 3, 4]</code> e <code>F' = [5, 4, 3, 2, 1, 4, 3, 2, 1]</code> (n = 8). O algoritmo preenche C e K diagonal por diagonal. <strong>C[0][8]</strong> dá o custo total ótimo; <strong>K[0][8]</strong> dá a raiz da árvore. Cada chamada recursiva em K reconstrói uma subárvore. Cada subintervalo <code>(i, i]</code> vira <em>folha de insucesso</em> rotulada <code>F'<sub>i</sub></code> — não esqueça de desenhá-las!
+                </div>
+
+                <div class="section-label purple">Análise da função tempo</div>
+                <div class="insight-box">
+                    <pre style="margin-top:0;"><code>Três laços aninhados sobre n: <strong>T(n) = Θ(n³)</strong>
+Cota inferior do problema: Ω(n²) — Knuth (1971) mostrou que K[i][j-1] ≤ K[i][j] ≤ K[i+1][j],
+o que permite uma implementação O(n²), mas a versão O(n³) é a esperada na prova.</code></pre>
+                    Na prova, escreva <code>T(n) = Θ(n³)</code> com a recorrência justificada e indique que o algoritmo é <em>ótimo dentro da abordagem clássica de PD</em> (sem mencionar a otimização de Knuth, a não ser que conheça e queira pontuar a mais).
+                </div>
+
+                <div class="callout">
+                    <span class="callout-icon">⚠</span>
+                    <span><strong>Erros que descontam nota:</strong> (1) esquecer as folhas de insucesso ao desenhar a árvore; (2) não comparar <code>C[0][n]</code> calculado com o "custo total" pedido pela soma manual <code>Σ F<sub>j</sub>·(prof+1) + Σ F'<sub>j</sub>·prof</code>; (3) não justificar <code>Θ(n³)</code>.</span>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════
+                     ÁRVORE GRADUADA (AVL) — Rotações
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Árvore Graduada (AVL) — Rotações</div>
+                <div class="enunciado">
+                    <strong>Questão clássica de 3,5 pontos:</strong> "Descreva um algoritmo que transforme uma árvore binária em uma árvore GRADUADA. Analise a complexidade e diga se é ótima. Aplique o algoritmo proposto e esquematize todas as rotações ativadas durante o processo." (P1-2020.1 Q4)
+                </div>
+
+                <div class="insight-box">
+                    Uma <strong>árvore graduada</strong> (terminologia do Prof. Strauss) é uma <strong>árvore AVL</strong>: BST em que, para todo nó, a diferença entre as alturas das subárvores esquerda e direita — o <em>fator de balanceamento</em> <code>FB = h(esq) − h(dir)</code> — pertence ao conjunto <strong>{−1, 0, +1}</strong>. Garante busca, inserção e remoção em <strong>O(log n)</strong>.
+                </div>
+
+                <div class="section-label purple">Os 4 casos de desbalanceamento</div>
+                <table class="complexity-table">
+                    <tr><th>Caso</th><th>FB(p)</th><th>FB(filho)</th><th>Rotação</th></tr>
+                    <tr><td><strong>EE</strong> (Esq-Esq)</td><td>+2</td><td>+1</td><td>Simples à <strong>direita</strong></td></tr>
+                    <tr><td><strong>DD</strong> (Dir-Dir)</td><td>−2</td><td>−1</td><td>Simples à <strong>esquerda</strong></td></tr>
+                    <tr><td><strong>ED</strong> (Esq-Dir)</td><td>+2</td><td>−1</td><td>Dupla: <em>esq</em> no filho, depois <em>dir</em> em p</td></tr>
+                    <tr><td><strong>DE</strong> (Dir-Esq)</td><td>−2</td><td>+1</td><td>Dupla: <em>dir</em> no filho, depois <em>esq</em> em p</td></tr>
+                </table>
+
+                <div class="section-label purple">Rotação simples à direita (caso EE)</div>
+                <pre><code><span class="cm">         p (FB=+2)                     q
+        / \                          / \
+       q   T3      ── ROT_DIR ──&gt;   A   p
+      / \                              / \
+     A   T2                          T2   T3</span>
+
+<span class="kw">def</span> <span class="fn">rot_direita</span>(p):
+    q = p.esq
+    p.esq = q.dir
+    q.dir = p
+    <span class="fn">atualiza_altura</span>(p)        <span class="cm"># sempre o nó "que desceu" primeiro</span>
+    <span class="fn">atualiza_altura</span>(q)
+    <span class="kw">return</span> q                  <span class="cm"># nova raiz da subárvore</span>
+
+<span class="kw">def</span> <span class="fn">rot_esquerda</span>(p):       <span class="cm"># espelhada</span>
+    q = p.dir
+    p.dir = q.esq
+    q.esq = p
+    <span class="fn">atualiza_altura</span>(p)
+    <span class="fn">atualiza_altura</span>(q)
+    <span class="kw">return</span> q
+
+<span class="kw">def</span> <span class="fn">balanceia</span>(p):
+    fb = <span class="fn">FB</span>(p)
+    <span class="kw">if</span> fb &gt; <span class="num">1</span>:                              <span class="cm"># desbalanceado à esquerda</span>
+        <span class="kw">if</span> <span class="fn">FB</span>(p.esq) &lt; <span class="num">0</span>:                    <span class="cm"># caso ED</span>
+            p.esq = <span class="fn">rot_esquerda</span>(p.esq)
+        <span class="kw">return</span> <span class="fn">rot_direita</span>(p)                <span class="cm"># caso EE (ou complemento)</span>
+    <span class="kw">if</span> fb &lt; -<span class="num">1</span>:                             <span class="cm"># desbalanceado à direita</span>
+        <span class="kw">if</span> <span class="fn">FB</span>(p.dir) &gt; <span class="num">0</span>:                    <span class="cm"># caso DE</span>
+            p.dir = <span class="fn">rot_direita</span>(p.dir)
+        <span class="kw">return</span> <span class="fn">rot_esquerda</span>(p)
+    <span class="kw">return</span> p</code></pre>
+
+                <div class="section-label purple">Transformar uma BST qualquer em árvore graduada</div>
+                <ul class="steps-list">
+                    <li><span class="step-num">01</span><span>Percorra a árvore em <strong>pós-ordem</strong>: balanceia das folhas para a raiz (cada subárvore filha já está graduada antes do pai).</span></li>
+                    <li><span class="step-num">02</span><span>Em cada nó, calcule <code>h(esq)</code> e <code>h(dir)</code> e o <code>FB</code>. Se |FB| ≤ 1, retorna o nó inalterado.</span></li>
+                    <li><span class="step-num">03</span><span>Caso contrário, aplique uma das 4 rotações da tabela acima.</span></li>
+                    <li><span class="step-num">04</span><span>Após a rotação, recalcule a altura do nó (pode haver propagação até a raiz; basta o algoritmo recursivo cuidar disso).</span></li>
+                </ul>
+
+                <pre><code><span class="kw">def</span> <span class="fn">graduada</span>(raiz):
+    <span class="kw">if</span> raiz <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span> <span class="kw">None</span>
+    raiz.esq = <span class="fn">graduada</span>(raiz.esq)       <span class="cm"># pós-ordem: filhos primeiro</span>
+    raiz.dir = <span class="fn">graduada</span>(raiz.dir)
+    <span class="fn">atualiza_altura</span>(raiz)
+    <span class="kw">return</span> <span class="fn">balanceia</span>(raiz)             <span class="cm"># pode trocar a raiz local</span></code></pre>
+
+                <div class="section-label purple">Análise da função tempo</div>
+                <div class="insight-box">
+                    <pre style="margin-top:0;"><code>T(n) = T(n<sub>esq</sub>) + T(n<sub>dir</sub>) + O(1)        <span class="cm"># 1 chamada por subárvore + balanceio O(1)</span>
+Cada nó é visitado UMA vez, balanceio é O(1).
+<strong>T(n) = Θ(n)</strong>
+
+Cota inferior Ω(n): precisamos olhar todos os nós para saber se a árvore inteira está graduada.
+<strong>Algoritmo é ÓTIMO</strong> ✓</code></pre>
+                </div>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">🎯</span>
+                    <span><strong>Como aplicar na prova:</strong> ao "esquematizar todas as rotações", percorra a árvore em pós-ordem e, para cada subárvore que ficar com |FB| &gt; 1 logo após o balanceio dos filhos, <em>desenhe a árvore antes</em>, identifique o caso (EE/DD/ED/DE), <em>desenhe a árvore depois</em>. O Prof. Strauss conta esses passos como pontos de detalhamento.</span>
+                </div>
+
             </section>
             <hr class="divider">
         </div>
@@ -812,7 +993,7 @@ T(n) = 2·T(n/2) + O(n)  →  T(n) = O(n log n)</code></pre>
                     <div class="problem-title-block">
                         <h2>Notações Matemáticas: Infixa, Prefixa, Pósfixa</h2>
                         <div class="badges">
-                            <span class="badge badge-time">Cai em ~50% das P1's</span>
+                            <span class="badge badge-time">Cai em 67% das P1's coletadas</span>
                             <span class="badge badge-struct">Árvore + Recursão</span>
                             <span class="badge badge-theory">Conversão</span>
                         </div>
@@ -985,7 +1166,7 @@ Algoritmo: Θ(n)      →  ATINGE A COTA  →  <strong>É ÓTIMO</strong> ✓</c
                 <!-- FIBONACCI -->
                 <div class="section-label purple">Estudo de Caso: Fibonacci</div>
                 <div class="enunciado">
-                    Sequência de Fibonacci: <code>fib(0)=0, fib(1)=1, fib(n) = fib(n-1) + fib(n-2)</code>. Apareceu na P1-2018.01 (5ª questão), pedindo para analisar a árvore de chamadas e determinar Ω e O.
+                    Sequência de Fibonacci: <code>fib(0)=0, fib(1)=1, fib(n) = fib(n-1) + fib(n-2)</code>. Apareceu na P1-2025.1 Q4: "Apresentar a fórmula como um algoritmo recursivo para o cálculo da sequência de Fibonacci de um número n. Descreva se sua proposta é ótima."
                 </div>
 
                 <pre><code><span class="kw">def</span> <span class="fn">fib</span>(n):
@@ -1193,15 +1374,15 @@ Algoritmo: Θ(n) → atinge Ω(n) → <strong>É ÓTIMO</strong> ✓</code></pre
                     <div class="problem-title-block">
                         <h2>Teoria dos Números</h2>
                         <div class="badges">
-                            <span class="badge badge-time">MDC + Primos</span>
-                            <span class="badge badge-struct">Cai em P1-2018.01</span>
+                            <span class="badge badge-time">MDC · Primos · Carmichael</span>
+                            <span class="badge badge-struct">Cai em 67% das P1's coletadas</span>
                             <span class="badge badge-theory">Recursão clássica</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="enunciado">
-                    <strong>Questão clássica:</strong> "Determine o maior divisor comum entre dois valores X e Y" (P1-2018.01 Q3) e "Determine se um número N é primo, e se sim, encontre os dois primos antecessores e sucessores" (P1-2018.01 Q4).
+                    <strong>Tema recorrente:</strong> "Determine o MDC entre dois valores X e Y" (P1-2020.2 Q3) · "Determine se N é primo e ache os 2 primos antecessores/sucessores" (P1-2020.2 Q4) · "MDC de n herdeiros" (P1-2025.1 Q2) · "Identifique se n é Carmichael" (P1-2025.1 Q3). É o <strong>tema mais frequente</strong> junto com notações matemáticas.
                 </div>
 
                 <!-- ALGORITMO DE EUCLIDES -->
@@ -1223,7 +1404,7 @@ Algoritmo: Θ(n) → atinge Ω(n) → <strong>É ÓTIMO</strong> ✓</code></pre
         a, b = b, a % b
     <span class="kw">return</span> a
 
-<span class="cm"># Exemplo do problema dos credores (P1-2018.01 Q3):
+<span class="cm"># Exemplo do problema dos credores (P1-2020.2 Q3):
 # X = 24, Y = 36 → mdc(24,36) = 12
 # Cada credor recebe X/Z + Y/Z = 24/12 + 36/12 = 2+3 = 5
 # Número de credores beneficiados: Z = 12</span></code></pre>
@@ -1316,6 +1497,109 @@ Cota inferior: Ω(log a) — precisa-se reduzir o problema log a vezes
                     <span><strong>Por que √n no teste?</strong> Se n = p · q com ambos p, q > √n, então p·q > n — contradição. Logo todo divisor não-trivial de n é ≤ √n. Basta procurar até essa cota.</span>
                 </div>
 
+                <!-- ═══════════════════════════════════════════════
+                     MDC GENERALIZADO — n valores (P1-2025.1 Q2)
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">MDC de n valores (herança proporcional)</div>
+                <div class="enunciado">
+                    <strong>Variante 2025.1 Q2:</strong> "Um milionário possui MUITOS herdeiros (n herdeiros). Cada um recebe um valor diferente <code>$VH<sub>1</sub>, $VH<sub>2</sub>, …, $VH<sub>n</sub></code>, todos inteiros positivos. Os credores entraram na justiça para receber o maior valor fixo <strong>MCr</strong> possível por credor, dividindo de cada herdeiro um múltiplo de MCr." Calcular MCr = <code>mdc($VH<sub>1</sub>, …, $VH<sub>n</sub>)</code>.
+                </div>
+
+                <div class="insight-box">
+                    A propriedade-chave é a <strong>associatividade do MDC</strong>: <code>mdc(a, b, c) = mdc(mdc(a, b), c)</code>. Logo basta reduzir a lista, dois a dois.
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">mdc_lista</span>(valores):
+    <span class="cm">"""MDC de uma lista de n inteiros positivos — recursivo."""</span>
+    <span class="kw">if</span> <span class="fn">len</span>(valores) == <span class="num">1</span>:
+        <span class="kw">return</span> valores[<span class="num">0</span>]                  <span class="cm"># caso base</span>
+    <span class="kw">return</span> <span class="fn">mdc</span>(valores[<span class="num">0</span>], <span class="fn">mdc_lista</span>(valores[<span class="num">1</span>:]))
+
+<span class="cm"># Função tempo: T(n) = T(n-1) + O(log V)   onde V = max($VH)
+#              = O(n · log V)
+# Cota inferior: precisamos ler os n valores → Ω(n)
+# Algoritmo é ÓTIMO até fator log V (que é constante para valores limitados)</span></code></pre>
+
+                <!-- ═══════════════════════════════════════════════
+                     NÚMEROS DE CARMICHAEL (P1-2025.1 Q3)
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Números de Carmichael (pseudoprimos absolutos)</div>
+                <div class="enunciado">
+                    <strong>Questão 2025.1 Q3:</strong> "Desenvolva um algoritmo que determine se n é um número de Carmichael (561, 1105, 1729, 2465, 2821, 6601, 10585, …). Descreva se sua proposta é ótima."
+                </div>
+
+                <div class="insight-box">
+                    Um <strong>número de Carmichael</strong> é um <em>composto</em> <code>n</code> que satisfaz o <strong>Pequeno Teorema de Fermat</strong> para toda base <code>a</code> coprima com <code>n</code>:
+                    <pre style="margin-top:10px;margin-bottom:6px;"><code>a<sup>n−1</sup> ≡ 1  (mod n)    para todo a com mdc(a, n) = 1</code></pre>
+                    Eles "enganam" o teste de Fermat — passam como se fossem primos para qualquer base. Existem infinitos, mas são raros (apenas 7 abaixo de 10 000). Os primeiros: <strong>561, 1105, 1729, 2465, 2821, 6601, 8911</strong>.
+                </div>
+
+                <div class="section-label purple">Critério de Korselt (1899) — atalho usado na prova</div>
+                <div class="insight-box">
+                    Korselt provou que <code>n</code> é Carmichael ⟺ <em>todas</em> as três condições valem:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>n é composto</strong> (não primo);</li>
+                        <li><strong>n é livre de quadrados</strong> (nenhum primo p divide n²); e</li>
+                        <li><strong>para todo primo p que divide n</strong>, vale <code>(p − 1) | (n − 1)</code>.</li>
+                    </ul>
+                    Isso transforma a verificação em <strong>fatoração + checagem por primo</strong>, sem precisar testar todas as bases.
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">eh_carmichael</span>(n):
+    <span class="kw">if</span> n &lt; <span class="num">2</span> <span class="kw">or</span> <span class="fn">eh_primo</span>(n):
+        <span class="kw">return</span> <span class="kw">False</span>                          <span class="cm"># precisa ser composto</span>
+
+    <span class="cm"># Fatora n e verifica Korselt em uma só passada</span>
+    fatores = []
+    m, p = n, <span class="num">2</span>
+    <span class="kw">while</span> p * p &lt;= m:
+        <span class="kw">if</span> m % p == <span class="num">0</span>:
+            cont = <span class="num">0</span>
+            <span class="kw">while</span> m % p == <span class="num">0</span>:
+                m //= p
+                cont += <span class="num">1</span>
+            <span class="kw">if</span> cont &gt; <span class="num">1</span>:
+                <span class="kw">return</span> <span class="kw">False</span>                      <span class="cm"># tem quadrado → não é Carmichael</span>
+            <span class="kw">if</span> (n - <span class="num">1</span>) % (p - <span class="num">1</span>) != <span class="num">0</span>:
+                <span class="kw">return</span> <span class="kw">False</span>                      <span class="cm"># falha Korselt</span>
+            fatores.append(p)
+        p += <span class="num">1</span>
+    <span class="kw">if</span> m &gt; <span class="num">1</span>:                                  <span class="cm"># sobrou um primo grande</span>
+        <span class="kw">if</span> (n - <span class="num">1</span>) % (m - <span class="num">1</span>) != <span class="num">0</span>:
+            <span class="kw">return</span> <span class="kw">False</span>
+        fatores.append(m)
+
+    <span class="kw">return</span> <span class="fn">len</span>(fatores) &gt;= <span class="num">3</span>              <span class="cm"># Carmichael tem ≥3 fatores primos distintos</span></code></pre>
+
+                <div class="section-label purple">Verificação manual: por que 561 é Carmichael?</div>
+                <div class="insight-box">
+                    <pre style="margin-top:0;"><code>561 = 3 · 11 · 17        <span class="cm"># composto, livre de quadrados, 3 primos distintos ✓</span>
+n − 1 = 560
+
+(p−1) | 560 para todo p ∈ {3, 11, 17}?
+  • 3−1 = 2  →  560 / 2  = 280   ✓
+  • 11−1 = 10 →  560 / 10 = 56    ✓
+  • 17−1 = 16 →  560 / 16 = 35    ✓
+
+Todas as condições de Korselt OK → 561 é Carmichael ✓</code></pre>
+                </div>
+
+                <div class="section-label purple">Análise da função tempo</div>
+                <div class="insight-box">
+                    <pre style="margin-top:0;"><code>Fatoração trial-division até √n:           O(√n)
+Para cada primo p de n: 1 divisão modular: O(log n)
+Total: <strong>T(n) = O(√n)</strong>
+
+Cota inferior do problema: Ω(log n) — pelo menos ler o número.
+O algoritmo NÃO é ótimo no sentido estrito (gap entre √n e log n),
+mas é <em>ótimo dentro da abordagem por fatoração</em>, que é o esperado em prova.</code></pre>
+                </div>
+
+                <div class="callout">
+                    <span class="callout-icon">⚠</span>
+                    <span><strong>Pegadinha de prova:</strong> não confunda "Carmichael" com "primo". O algoritmo precisa primeiro <em>descartar primos</em> (que satisfazem Fermat trivialmente) e exigir que <code>n</code> seja composto. A questão pede o teste para a sequência específica {561, 1105, 1729, 2465, 2821, 6601, …} — vale a pena memorizar os 4 primeiros para conferir a saída.</span>
+                </div>
+
             </section>
             <hr class="divider">
         </div>
@@ -1332,7 +1616,7 @@ Cota inferior: Ω(log a) — precisa-se reduzir o problema log a vezes
                     <div class="problem-title-block">
                         <h2>Geometria Computacional Básica</h2>
                         <div class="badges">
-                            <span class="badge badge-time">P1-Museu (sem data)</span>
+                            <span class="badge badge-time">P1-2024.1 (Museu)</span>
                             <span class="badge badge-struct">Cobertura por círculos</span>
                             <span class="badge badge-theory">Aplicação prática</span>
                         </div>
@@ -1700,7 +1984,7 @@ adj[v].<span class="fn">append</span>(u)  <span class="cm"># não-direcionado</s
                 <div class="graph-log" id="graph-log">Clique em ▶ BFS ou ▶ DFS para ver a busca em ação.</div>
 
                 <!-- APLICAÇÃO REDE -->
-                <div class="section-label purple">Aplicação: Identificar a Máquina Gestora (P1-2018.01 Q1)</div>
+                <div class="section-label purple">Aplicação: Identificar a Máquina Gestora (P1-2020.2 Q1)</div>
                 <div class="enunciado">
                     <strong>Problema:</strong> dada uma rede de N máquinas com protocolos GRID e NÃO-GRID, identifique qual é a "máquina gestora" — aquela que conhece TODAS as outras (tem grau = N-1 no subgrafo de comunicações GRID).
                 </div>
@@ -1939,26 +2223,47 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
                 </div>
 
                 <div class="enunciado">
-                    Distribuição empírica dos temas que aparecem na P1 do Strauss. Cada linha aponta direto para a seção do Módulo 1 onde revisar.
+                    <strong>Base estatística:</strong> 6 P1's mapeadas (2020.1 PLE, 2020.2, 2021.1, 2024.1, 2025.1, 2025.2). Cada linha aponta direto para a seção do Módulo 1 onde revisar.
                 </div>
 
-                <div class="section-label purple">Tabela de probabilidade</div>
+                <div class="section-label purple">Tabela de probabilidade (dados reais)</div>
                 <table class="complexity-table">
-                    <tr><th>Tema</th><th>Probabilidade</th><th>Estude em</th></tr>
-                    <tr><td>Reconstrução de árvore (pré + in-ordem)</td><td style="color:var(--accent3);font-weight:700">~75%</td><td>Seção 1.5</td></tr>
-                    <tr><td>Conversão prefixa ↔ infixa ↔ pósfixa (recursivo)</td><td style="color:var(--accent3);font-weight:700">~50%</td><td>Seção 1.4</td></tr>
-                    <tr><td>Análise de complexidade (T(n), Ω, O, ótimo)</td><td style="color:var(--accent3);font-weight:700">100%</td><td>Seções 1.1 e 1.2</td></tr>
-                    <tr><td>Recursão clássica (Fibonacci, Hanoi)</td><td style="color:var(--accent3);font-weight:700">~40%</td><td>Seção 1.2</td></tr>
-                    <tr><td>Strings / Palíndromos</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.8</td></tr>
-                    <tr><td>Teoria dos Números (MDC, primos)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.9</td></tr>
-                    <tr><td>Geometria computacional (cobertura)</td><td style="color:var(--warn);font-weight:700">~25%</td><td>Seção 1.10</td></tr>
-                    <tr><td>Grafos (rede de máquinas, trajetória)</td><td style="color:var(--warn);font-weight:700">~30%</td><td>Seção 1.6</td></tr>
+                    <tr><th>Tema</th><th>Aparições</th><th>Probabilidade</th><th>Estude em</th></tr>
+                    <tr><td>Análise de complexidade (T(n), Ω, ótimo)</td><td>6/6</td><td style="color:var(--accent3);font-weight:700">100%</td><td>Seções 1.1 e 1.2</td></tr>
+                    <tr><td>Conversão prefixa ↔ infixa ↔ pósfixa (recursivo)</td><td>4/6</td><td style="color:var(--accent3);font-weight:700">67%</td><td>Seção 1.4</td></tr>
+                    <tr><td>Teoria dos Números (MDC, primos, Carmichael)</td><td>4/6</td><td style="color:var(--accent3);font-weight:700">67%</td><td>Seção 1.9</td></tr>
+                    <tr><td>Reconstrução de árvore (pré + in-ordem)</td><td>2/6</td><td style="color:var(--warn);font-weight:700">33%</td><td>Seção 1.5</td></tr>
+                    <tr><td><strong>Árvore Ótima (PD + matriz K)</strong></td><td>2/6</td><td style="color:var(--warn);font-weight:700">33%</td><td>Seção 1.5</td></tr>
+                    <tr><td>Grafos (GRID network, trajetória)</td><td>2/6</td><td style="color:var(--warn);font-weight:700">33%</td><td>Seção 1.6</td></tr>
+                    <tr><td>Avaliação de expressão com pilha</td><td>2/6</td><td style="color:var(--warn);font-weight:700">33%</td><td>Seção 1.4 + 1.3</td></tr>
+                    <tr><td><strong>Modelagem aberta / otimização (recente)</strong></td><td>2/6</td><td style="color:var(--warn);font-weight:700">33%</td><td>P1-P3 deste módulo</td></tr>
+                    <tr><td><strong>Árvore Graduada (AVL) + rotações</strong></td><td>1/6</td><td style="color:var(--muted);font-weight:700">17%</td><td>Seção 1.5</td></tr>
+                    <tr><td>Geometria computacional (cobertura)</td><td>1/6</td><td style="color:var(--muted);font-weight:700">17%</td><td>Seção 1.10</td></tr>
+                    <tr><td>Celebridade (eliminação por candidato)</td><td>1/6</td><td style="color:var(--muted);font-weight:700">17%</td><td>M2 · Problema 01</td></tr>
+                    <tr><td>Recursão clássica (Fibonacci)</td><td>1/6</td><td style="color:var(--muted);font-weight:700">17%</td><td>Seção 1.2</td></tr>
                 </table>
+
+                <div class="section-label purple">Pontuação esperada por tema</div>
+                <div class="insight-box">
+                    Provas valem 10 pontos no total. Distribuição típica observada:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>Árvore Ótima (PD)</strong> e <strong>Árvore Graduada</strong> valem <strong>3,5 pontos cada</strong> quando aparecem. Estes dois sozinhos podem valer 7,0 pts da prova.</li>
+                        <li>Conversão de notações vale tipicamente <strong>1,5 a 2,0 pts</strong>.</li>
+                        <li>Reconstrução de árvore vale tipicamente <strong>1,5 a 2,0 pts</strong>.</li>
+                        <li>Demais questões (números, grafos, geometria, modelagem) valem <strong>1,5 a 2,5 pts</strong>.</li>
+                    </ul>
+                </div>
 
                 <div class="section-label purple">Estratégia de revisão sugerida</div>
                 <div class="callout green">
                     <span class="callout-icon" style="color:var(--accent3)">🎯</span>
-                    <span>1) Domine a <strong>Anatomia</strong> e o <strong>Modelo</strong> deste módulo. 2) Revise <em>árvores e notações</em> (§1.5 e §1.4) — são quase certeza. 3) Pratique <em>análise de complexidade e recursão</em> (§1.1 e §1.2). 4) Revise <em>grafos</em> (§1.6) e <em>ordenação</em> (§1.7). 5) Faça uma passada nos tópicos especializados (§1.8 a §1.10).</span>
+                    <span><strong>Ordem ótima de estudo</strong> (baseada em probabilidade × pontuação):
+                    <br>1) <strong>Anatomia + Modelo + Erros</strong> deste módulo — o template em 5 passos vale ponto em <em>toda</em> questão.
+                    <br>2) <strong>§1.5 Árvores</strong> completa: percursos, reconstrução, <em>árvore ótima</em>, <em>AVL/graduada</em> — sozinha pode garantir 5 a 7 pts da prova.
+                    <br>3) <strong>§1.4 Notações</strong> matemáticas (conversão recursiva + pilha de avaliação) — 67% e quase grátis se você sabe percursos.
+                    <br>4) <strong>§1.9 Números</strong> (Euclides, primos, Carmichael) — 67% e algoritmos curtos.
+                    <br>5) <strong>§1.6 Grafos</strong> (BFS/DFS, GRID network).
+                    <br>6) <strong>§1.10 Geometria</strong> (cobertura por círculos) e <strong>§1.2 Recursão</strong> (Fibonacci, Hanoi).</span>
                 </div>
             </section>
         </div>

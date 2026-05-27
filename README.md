@@ -62,9 +62,9 @@ A organização é **pedagógica**, em três etapas claras:
 |---|---|
 | **A. Fundamentos** | 1.1 Notações & Complexidade · 1.2 Recursão |
 | **B. ED Lineares** | 1.3 Estruturas de Dados · 1.4 Notações Matemáticas (in/pré/pós-fixa) |
-| **C. ED Não-Lineares** | 1.5 Árvores Binárias · 1.6 Grafos |
+| **C. ED Não-Lineares** | 1.5 Árvores Binárias (BST · percursos · reconstrução · **Árvore Ótima (PD)** · **Árvore Graduada/AVL**) · 1.6 Grafos |
 | **D. Algoritmos Clássicos** | 1.7 Ordenação (9 algoritmos) |
-| **E. Especializados** | 1.8 Strings · 1.9 Teoria dos Números · 1.10 Geometria |
+| **E. Especializados** | 1.8 Strings · 1.9 Teoria dos Números (Euclides · primos · **MDC de n valores** · **Carmichael / Korselt**) · 1.10 Geometria |
 
 > A ordem foi pensada para um aluno que está aprendendo do zero: análise antes de algoritmos, recursão antes de árvores, lineares antes de não-lineares, geral antes de especializado.
 
@@ -75,7 +75,7 @@ A organização é **pedagógica**, em três etapas claras:
 | **P1** | Anatomia da Resposta Ideal | Os 5 passos obrigatórios em qualquer resposta da P1 |
 | **P2** | Modelo de Resposta | Template em 5 blocos para copiar e adaptar |
 | **P3** | Erros Comuns | 6 armadilhas que descontam nota |
-| **P4** | Temas × Probabilidade | Estatísticas dos temas das 4 últimas P1's e onde revisá-los no Módulo 1 |
+| **P4** | Temas × Probabilidade | Estatísticas reais das **6 P1's mapeadas** (2020.1, 2020.2, 2021.1, 2024.1, 2025.1, 2025.2) e onde revisá-los no Módulo 1 |
 
 > Este módulo **não** é teoria de AED — é estratégia de prova. Foi separado do M1 para deixar a teoria pura e o preparo prático em locais distintos.
 
