@@ -68,7 +68,7 @@ A organização é **pedagógica**, em três etapas claras:
 
 > A ordem foi pensada para um aluno que está aprendendo do zero: análise antes de algoritmos, recursão antes de árvores, lineares antes de não-lineares, geral antes de especializado.
 
-### Prova (4 cartões de preparo para a P1 do Prof. Strauss)
+### Prova P1 (4 cartões de preparo para a 1ª prova)
 
 | # | Cartão | O que tem |
 |---|---|---|
@@ -77,7 +77,16 @@ A organização é **pedagógica**, em três etapas claras:
 | **P3** | Erros Comuns | 6 armadilhas que descontam nota |
 | **P4** | Temas × Probabilidade | Estatísticas reais das **6 P1's mapeadas** (2020.1, 2020.2, 2021.1, 2024.1, 2025.1, 2025.2) e onde revisá-los no Módulo 1 |
 
-> Este módulo **não** é teoria de AED — é estratégia de prova. Foi separado do M1 para deixar a teoria pura e o preparo prático em locais distintos.
+### Prova P2 (4 cartões — cada um é uma questão-tipo resolvida por completo)
+
+| # | Cartão | O que tem |
+|---|---|---|
+| **P1** | Anatomia da Resposta na P2 | Os 5 passos + checklist específico (certificar antes de transformar, folhas de insucesso, desenhar antes/depois de cada rotação, max vs min heap) |
+| **P2** | Árvore Ótima Resolvida | Resposta modelo da **P2-2020.02 Q1** com DRE=123456789: F e F' calculados, matriz C e K preenchidas (custo total = **210**), reconstrução da árvore e verificação manual |
+| **P3** | AVL — Certificar e Transformar | Algoritmo de certificação (retorna bool) + transformação (pós-ordem), aplicado na árvore da Q1 do "P2 de 3 questões" — 1 rotação simples à direita, verificação FB antes/depois |
+| **P4** | Heap para Priorização de CRAs | Max-heap + HashMap para as 3 operações da **Q3 do P2 de 3 questões**: (a) maior CRA em Θ(1), (b) inserir aluno em Θ(log n), (c) alterar CRA em Θ(log n) |
+
+> Os dois módulos **não** são teoria de AED — são estratégia de prova. Foram separados do M1 para deixar a teoria pura e o preparo prático em locais distintos. O foco da Prova P2 é <em>resposta modelo como método didático</em>: cada cartão é uma questão real resolvida por completo, servindo simultaneamente como gabarito e como material de estudo.
 
 ### Módulo 2 — Problemas Aplicados *(gabarito de consulta opcional)* — 10 problemas em 4 grupos
 

@@ -2,9 +2,9 @@
 /* ══════════════════════════════════════════════════════
    MODULE + PANEL NAVIGATION
 ══════════════════════════════════════════════════════ */
-const MOD_SUBTABS = { m1:'subtab-m1', prova:'subtab-prova', m2:'subtab-m2' };
-const MOD_PANELS  = { home:'panel-home', m1:'panel-m1', prova:'panel-prova', m2:'panel-m2' };
-const MOD_LABEL   = { m1:'Módulo 1 · Teoria', prova:'Prova · P1 do Strauss', m2:'Módulo 2 · Problemas' };
+const MOD_SUBTABS = { m1:'subtab-m1', prova:'subtab-prova', prova2:'subtab-prova2', m2:'subtab-m2' };
+const MOD_PANELS  = { home:'panel-home', m1:'panel-m1', prova:'panel-prova', prova2:'panel-prova2', m2:'panel-m2' };
+const MOD_LABEL   = { m1:'Módulo 1 · Teoria', prova:'Prova · P1 do Strauss', prova2:'Prova · P2 do Strauss', m2:'Módulo 2 · Problemas' };
 
 /* Metadados de cada painel: módulo, bloco/grupo, número e título.
    Cor segue a paleta dos blocos/grupos definidos no layout.css. */
@@ -21,11 +21,17 @@ const PANEL_META = {
     'm1-numeros':        { mod:'m1', block:'Especializados',  color:'#aab7b8', num:'1.9',  title:'Teoria dos Números' },
     'm1-geometria':      { mod:'m1', block:'Especializados',  color:'#aab7b8', num:'1.10', title:'Geometria' },
 
-    /* Prova — 4 cartões de preparo para a P1 */
+    /* Prova P1 — 4 cartões de preparo */
     'pr-anatomia':       { mod:'prova', block:'Tática P1', color:'#f7dc6f', num:'P1', title:'Anatomia da Resposta Ideal' },
     'pr-modelo':         { mod:'prova', block:'Tática P1', color:'#f7dc6f', num:'P2', title:'Modelo de Resposta (Template)' },
     'pr-erros':          { mod:'prova', block:'Tática P1', color:'#f7dc6f', num:'P3', title:'Erros Comuns que Descontam Nota' },
     'pr-temas':          { mod:'prova', block:'Tática P1', color:'#f7dc6f', num:'P4', title:'Temas × Probabilidade × Onde Estudar' },
+
+    /* Prova P2 — 4 cartões, cada um é uma questão-tipo resolvida */
+    'pr2-anatomia':      { mod:'prova2', block:'Tática P2', color:'#ec7063', num:'P1', title:'Anatomia da Resposta na P2' },
+    'pr2-arvore':        { mod:'prova2', block:'Tática P2', color:'#ec7063', num:'P2', title:'Árvore Ótima Resolvida (P2-2020.02 Q1)' },
+    'pr2-avl':           { mod:'prova2', block:'Tática P2', color:'#ec7063', num:'P3', title:'AVL — Certificar e Transformar (P2-2020.02 Q2)' },
+    'pr2-heap':          { mod:'prova2', block:'Tática P2', color:'#ec7063', num:'P4', title:'Heap para Priorização (Q3 do 3-questões)' },
 
     /* M2 — 4 grupos */
     'p1':  { mod:'m2', block:'Estruturas Lineares', color:'#5dade2', num:'01', title:'O Problema da Celebridade' },
@@ -44,6 +50,7 @@ const PANEL_META = {
 const PANEL_ORDER = {
     m1:    ['m1-notacoes','m1-recursao','m1-estruturas','m1-notmat','m1-arvores','m1-grafos-teoria','m1-sort','m1-strings','m1-numeros','m1-geometria'],
     prova: ['pr-anatomia','pr-modelo','pr-erros','pr-temas'],
+    prova2:['pr2-anatomia','pr2-arvore','pr2-avl','pr2-heap'],
     m2:    ['p1','p3','p7','p2','p6','p8','p10','p4','p5','p9']
 };
 
@@ -155,7 +162,7 @@ function hexToRgba(hex, alpha) {
 
 /* Renderiza chrome do primeiro painel ativo de cada módulo na carga inicial */
 document.addEventListener('DOMContentLoaded', () => {
-    ['m1','prova','m2'].forEach(mod => {
+    ['m1','prova','prova2','m2'].forEach(mod => {
         const activePanel = document.querySelector(`#panel-${mod} .content-panel.active`);
         if (activePanel) renderPanelChrome(mod, activePanel.id.replace('panel-',''));
     });

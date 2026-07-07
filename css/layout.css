@@ -118,6 +118,7 @@
         .mod-tab[data-mod="home"].active   { border-bottom-color: var(--muted); }
         .mod-tab[data-mod="m1"].active     { border-bottom-color: #9b59b6; color: #be90d4; }
         .mod-tab[data-mod="prova"].active  { border-bottom-color: #f1c40f; color: #f7dc6f; }
+        .mod-tab[data-mod="prova2"].active { border-bottom-color: #e74c3c; color: #ec7063; }
         .mod-tab[data-mod="m2"].active     { border-bottom-color: var(--accent); color: var(--accent); }
 
         .mod-tab .tab-icon {
@@ -154,6 +155,7 @@
 
         .mod-tab[data-mod="m1"].active .tab-count    { background: rgba(155,89,182,0.25); color: #be90d4; }
         .mod-tab[data-mod="prova"].active .tab-count { background: rgba(241,196,15,0.20); color: #f7dc6f; }
+        .mod-tab[data-mod="prova2"].active .tab-count{ background: rgba(231,76,60,0.20); color: #ec7063; }
         .mod-tab[data-mod="m2"].active .tab-count    { background: rgba(93,173,226,0.18); color: var(--accent); }
 
         /* Sub-tabs (problem list inside a module) */
@@ -254,8 +256,10 @@
         .sub-tab.block-classicos.active       { color: #f5b041; border-bottom-color: #f39c12; }
         .sub-tab.block-especializados.active  { color: #aab7b8; border-bottom-color: #aab7b8; }
 
-        /* Prova — tema gold */
+        /* Prova P1 — tema gold */
         .sub-tab.block-prova.active           { color: #f7dc6f; border-bottom-color: #f1c40f; }
+        /* Prova P2 — tema coral */
+        .sub-tab.block-prova2.active          { color: #ec7063; border-bottom-color: #e74c3c; }
 
         /* M2 — 4 grupos de problemas */
         .sub-tab.grp-estruturas.active        { color: #5dade2; border-bottom-color: #5dade2; }
