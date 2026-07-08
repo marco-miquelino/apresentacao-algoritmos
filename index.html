@@ -1041,142 +1041,10 @@ o que permite uma implementação O(n²), mas a versão O(n³) é a esperada na 
                     <span><strong>Erros que descontam nota:</strong> (1) esquecer as folhas de insucesso ao desenhar a árvore; (2) não comparar <code>C[0][n]</code> calculado com o "custo total" pedido pela soma manual <code>Σ F<sub>j</sub>·(prof+1) + Σ F'<sub>j</sub>·prof</code>; (3) não justificar <code>Θ(n³)</code>.</span>
                 </div>
 
-                <!-- ═══════════════════════════════════════════════
-                     ÁRVORE ÓTIMA — EXEMPLO RESOLVIDO DE PROVA
-                ═══════════════════════════════════════════════ -->
-                <div class="section-label purple">Exemplo Resolvido de Prova — Árvore Ótima (P2-2020.02 Q1 · valor 5,0)</div>
-                <div class="enunciado">
-                    <strong>Enunciado (transcrição literal):</strong> <em>"Descreva a árvore ótima, usando o algoritmo baseado na programação dinâmica para a geração da árvores ótimas, a partir das frequências diferenciadas apresentadas na tabela abaixo, onde os valores encontram-se baseados no DRE do aluno. Usando o mapa descrito pela matriz K do algoritmo, esquematize o árvore (não esqueça dos nós referentes aos insucessos de busca), e calcule o custo TOTAL da árvore proposta, comparando-o com o custo apresentado na matriz C."</em> Resolvido abaixo com o DRE de exemplo <strong>123456789</strong>.
-                </div>
-
-                <div class="section-label purple">Frequências para DRE = 123456789</div>
-                <div class="insight-box">
-                    O enunciado mapeia os dígitos do DRE por <em>ordem</em>: n = ordem 1 (unidade) = <strong>9</strong>, n−1 = ordem 2 (dezena) = <strong>8</strong>, …, n−6 = <strong>3</strong>.
-                </div>
-
-                <table class="complexity-table">
-                    <tr><th>nós j</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
-                    <tr><td><strong>F<sub>j</sub></strong> (sucesso)</td><td>—</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
-                    <tr><td><strong>F'<sub>j</sub></strong> (insucesso)</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td></tr>
-                </table>
-
-                <div class="section-label purple">Matrizes C e K preenchidas (n = 6)</div>
-                <div class="insight-box">
-                    Preenchimento diagonal por diagonal, usando a recorrência da seção anterior. Só os valores acima da diagonal principal são calculados (matriz triangular):
-                </div>
-
-                <table class="complexity-table" style="text-align:center">
-                    <tr><th style="text-align:center">C</th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th><th>j=4</th><th>j=5</th><th>j=6</th></tr>
-                    <tr><td><strong>i=0</strong></td><td>0</td><td>21</td><td>53</td><td>85</td><td>127</td><td>169</td><td style="background:rgba(93,173,226,0.15);color:var(--accent);font-weight:700">210</td></tr>
-                    <tr><td><strong>i=1</strong></td><td>—</td><td>0</td><td>20</td><td>51</td><td>82</td><td>123</td><td>164</td></tr>
-                    <tr><td><strong>i=2</strong></td><td>—</td><td>—</td><td>0</td><td>19</td><td>49</td><td>79</td><td>119</td></tr>
-                    <tr><td><strong>i=3</strong></td><td>—</td><td>—</td><td>—</td><td>0</td><td>18</td><td>47</td><td>76</td></tr>
-                    <tr><td><strong>i=4</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>17</td><td>45</td></tr>
-                    <tr><td><strong>i=5</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>16</td></tr>
-                    <tr><td><strong>i=6</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td></tr>
-                </table>
-
-                <div class="callout">
-                    <span class="callout-icon">✓</span>
-                    <span><strong>C[0][6] = 210</strong> — o custo mínimo da árvore ótima. Este é o valor que a matriz C "apresenta" e que o enunciado pede para comparar com o cálculo manual do custo total.</span>
-                </div>
-
-                <table class="complexity-table" style="text-align:center">
-                    <tr><th style="text-align:center">K</th><th>j=1</th><th>j=2</th><th>j=3</th><th>j=4</th><th>j=5</th><th>j=6</th></tr>
-                    <tr><td><strong>i=0</strong></td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td style="background:rgba(93,173,226,0.15);color:var(--accent);font-weight:700">3</td></tr>
-                    <tr><td><strong>i=1</strong></td><td>—</td><td>2</td><td>2</td><td>3</td><td>3</td><td>3</td></tr>
-                    <tr><td><strong>i=2</strong></td><td>—</td><td>—</td><td>3</td><td>3</td><td>4</td><td>4</td></tr>
-                    <tr><td><strong>i=3</strong></td><td>—</td><td>—</td><td>—</td><td>4</td><td>4</td><td>5</td></tr>
-                    <tr><td><strong>i=4</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td><td>5</td></tr>
-                    <tr><td><strong>i=5</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>6</td></tr>
-                </table>
-
-                <div class="section-label purple">Amostra de contas (para conferir)</div>
-                <div class="insight-box">
-                    <pre style="margin-top:0"><code><strong>d=1 (subárvores de 1 chave):</strong>
-  P[0][1] = P[0][0] + F[1] + F'[1] = 9 + 4 + 8 = 21
-  C[0][1] = 21 + (C[0][0]+C[1][1]) = 21 + 0 = 21     K[0][1] = 1
-
-<strong>d=2, célula C[0][2]:</strong>
-  P[0][2] = P[0][1] + F[2] + F'[2] = 21 + 5 + 7 = 33
-  k=1: C[0][0]+C[1][2] = 0+20 = <strong>20</strong>  ← vence
-  k=2: C[0][1]+C[2][2] = 21+0 = 21
-  C[0][2] = 33 + 20 = <strong>53</strong>     K[0][2] = 1
-
-<strong>d=6, célula final C[0][6]:</strong>
-  P[0][6] = P[0][5] + F[6] + F'[6] = 69 + 9 + 3 = 81
-  k=1: 0+164 = 164        k=2: 21+119 = 140
-  k=3: 53+76  = <strong>129</strong> ← vence
-  k=4: 85+45  = 130       k=5: 127+16 = 143      k=6: 169+0 = 169
-  C[0][6] = 81 + 129 = <strong>210</strong>     K[0][6] = <strong>3</strong></code></pre>
-                </div>
-
-                <div class="section-label purple">Reconstrução da árvore a partir de K</div>
-                <div class="insight-box">
-                    Chame <code>reconstroi(K, 0, 6)</code>. Quando <code>i = j</code>, o "nó" é uma <strong>folha de insucesso rotulada F'<sub>i</sub></strong>.
-                    <pre style="margin-top:10px;margin-bottom:0"><code>reconstroi(K, 0, 6) → raiz = K[0][6] = <strong>3</strong>
-  ├── esq: reconstroi(K, 0, 2) → raiz = K[0][2] = <strong>1</strong>
-  │        ├── esq: reconstroi(K, 0, 0) → folha <strong>F'<sub>0</sub></strong>
-  │        └── dir: reconstroi(K, 1, 2) → raiz = K[1][2] = <strong>2</strong>
-  │                 ├── esq: folha <strong>F'<sub>1</sub></strong>
-  │                 └── dir: folha <strong>F'<sub>2</sub></strong>
-  └── dir: reconstroi(K, 3, 6) → raiz = K[3][6] = <strong>5</strong>
-           ├── esq: reconstroi(K, 3, 4) → raiz = K[3][4] = <strong>4</strong>
-           │        ├── esq: folha <strong>F'<sub>3</sub></strong>
-           │        └── dir: folha <strong>F'<sub>4</sub></strong>
-           └── dir: reconstroi(K, 5, 6) → raiz = K[5][6] = <strong>6</strong>
-                    ├── esq: folha <strong>F'<sub>5</sub></strong>
-                    └── dir: folha <strong>F'<sub>6</sub></strong></code></pre>
-                </div>
-
-                <div class="section-label purple">Esquema da árvore ótima (desenho)</div>
-                <pre><code>                              ┌─────┐
-                              │  3  │ ← raiz
-                              └──┬──┘
-                     ┌───────────┴───────────┐
-                  ┌──┴──┐                 ┌──┴──┐
-                  │  1  │                 │  5  │
-                  └──┬──┘                 └──┬──┘
-              ┌─────┴────┐              ┌────┴─────┐
-           ┌──┴───┐   ┌──┴──┐        ┌──┴──┐    ┌──┴──┐
-           │ F'₀=9│   │  2  │        │  4  │    │  6  │
-           └──────┘   └──┬──┘        └──┬──┘    └──┬──┘
-                    ┌────┴────┐    ┌────┴────┐  ┌──┴──────┐
-                 ┌──┴──┐   ┌──┴──┐┌──┴──┐┌──┴──┐┌──┴──┐┌──┴──┐
-                 │F'₁=8│   │F'₂=7││F'₃=6││F'₄=5││F'₅=4││F'₆=3│
-                 └─────┘   └─────┘└─────┘└─────┘└─────┘└─────┘</code></pre>
-
-                <div class="section-label purple">Cálculo manual do custo TOTAL</div>
-                <div class="insight-box">
-                    <strong>Fórmula:</strong> <code>custo(T) = Σ F<sub>j</sub>·(prof(j)+1) + Σ F'<sub>i</sub>·prof(folha<sub>i</sub>)</code>
-                </div>
-
-                <table class="complexity-table">
-                    <tr><th>Nó</th><th>Tipo</th><th>Prof.</th><th>Frequência</th><th>Contribuição</th></tr>
-                    <tr><td><strong>3</strong></td><td>interno (raiz)</td><td>0</td><td>F<sub>3</sub> = 6</td><td>6 · (0+1) = <strong>6</strong></td></tr>
-                    <tr><td><strong>1</strong></td><td>interno</td><td>1</td><td>F<sub>1</sub> = 4</td><td>4 · 2 = <strong>8</strong></td></tr>
-                    <tr><td><strong>5</strong></td><td>interno</td><td>1</td><td>F<sub>5</sub> = 8</td><td>8 · 2 = <strong>16</strong></td></tr>
-                    <tr><td><strong>2</strong></td><td>interno</td><td>2</td><td>F<sub>2</sub> = 5</td><td>5 · 3 = <strong>15</strong></td></tr>
-                    <tr><td><strong>4</strong></td><td>interno</td><td>2</td><td>F<sub>4</sub> = 7</td><td>7 · 3 = <strong>21</strong></td></tr>
-                    <tr><td><strong>6</strong></td><td>interno</td><td>2</td><td>F<sub>6</sub> = 9</td><td>9 · 3 = <strong>27</strong></td></tr>
-                    <tr><td>F'<sub>0</sub></td><td>folha</td><td>2</td><td>9</td><td>9 · 2 = <strong>18</strong></td></tr>
-                    <tr><td>F'<sub>1</sub></td><td>folha</td><td>3</td><td>8</td><td>8 · 3 = <strong>24</strong></td></tr>
-                    <tr><td>F'<sub>2</sub></td><td>folha</td><td>3</td><td>7</td><td>7 · 3 = <strong>21</strong></td></tr>
-                    <tr><td>F'<sub>3</sub></td><td>folha</td><td>3</td><td>6</td><td>6 · 3 = <strong>18</strong></td></tr>
-                    <tr><td>F'<sub>4</sub></td><td>folha</td><td>3</td><td>5</td><td>5 · 3 = <strong>15</strong></td></tr>
-                    <tr><td>F'<sub>5</sub></td><td>folha</td><td>3</td><td>4</td><td>4 · 3 = <strong>12</strong></td></tr>
-                    <tr><td>F'<sub>6</sub></td><td>folha</td><td>3</td><td>3</td><td>3 · 3 = <strong>9</strong></td></tr>
-                    <tr style="background:rgba(39,174,96,0.10)"><td colspan="4"><strong>Soma internos + folhas</strong></td><td style="color:var(--accent3);font-weight:800;font-size:16px">93 + 117 = 210 ✓</td></tr>
-                </table>
-
-                <div class="callout green">
-                    <span class="callout-icon" style="color:var(--accent3)">✅</span>
-                    <span><strong>Custo total = 210 = C[0][6]</strong>. Bate com a matriz C — a resposta está consistente.</span>
-                </div>
-
-                <div class="callout purple">
-                    <span class="callout-icon" style="color:var(--accent5)">📌</span>
-                    <span><strong>Como usar na sua prova real:</strong> substitua os dígitos do DRE de exemplo (123456789) pelos <em>seus</em> dígitos e refaça as frequências, as matrizes, a reconstrução, o desenho e o custo total. Toda a estrutura da resposta permanece — a modelagem, a recorrência e a análise Θ(n³) da seção anterior podem ser copiadas literalmente.</span>
+                <!-- placeholder: video/implementacao passo a passo da arvore otima -->
+                <div class="callout orange">
+                    <span class="callout-icon" style="color:var(--warn)">🎥</span>
+                    <span><strong>Em breve:</strong> vídeo com a implementação passo a passo — preenchimento das matrizes C/P/K a partir da tabela de frequências, leitura do mapa K e desenho da árvore ótima com o custo total conferido.</span>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════
@@ -1366,6 +1234,144 @@ Cota inferior Ω(n): precisamos olhar todos os nós para saber se a árvore inte
                 <div class="callout purple">
                     <span class="callout-icon" style="color:var(--accent5)">📌</span>
                     <span><strong>Padrão de resposta ótima:</strong> (1) descreva <em>certificar</em> primeiro, (2) descreva <em>transformar</em> depois, (3) mostre que <code>transformar</code> chama <code>balanceia</code> que faz apenas O(1) trabalho por nó, (4) certifique a árvore de entrada apontando exatamente qual FB fere a regra, (5) desenhe ANTES e DEPOIS de <em>cada</em> rotação (aqui é só 1). Cada omissão custa 0,5 pt.</span>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════
+                     TIPOS DE ÁRVORES BALANCEADAS
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Tipos de Árvores Balanceadas — AVL/Graduada × Rubro-Negra</div>
+                <div class="insight-box">
+                    Uma BST comum pode <strong>degenerar em lista</strong> (basta inserir chaves já ordenadas) e aí a busca cai de O(log n) para <strong>O(n)</strong>. As árvores balanceadas impõem uma <em>invariante extra</em> que força a altura a permanecer O(log n). Os dois tipos clássicos:
+                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
+                        <li><strong>AVL e Graduada são a MESMA estrutura</strong> — "graduada" é o nome que o Prof. Strauss usa. Invariante: em todo nó, o fator de balanceamento <code>FB = h(esq) − h(dir)</code> pertence a <strong>{−1, 0, +1}</strong>. É o balanceamento mais rígido: a árvore fica o mais rasa possível.</li>
+                        <li><strong>Rubro-Negra</strong> — balanceia por <em>cores</em> (vermelho/preto) em vez de alturas. A invariante é mais frouxa: garante apenas que o caminho mais longo até uma folha tem no máximo o <em>dobro</em> do mais curto. Em troca, faz menos rotações por operação.</li>
+                    </ul>
+                </div>
+
+                <table class="complexity-table">
+                    <tr><th>Critério</th><th>AVL / Graduada</th><th>Rubro-Negra</th></tr>
+                    <tr><td>Invariante</td><td><code>|h(esq) − h(dir)| ≤ 1</code> em todo nó</td><td>5 propriedades de cor</td></tr>
+                    <tr><td>Altura máxima</td><td>≈ 1,44·log₂ n (mais rasa)</td><td>≤ 2·log₂(n+1)</td></tr>
+                    <tr><td>Busca</td><td style="color:var(--accent3);font-weight:700">Mais rápida</td><td>Levemente mais lenta</td></tr>
+                    <tr><td>Inserção</td><td>No máx. 1 rotação (simples ou dupla)</td><td>No máx. 2 rotações + recolorações</td></tr>
+                    <tr><td>Remoção</td><td>Pode rotacionar até a raiz — O(log n) rotações</td><td style="color:var(--accent3);font-weight:700">No máx. 3 rotações</td></tr>
+                    <tr><td>Quando preferir</td><td>Leitura intensa (muitas buscas)</td><td>Escrita intensa (muitas inserções/remoções)</td></tr>
+                    <tr><td>Onde aparece</td><td>Questões do Strauss ("graduada")</td><td><code>std::map</code> (C++), <code>TreeMap</code> (Java), kernel Linux</td></tr>
+                </table>
+
+                <!-- KIT AVL -->
+                <div class="section-label purple">AVL / Graduada — kit mínimo para levar à prova</div>
+                <div class="insight-box">
+                    Bloco <strong>autocontido</strong>: com essas ~35 linhas você resolve qualquer questão de AVL (certificar usa <code>FB</code>; transformar usa <code>balanceia</code> em pós-ordem; inserir já rebalanceia na volta da recursão).
+                </div>
+
+                <pre><code><span class="cm"># ── KIT AVL: copie este bloco inteiro na prova ───────────────</span>
+<span class="kw">def</span> <span class="fn">h</span>(no):                                <span class="cm"># altura segura (None → -1)</span>
+    <span class="kw">return</span> no.altura <span class="kw">if</span> no <span class="kw">else</span> -<span class="num">1</span>
+
+<span class="kw">def</span> <span class="fn">FB</span>(no):                               <span class="cm"># fator de balanceamento</span>
+    <span class="kw">return</span> <span class="fn">h</span>(no.esq) - <span class="fn">h</span>(no.dir)
+
+<span class="kw">def</span> <span class="fn">atualiza</span>(no):
+    no.altura = <span class="num">1</span> + <span class="fn">max</span>(<span class="fn">h</span>(no.esq), <span class="fn">h</span>(no.dir))
+
+<span class="kw">def</span> <span class="fn">rot_dir</span>(p):                            <span class="cm"># conserta caso EE</span>
+    q = p.esq
+    p.esq = q.dir
+    q.dir = p
+    <span class="fn">atualiza</span>(p); <span class="fn">atualiza</span>(q)
+    <span class="kw">return</span> q                               <span class="cm"># q é a nova raiz local</span>
+
+<span class="kw">def</span> <span class="fn">rot_esq</span>(p):                            <span class="cm"># conserta caso DD (espelho)</span>
+    q = p.dir
+    p.dir = q.esq
+    q.esq = p
+    <span class="fn">atualiza</span>(p); <span class="fn">atualiza</span>(q)
+    <span class="kw">return</span> q
+
+<span class="kw">def</span> <span class="fn">balanceia</span>(p):
+    <span class="fn">atualiza</span>(p)
+    <span class="kw">if</span> <span class="fn">FB</span>(p) &gt; <span class="num">1</span>:                          <span class="cm"># esquerda pesada</span>
+        <span class="kw">if</span> <span class="fn">FB</span>(p.esq) &lt; <span class="num">0</span>:                   <span class="cm"># caso ED → vira EE antes</span>
+            p.esq = <span class="fn">rot_esq</span>(p.esq)
+        <span class="kw">return</span> <span class="fn">rot_dir</span>(p)
+    <span class="kw">if</span> <span class="fn">FB</span>(p) &lt; -<span class="num">1</span>:                         <span class="cm"># direita pesada</span>
+        <span class="kw">if</span> <span class="fn">FB</span>(p.dir) &gt; <span class="num">0</span>:                   <span class="cm"># caso DE → vira DD antes</span>
+            p.dir = <span class="fn">rot_dir</span>(p.dir)
+        <span class="kw">return</span> <span class="fn">rot_esq</span>(p)
+    <span class="kw">return</span> p
+
+<span class="kw">def</span> <span class="fn">inserir</span>(no, chave):                    <span class="cm"># BST + rebalanceio na volta</span>
+    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">return</span> <span class="fn">Node</span>(chave)                 <span class="cm"># caso base: vira folha</span>
+    <span class="kw">if</span> chave &lt; no.valor:
+        no.esq = <span class="fn">inserir</span>(no.esq, chave)
+    <span class="kw">else</span>:
+        no.dir = <span class="fn">inserir</span>(no.dir, chave)
+    <span class="kw">return</span> <span class="fn">balanceia</span>(no)                   <span class="cm"># rebalanceia cada ancestral</span></code></pre>
+
+                <!-- RUBRO-NEGRA -->
+                <div class="section-label purple">Árvore Rubro-Negra — as 5 propriedades</div>
+                <div class="insight-box">
+                    Cada nó carrega uma <strong>cor</strong> (vermelho ou preto) e a árvore mantém:
+                    <ul style="margin:12px 0 12px 22px;list-style:decimal;">
+                        <li>Todo nó é <strong>vermelho ou preto</strong>.</li>
+                        <li>A <strong>raiz é preta</strong>.</li>
+                        <li>Toda folha externa (<code>nil</code>) é <strong>preta</strong>.</li>
+                        <li>Filhos de nó vermelho são <strong>pretos</strong> — nunca há dois vermelhos seguidos.</li>
+                        <li>Todo caminho de um nó até suas folhas descendentes tem o <strong>mesmo número de nós pretos</strong> (a <em>altura-preta</em>).</li>
+                    </ul>
+                    <strong>Por que isso balanceia?</strong> Pelas propriedades 4 e 5, o caminho mais longo (alternando vermelho-preto) tem no máximo o dobro do mais curto (só pretos). Logo <code>altura ≤ 2·log₂(n+1)</code> → busca, inserção e remoção em <strong>O(log n)</strong>.
+                </div>
+
+                <div class="section-label purple">Rubro-Negra — inserção mais simples possível</div>
+                <div class="insight-box">
+                    A regra de bolso cabe numa linha: <strong>novo nó nasce VERMELHO; se o pai também for vermelho, olhe o TIO</strong> — tio vermelho → <em>recolore</em> e sobe; tio preto → <em>rotaciona</em> (1 ou 2 vezes) e para.
+                </div>
+
+                <pre><code><span class="cm"># ── KIT RUBRO-NEGRA: inserção com casos do tio ───────────────
+# Nó: valor, esq, dir, pai, cor ('R' = vermelho, 'P' = preto)
+# rot_esq_rn / rot_dir_rn = mesmas rotações da AVL,
+# atualizando TAMBÉM o ponteiro pai de cada nó movido.</span>
+
+<span class="kw">def</span> <span class="fn">inserir_rn</span>(T, chave):
+    z = <span class="fn">No</span>(chave, cor=<span class="st">'R'</span>)                <span class="cm"># 1. novo nó nasce VERMELHO</span>
+    <span class="fn">inserir_bst</span>(T, z)                      <span class="cm"># 2. inserção comum de BST</span>
+
+    <span class="kw">while</span> z.pai <span class="kw">and</span> z.pai.cor == <span class="st">'R'</span>:     <span class="cm"># 3. conserta vermelho-vermelho</span>
+        avo = z.pai.pai
+        tio = avo.dir <span class="kw">if</span> z.pai == avo.esq <span class="kw">else</span> avo.esq
+
+        <span class="kw">if</span> tio <span class="kw">and</span> tio.cor == <span class="st">'R'</span>:         <span class="cm"># CASO 1: tio VERMELHO</span>
+            z.pai.cor = tio.cor = <span class="st">'P'</span>       <span class="cm">#   recolore pai e tio de preto,</span>
+            avo.cor = <span class="st">'R'</span>                   <span class="cm">#   avô de vermelho,</span>
+            z = avo                          <span class="cm">#   e sobe 2 níveis (repete)</span>
+
+        <span class="kw">elif</span> z.pai == avo.esq:              <span class="cm"># CASO 2/3: tio PRETO, lado esq</span>
+            <span class="kw">if</span> z == z.pai.dir:               <span class="cm">#   "triângulo" → vira "linha"</span>
+                z = z.pai
+                <span class="fn">rot_esq_rn</span>(T, z)
+            z.pai.cor = <span class="st">'P'</span>                 <span class="cm">#   "linha": recolore e</span>
+            avo.cor = <span class="st">'R'</span>                   <span class="cm">#   rotaciona o avô</span>
+            <span class="fn">rot_dir_rn</span>(T, avo)
+
+        <span class="kw">else</span>:                                <span class="cm"># espelhado (lado dir)</span>
+            <span class="kw">if</span> z == z.pai.esq:
+                z = z.pai
+                <span class="fn">rot_dir_rn</span>(T, z)
+            z.pai.cor = <span class="st">'P'</span>
+            avo.cor = <span class="st">'R'</span>
+            <span class="fn">rot_esq_rn</span>(T, avo)
+
+    T.raiz.cor = <span class="st">'P'</span>                        <span class="cm"># 4. raiz SEMPRE preta</span></code></pre>
+
+                <div class="insight-box">
+                    <strong>Análise:</strong> o laço sobe no máximo 2 níveis por iteração até a raiz → <code>T(n) = O(log n)</code>, com no máximo <strong>2 rotações</strong> no total (os casos 2/3 encerram o laço). Cota inferior Ω(log n) para manter qualquer árvore balanceada → <strong>ÓTIMO ✓</strong>
+                </div>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">🎯</span>
+                    <span><strong>Dica de prova:</strong> se o enunciado pedir "árvore GRADUADA", é AVL — use o kit AVL acima (certificar → transformar → esquematizar rotações). Rubro-negra costuma aparecer como pergunta <em>conceitual</em>: memorize as <strong>5 propriedades</strong>, a consequência <code>altura ≤ 2·log₂(n+1)</code> e a regra do tio (<em>vermelho recolore, preto rotaciona</em>).</span>
                 </div>
 
             </section>
@@ -2755,7 +2761,7 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
 
                 <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
                     <span class="callout-icon" style="color:#ec7063">🎯</span>
-                    <span><strong>Regra de bolso da P2:</strong> se você chegar na prova sabendo <em>fluentemente</em> (1) preencher matriz C/K para árvore ótima, (2) balancear uma BST em AVL e (3) fazer as 3 operações de heap — você garante 8 a 10 pontos. As três questões estão <em>resolvidas por completo</em> no módulo teórico: árvore ótima e AVL em <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-arvores'),50)">§1.5 — Árvores Binárias</a> (seções "Exemplo Resolvido de Prova") e heap em <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 — Estruturas de Dados</a> (seção "Heap — Fila de Prioridade").</span>
+                    <span><strong>Regra de bolso da P2:</strong> se você chegar na prova sabendo <em>fluentemente</em> (1) preencher matriz C/K para árvore ótima, (2) balancear uma BST em AVL e (3) fazer as 3 operações de heap — você garante 8 a 10 pontos. Estude em <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-arvores'),50)">§1.5 — Árvores Binárias</a> (teoria de árvore ótima com vídeo passo a passo em breve · AVL certificar/transformar resolvida · kits copiáveis de AVL e Rubro-Negra) e em <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 — Estruturas de Dados</a> (seção "Heap — Fila de Prioridade" com o exemplo dos CRAs resolvido).</span>
                 </div>
             </section>
         </div>

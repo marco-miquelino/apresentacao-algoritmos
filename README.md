@@ -62,7 +62,7 @@ A organização é **pedagógica**, em três etapas claras:
 |---|---|
 | **A. Fundamentos** | 1.1 Notações & Complexidade · 1.2 Recursão |
 | **B. ED Lineares** | 1.3 Estruturas de Dados (Array · Pilha · Fila · Hash · **Heap/Fila de Prioridade**) · 1.4 Notações Matemáticas (in/pré/pós-fixa) |
-| **C. ED Não-Lineares** | 1.5 Árvores Binárias (BST · percursos · reconstrução · **Árvore Ótima (PD)** · **Árvore Graduada/AVL**) · 1.6 Grafos |
+| **C. ED Não-Lineares** | 1.5 Árvores Binárias (BST · percursos · reconstrução · **Árvore Ótima (PD)** · **Árvore Graduada/AVL** · **Rubro-Negra**) · 1.6 Grafos |
 | **D. Algoritmos Clássicos** | 1.7 Ordenação (9 algoritmos) |
 | **E. Especializados** | 1.8 Strings · 1.9 Teoria dos Números (Euclides · primos · **MDC de n valores** · **Carmichael / Korselt**) · 1.10 Geometria |
 
@@ -83,10 +83,11 @@ A organização é **pedagógica**, em três etapas claras:
 |---|---|---|
 | **P1** | Anatomia da Resposta na P2 | Os 5 passos + checklist específico (certificar antes de transformar, folhas de insucesso, desenhar antes/depois de cada rotação, max vs min heap), com links para as questões resolvidas no M1 |
 
-As três questões-tipo da P2 estão **resolvidas por completo no módulo teórico**, como "Exemplo Resolvido de Prova":
+As questões-tipo da P2 vivem no **módulo teórico**:
 
-- **Árvore Ótima (P2-2020.02 Q1, DRE=123456789)** → §1.5: matrizes C e K preenchidas, custo total = 210 verificado manualmente, reconstrução e desenho da árvore.
+- **Árvore Ótima** → §1.5: teoria (matrizes C/P/K, recorrência, análise Θ(n³)); a construção passo a passo será um **vídeo/implementação guiada** (placeholder já no lugar).
 - **AVL — Certificar e Transformar** → §1.5: algoritmo de certificação (bool) + aplicação na árvore da Q1 (1 rotação EE), tabelas de FB antes/depois.
+- **Tipos de Árvores Balanceadas** → §1.5: comparativo AVL/Graduada × Rubro-Negra + **kits mínimos copiáveis** para a prova (kit AVL completo em ~35 linhas; inserção Rubro-Negra com a regra do tio).
 - **Heap para Priorização de CRAs** → §1.3: max-heap + HashMap, operações (a) maior CRA Θ(1), (b) inserir Θ(log n), (c) alterar CRA Θ(log n), com exemplo de 5 alunos.
 
 > Os dois módulos de Prova **não** são teoria de AED — são estratégia. A teoria (incluindo os exemplos resolvidos, que são material didático) mora no M1.
