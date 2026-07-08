@@ -61,7 +61,7 @@ A organização é **pedagógica**, em três etapas claras:
 | Bloco | Seções |
 |---|---|
 | **A. Fundamentos** | 1.1 Notações & Complexidade · 1.2 Recursão |
-| **B. ED Lineares** | 1.3 Estruturas de Dados · 1.4 Notações Matemáticas (in/pré/pós-fixa) |
+| **B. ED Lineares** | 1.3 Estruturas de Dados (Array · Pilha · Fila · Hash · **Heap/Fila de Prioridade**) · 1.4 Notações Matemáticas (in/pré/pós-fixa) |
 | **C. ED Não-Lineares** | 1.5 Árvores Binárias (BST · percursos · reconstrução · **Árvore Ótima (PD)** · **Árvore Graduada/AVL**) · 1.6 Grafos |
 | **D. Algoritmos Clássicos** | 1.7 Ordenação (9 algoritmos) |
 | **E. Especializados** | 1.8 Strings · 1.9 Teoria dos Números (Euclides · primos · **MDC de n valores** · **Carmichael / Korselt**) · 1.10 Geometria |
@@ -77,16 +77,19 @@ A organização é **pedagógica**, em três etapas claras:
 | **P3** | Erros Comuns | 6 armadilhas que descontam nota |
 | **P4** | Temas × Probabilidade | Estatísticas reais das **6 P1's mapeadas** (2020.1, 2020.2, 2021.1, 2024.1, 2025.1, 2025.2) e onde revisá-los no Módulo 1 |
 
-### Prova P2 (4 cartões — cada um é uma questão-tipo resolvida por completo)
+### Prova P2 (1 cartão de tática — as questões resolvidas vivem no Módulo 1)
 
 | # | Cartão | O que tem |
 |---|---|---|
-| **P1** | Anatomia da Resposta na P2 | Os 5 passos + checklist específico (certificar antes de transformar, folhas de insucesso, desenhar antes/depois de cada rotação, max vs min heap) |
-| **P2** | Árvore Ótima Resolvida | Resposta modelo da **P2-2020.02 Q1** com DRE=123456789: F e F' calculados, matriz C e K preenchidas (custo total = **210**), reconstrução da árvore e verificação manual |
-| **P3** | AVL — Certificar e Transformar | Algoritmo de certificação (retorna bool) + transformação (pós-ordem), aplicado na árvore da Q1 do "P2 de 3 questões" — 1 rotação simples à direita, verificação FB antes/depois |
-| **P4** | Heap para Priorização de CRAs | Max-heap + HashMap para as 3 operações da **Q3 do P2 de 3 questões**: (a) maior CRA em Θ(1), (b) inserir aluno em Θ(log n), (c) alterar CRA em Θ(log n) |
+| **P1** | Anatomia da Resposta na P2 | Os 5 passos + checklist específico (certificar antes de transformar, folhas de insucesso, desenhar antes/depois de cada rotação, max vs min heap), com links para as questões resolvidas no M1 |
 
-> Os dois módulos **não** são teoria de AED — são estratégia de prova. Foram separados do M1 para deixar a teoria pura e o preparo prático em locais distintos. O foco da Prova P2 é <em>resposta modelo como método didático</em>: cada cartão é uma questão real resolvida por completo, servindo simultaneamente como gabarito e como material de estudo.
+As três questões-tipo da P2 estão **resolvidas por completo no módulo teórico**, como "Exemplo Resolvido de Prova":
+
+- **Árvore Ótima (P2-2020.02 Q1, DRE=123456789)** → §1.5: matrizes C e K preenchidas, custo total = 210 verificado manualmente, reconstrução e desenho da árvore.
+- **AVL — Certificar e Transformar** → §1.5: algoritmo de certificação (bool) + aplicação na árvore da Q1 (1 rotação EE), tabelas de FB antes/depois.
+- **Heap para Priorização de CRAs** → §1.3: max-heap + HashMap, operações (a) maior CRA Θ(1), (b) inserir Θ(log n), (c) alterar CRA Θ(log n), com exemplo de 5 alunos.
+
+> Os dois módulos de Prova **não** são teoria de AED — são estratégia. A teoria (incluindo os exemplos resolvidos, que são material didático) mora no M1.
 
 ### Módulo 2 — Problemas Aplicados *(gabarito de consulta opcional)* — 10 problemas em 4 grupos
 

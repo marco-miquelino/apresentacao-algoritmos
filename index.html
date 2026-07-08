@@ -77,7 +77,7 @@
                 <span>Prova P2</span>
                 <span class="tab-sub">Tática para a 2ª prova</span>
             </span>
-            <span class="tab-count">4 cartões</span>
+            <span class="tab-count">1 cartão</span>
         </button>
 
         <button class="mod-tab" data-mod="m2" onclick="switchMod('m2')">
@@ -116,12 +116,9 @@
         <button class="sub-tab block-prova" data-mod="prova" data-panel="pr-temas" title="Temas × Probabilidade × Onde Estudar" onclick="switchPanel('prova','pr-temas')"><span class="st-num">P4</span><span class="st-short">Temas</span></button>
     </div>
 
-    <!-- Sub-tab bar PROVA P2 — 4 cartões de preparo para a P2 -->
+    <!-- Sub-tab bar PROVA P2 — tática; as questões resolvidas vivem no M1 (§1.3 e §1.5) -->
     <div class="subtab-bar" id="subtab-prova2">
         <button class="sub-tab active block-prova2" data-mod="prova2" data-panel="pr2-anatomia" title="Anatomia da Resposta P2" onclick="switchPanel('prova2','pr2-anatomia')"><span class="st-num">P1</span><span class="st-short">Anatomia</span></button>
-        <button class="sub-tab block-prova2" data-mod="prova2" data-panel="pr2-arvore" title="Árvore Ótima Resolvida (P2-2020.02 Q1)" onclick="switchPanel('prova2','pr2-arvore')"><span class="st-num">P2</span><span class="st-short">Árvore Ótima</span></button>
-        <button class="sub-tab block-prova2" data-mod="prova2" data-panel="pr2-avl" title="AVL — Certificar e Transformar (P2-2020.02 Q2)" onclick="switchPanel('prova2','pr2-avl')"><span class="st-num">P3</span><span class="st-short">AVL</span></button>
-        <button class="sub-tab block-prova2" data-mod="prova2" data-panel="pr2-heap" title="Heap para Priorização de CRAs (P2)" onclick="switchPanel('prova2','pr2-heap')"><span class="st-num">P4</span><span class="st-short">Heap CRA</span></button>
     </div>
 
     <!-- Sub-tab bar M2 — compact: 10 problemas em 4 grupos -->
@@ -584,6 +581,142 @@ O(log₂ n) = O(log₁₀ n) = O(log n)  <span class="cm"># diferença é só co
             </div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════
+             HEAP — FILA DE PRIORIDADE
+        ═══════════════════════════════════════════════ -->
+        <div class="section-label purple">Heap — Fila de Prioridade</div>
+        <div class="insight-box">
+            Um <strong>heap binário</strong> é uma árvore binária <em>completa</em> armazenada num vetor, com a propriedade de ordem parcial: num <strong>max-heap</strong>, todo pai ≥ filhos (a raiz é o maior); num <strong>min-heap</strong>, todo pai ≤ filhos. Como a árvore é completa, a altura é sempre <code>⌊log₂ n⌋</code> e não são necessários ponteiros — pai e filhos são calculados por aritmética de índices:
+        </div>
+
+        <table class="complexity-table">
+            <tr><th>Elemento</th><th>Índice</th><th>Propriedade (max-heap)</th></tr>
+            <tr><td>pai de H[i]</td><td><code>(i−1) // 2</code></td><td rowspan="3"><code>H[pai(i)] ≥ H[i]</code></td></tr>
+            <tr><td>filho esq de H[i]</td><td><code>2i + 1</code></td></tr>
+            <tr><td>filho dir de H[i]</td><td><code>2i + 2</code></td></tr>
+        </table>
+
+        <pre><code><span class="kw">def</span> <span class="fn">sobe</span>(H, i):                            <span class="cm"># heapify-up (bubble up)</span>
+    <span class="kw">while</span> i &gt; <span class="num">0</span>:
+        pai = (i - <span class="num">1</span>) // <span class="num">2</span>
+        <span class="kw">if</span> H[i] &gt; H[pai]:
+            H[i], H[pai] = H[pai], H[i]
+            i = pai
+        <span class="kw">else</span>:
+            <span class="kw">break</span>
+
+<span class="kw">def</span> <span class="fn">desce</span>(H, i):                           <span class="cm"># heapify-down (bubble down)</span>
+    n = <span class="fn">len</span>(H)
+    <span class="kw">while</span> <span class="kw">True</span>:
+        e, d = <span class="num">2</span>*i + <span class="num">1</span>, <span class="num">2</span>*i + <span class="num">2</span>
+        maior = i
+        <span class="kw">if</span> e &lt; n <span class="kw">and</span> H[e] &gt; H[maior]: maior = e
+        <span class="kw">if</span> d &lt; n <span class="kw">and</span> H[d] &gt; H[maior]: maior = d
+        <span class="kw">if</span> maior == i: <span class="kw">break</span>
+        H[i], H[maior] = H[maior], H[i]
+        i = maior</code></pre>
+
+        <!-- ═══════════════════════════════════════════════
+             HEAP — EXEMPLO RESOLVIDO DE PROVA (CRAs)
+        ═══════════════════════════════════════════════ -->
+        <div class="section-label purple">Exemplo Resolvido de Prova — Priorização de CRAs (P2 do Strauss)</div>
+        <div class="enunciado">
+            <strong>Enunciado (P2 · Q3):</strong> <em>"Descreva uma estrutura de dados e um algoritmo que seja capaz de organizar um grupo de n alunos orientado à priorização dos CRAs mais altos. A partir desta estrutura de dados, descreva os seguintes algoritmos: (a) Que retorne os alunos com maior CRA; (b) Inserir um novo aluno com seu CRA; (c) Alterar o valor do CRA de um aluno de x para o novo valor k."</em>
+        </div>
+
+        <div class="insight-box">
+            <strong>Modelagem:</strong> "priorização dos CRAs mais altos" = <strong>max-heap</strong>. <strong>ED escolhida:</strong> vetor <code>H</code> (posições 0..n−1) + <code>HashMap M: aluno → índice em H</code> — o HashMap é essencial para a operação (c) achar o aluno em O(1) em vez de varrer o vetor em O(n). Toda troca dentro do heap atualiza <code>M</code> junto (custo O(1) extra por troca):
+        </div>
+
+        <pre><code><span class="kw">def</span> <span class="fn">troca</span>(H, M, i, j):
+    H[i], H[j] = H[j], H[i]
+    M[H[i].aluno] = i                       <span class="cm"># mantém HashMap coerente</span>
+    M[H[j].aluno] = j
+
+<span class="cm"># sobe(H, M, i) e desce(H, M, i): mesmas rotinas da seção anterior,
+# comparando H[i].CRA e trocando via troca(H, M, i, j)</span></code></pre>
+
+        <div class="section-label purple">Algoritmo (a) — retornar o aluno com maior CRA</div>
+        <pre><code><span class="kw">def</span> <span class="fn">maior_CRA</span>(H):
+    <span class="kw">if not</span> H: <span class="kw">return</span> <span class="kw">None</span>            <span class="cm"># caso base: heap vazia</span>
+    <span class="kw">return</span> H[<span class="num">0</span>]                        <span class="cm"># raiz é sempre o maior → Θ(1)</span>
+
+<span class="cm"># Se quiser retirar da estrutura:</span>
+<span class="kw">def</span> <span class="fn">extrair_maior</span>(H, M):
+    <span class="kw">if not</span> H: <span class="kw">return</span> <span class="kw">None</span>
+    top = H[<span class="num">0</span>]
+    ultimo = H.pop()                       <span class="cm"># remove último em O(1)</span>
+    <span class="kw">del</span> M[top.aluno]
+    <span class="kw">if</span> H:
+        H[<span class="num">0</span>] = ultimo
+        M[ultimo.aluno] = <span class="num">0</span>
+        <span class="fn">desce</span>(H, M, <span class="num">0</span>)                  <span class="cm"># restaura a propriedade → Θ(log n)</span>
+    <span class="kw">return</span> top</code></pre>
+
+        <div class="section-label purple">Algoritmo (b) — inserir novo aluno com seu CRA</div>
+        <pre><code><span class="kw">def</span> <span class="fn">inserir</span>(H, M, aluno, cra):
+    H.append(<span class="fn">No</span>(aluno, cra))               <span class="cm"># adiciona no fim → O(1)</span>
+    i = <span class="fn">len</span>(H) - <span class="num">1</span>
+    M[aluno] = i
+    <span class="fn">sobe</span>(H, M, i)                          <span class="cm"># restaura invariante → Θ(log n)</span></code></pre>
+
+        <div class="section-label purple">Algoritmo (c) — alterar CRA do aluno de x para k</div>
+        <pre><code><span class="kw">def</span> <span class="fn">alterar</span>(H, M, aluno, novo_cra):
+    <span class="kw">if</span> aluno <span class="kw">not in</span> M: <span class="kw">return</span> <span class="kw">False</span>       <span class="cm"># aluno não existe</span>
+    i = M[aluno]                             <span class="cm"># busca posição em O(1) pelo HashMap</span>
+    antigo = H[i].CRA
+    H[i].CRA = novo_cra
+    <span class="kw">if</span> novo_cra &gt; antigo:
+        <span class="fn">sobe</span>(H, M, i)                       <span class="cm"># CRA subiu → pode violar pai</span>
+    <span class="kw">else</span>:
+        <span class="fn">desce</span>(H, M, i)                      <span class="cm"># CRA desceu → pode violar filhos</span>
+    <span class="kw">return</span> <span class="kw">True</span></code></pre>
+
+        <div class="section-label purple">Resumo das complexidades</div>
+        <table class="complexity-table">
+            <tr><th>Operação</th><th>T(n)</th><th>Ω do problema</th><th>Ótimo?</th></tr>
+            <tr><td>(a) Maior CRA (consulta)</td><td>Θ(1)</td><td>Ω(1)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
+            <tr><td>(a') Extrair maior CRA</td><td>Θ(log n)</td><td>Ω(log n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
+            <tr><td>(b) Inserir aluno</td><td>Θ(log n)</td><td>Ω(log n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
+            <tr><td>(c) Alterar CRA (com HashMap)</td><td>Θ(log n)</td><td>Ω(log n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
+            <tr><td>Construir heap com n alunos</td><td>Θ(n)</td><td>Ω(n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
+        </table>
+
+        <div class="section-label purple">Exemplo pequeno (n = 5)</div>
+        <div class="insight-box">
+            Alunos e CRAs iniciais: <code>Ana=9.2, Bia=7.5, Caio=8.8, Duda=6.0, Eva=8.5</code>. Inserção sucessiva (aplicando <code>sobe</code>):
+            <pre style="margin-top:10px;margin-bottom:0"><code>Inicial:  Ana(9.2)                          M = {Ana:0}
++Bia:     Ana(9.2) → Bia(7.5) fica em [1]   M = {Ana:0, Bia:1}
++Caio:    Caio(8.8) em [2] (não sobe: 8.8 &lt; 9.2)   M = {..., Caio:2}
++Duda:    Duda(6.0) em [3]  (6.0 &lt; 7.5, não sobe)
++Eva:     Eva(8.5) em [4]  (8.5 &gt; 7.5, sobe: troca com Bia)
+
+Heap final (max-heap):
+                        Ana (9.2)
+                       /        \
+                    Eva (8.5)  Caio (8.8)
+                    /    \
+                Duda (6.0)  Bia (7.5)
+
+Consulta maior CRA → H[0] = Ana (9.2)                                 (a)
+
+Alterar Duda de 6.0 para 9.5:
+   i = M[Duda] = 3, novo=9.5 &gt; antigo=6.0 → sobe
+   troca H[3]↔H[1]: Duda vira filho esq de Ana
+   troca H[1]↔H[0]: Duda vira raiz                                    (c)
+
+Heap:      Duda (9.5)
+          /          \
+        Ana (9.2)   Caio (8.8)
+        /     \
+     Eva (8.5) Bia (7.5)</code></pre>
+        </div>
+
+        <div class="callout purple">
+            <span class="callout-icon" style="color:var(--accent5)">📌</span>
+            <span><strong>Coisas que o Strauss provavelmente vai pedir para você mostrar:</strong> (1) <em>desenho da heap</em> antes/depois de cada operação; (2) sequência de índices trocados no <code>sobe</code> ou <code>desce</code>; (3) explicitar que <code>sobe</code> ou <code>desce</code> escolhem-se baseado em <code>novo_cra &gt; antigo</code>; (4) mostrar que <em>sem HashMap</em> a operação (c) seria Θ(n), justificando por que ele é <em>essencial</em> para atingir ótimo.</span>
+        </div>
+
         <div class="callout green">
             <span class="callout-icon" style="color:var(--accent3)">💡</span>
             <span><strong>Como escolher a estrutura certa?</strong> Pergunte-se: (1) qual operação é mais frequente? (2) preciso de ordem? (3) tenho restrição de memória? A maioria dos problemas desta matéria é resolvida escolhendo a estrutura adequada — não inventing um algoritmo novo.</span>
@@ -909,6 +1042,144 @@ o que permite uma implementação O(n²), mas a versão O(n³) é a esperada na 
                 </div>
 
                 <!-- ═══════════════════════════════════════════════
+                     ÁRVORE ÓTIMA — EXEMPLO RESOLVIDO DE PROVA
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Exemplo Resolvido de Prova — Árvore Ótima (P2-2020.02 Q1 · valor 5,0)</div>
+                <div class="enunciado">
+                    <strong>Enunciado (transcrição literal):</strong> <em>"Descreva a árvore ótima, usando o algoritmo baseado na programação dinâmica para a geração da árvores ótimas, a partir das frequências diferenciadas apresentadas na tabela abaixo, onde os valores encontram-se baseados no DRE do aluno. Usando o mapa descrito pela matriz K do algoritmo, esquematize o árvore (não esqueça dos nós referentes aos insucessos de busca), e calcule o custo TOTAL da árvore proposta, comparando-o com o custo apresentado na matriz C."</em> Resolvido abaixo com o DRE de exemplo <strong>123456789</strong>.
+                </div>
+
+                <div class="section-label purple">Frequências para DRE = 123456789</div>
+                <div class="insight-box">
+                    O enunciado mapeia os dígitos do DRE por <em>ordem</em>: n = ordem 1 (unidade) = <strong>9</strong>, n−1 = ordem 2 (dezena) = <strong>8</strong>, …, n−6 = <strong>3</strong>.
+                </div>
+
+                <table class="complexity-table">
+                    <tr><th>nós j</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+                    <tr><td><strong>F<sub>j</sub></strong> (sucesso)</td><td>—</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+                    <tr><td><strong>F'<sub>j</sub></strong> (insucesso)</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td></tr>
+                </table>
+
+                <div class="section-label purple">Matrizes C e K preenchidas (n = 6)</div>
+                <div class="insight-box">
+                    Preenchimento diagonal por diagonal, usando a recorrência da seção anterior. Só os valores acima da diagonal principal são calculados (matriz triangular):
+                </div>
+
+                <table class="complexity-table" style="text-align:center">
+                    <tr><th style="text-align:center">C</th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th><th>j=4</th><th>j=5</th><th>j=6</th></tr>
+                    <tr><td><strong>i=0</strong></td><td>0</td><td>21</td><td>53</td><td>85</td><td>127</td><td>169</td><td style="background:rgba(93,173,226,0.15);color:var(--accent);font-weight:700">210</td></tr>
+                    <tr><td><strong>i=1</strong></td><td>—</td><td>0</td><td>20</td><td>51</td><td>82</td><td>123</td><td>164</td></tr>
+                    <tr><td><strong>i=2</strong></td><td>—</td><td>—</td><td>0</td><td>19</td><td>49</td><td>79</td><td>119</td></tr>
+                    <tr><td><strong>i=3</strong></td><td>—</td><td>—</td><td>—</td><td>0</td><td>18</td><td>47</td><td>76</td></tr>
+                    <tr><td><strong>i=4</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>17</td><td>45</td></tr>
+                    <tr><td><strong>i=5</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>16</td></tr>
+                    <tr><td><strong>i=6</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td></tr>
+                </table>
+
+                <div class="callout">
+                    <span class="callout-icon">✓</span>
+                    <span><strong>C[0][6] = 210</strong> — o custo mínimo da árvore ótima. Este é o valor que a matriz C "apresenta" e que o enunciado pede para comparar com o cálculo manual do custo total.</span>
+                </div>
+
+                <table class="complexity-table" style="text-align:center">
+                    <tr><th style="text-align:center">K</th><th>j=1</th><th>j=2</th><th>j=3</th><th>j=4</th><th>j=5</th><th>j=6</th></tr>
+                    <tr><td><strong>i=0</strong></td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td style="background:rgba(93,173,226,0.15);color:var(--accent);font-weight:700">3</td></tr>
+                    <tr><td><strong>i=1</strong></td><td>—</td><td>2</td><td>2</td><td>3</td><td>3</td><td>3</td></tr>
+                    <tr><td><strong>i=2</strong></td><td>—</td><td>—</td><td>3</td><td>3</td><td>4</td><td>4</td></tr>
+                    <tr><td><strong>i=3</strong></td><td>—</td><td>—</td><td>—</td><td>4</td><td>4</td><td>5</td></tr>
+                    <tr><td><strong>i=4</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td><td>5</td></tr>
+                    <tr><td><strong>i=5</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>6</td></tr>
+                </table>
+
+                <div class="section-label purple">Amostra de contas (para conferir)</div>
+                <div class="insight-box">
+                    <pre style="margin-top:0"><code><strong>d=1 (subárvores de 1 chave):</strong>
+  P[0][1] = P[0][0] + F[1] + F'[1] = 9 + 4 + 8 = 21
+  C[0][1] = 21 + (C[0][0]+C[1][1]) = 21 + 0 = 21     K[0][1] = 1
+
+<strong>d=2, célula C[0][2]:</strong>
+  P[0][2] = P[0][1] + F[2] + F'[2] = 21 + 5 + 7 = 33
+  k=1: C[0][0]+C[1][2] = 0+20 = <strong>20</strong>  ← vence
+  k=2: C[0][1]+C[2][2] = 21+0 = 21
+  C[0][2] = 33 + 20 = <strong>53</strong>     K[0][2] = 1
+
+<strong>d=6, célula final C[0][6]:</strong>
+  P[0][6] = P[0][5] + F[6] + F'[6] = 69 + 9 + 3 = 81
+  k=1: 0+164 = 164        k=2: 21+119 = 140
+  k=3: 53+76  = <strong>129</strong> ← vence
+  k=4: 85+45  = 130       k=5: 127+16 = 143      k=6: 169+0 = 169
+  C[0][6] = 81 + 129 = <strong>210</strong>     K[0][6] = <strong>3</strong></code></pre>
+                </div>
+
+                <div class="section-label purple">Reconstrução da árvore a partir de K</div>
+                <div class="insight-box">
+                    Chame <code>reconstroi(K, 0, 6)</code>. Quando <code>i = j</code>, o "nó" é uma <strong>folha de insucesso rotulada F'<sub>i</sub></strong>.
+                    <pre style="margin-top:10px;margin-bottom:0"><code>reconstroi(K, 0, 6) → raiz = K[0][6] = <strong>3</strong>
+  ├── esq: reconstroi(K, 0, 2) → raiz = K[0][2] = <strong>1</strong>
+  │        ├── esq: reconstroi(K, 0, 0) → folha <strong>F'<sub>0</sub></strong>
+  │        └── dir: reconstroi(K, 1, 2) → raiz = K[1][2] = <strong>2</strong>
+  │                 ├── esq: folha <strong>F'<sub>1</sub></strong>
+  │                 └── dir: folha <strong>F'<sub>2</sub></strong>
+  └── dir: reconstroi(K, 3, 6) → raiz = K[3][6] = <strong>5</strong>
+           ├── esq: reconstroi(K, 3, 4) → raiz = K[3][4] = <strong>4</strong>
+           │        ├── esq: folha <strong>F'<sub>3</sub></strong>
+           │        └── dir: folha <strong>F'<sub>4</sub></strong>
+           └── dir: reconstroi(K, 5, 6) → raiz = K[5][6] = <strong>6</strong>
+                    ├── esq: folha <strong>F'<sub>5</sub></strong>
+                    └── dir: folha <strong>F'<sub>6</sub></strong></code></pre>
+                </div>
+
+                <div class="section-label purple">Esquema da árvore ótima (desenho)</div>
+                <pre><code>                              ┌─────┐
+                              │  3  │ ← raiz
+                              └──┬──┘
+                     ┌───────────┴───────────┐
+                  ┌──┴──┐                 ┌──┴──┐
+                  │  1  │                 │  5  │
+                  └──┬──┘                 └──┬──┘
+              ┌─────┴────┐              ┌────┴─────┐
+           ┌──┴───┐   ┌──┴──┐        ┌──┴──┐    ┌──┴──┐
+           │ F'₀=9│   │  2  │        │  4  │    │  6  │
+           └──────┘   └──┬──┘        └──┬──┘    └──┬──┘
+                    ┌────┴────┐    ┌────┴────┐  ┌──┴──────┐
+                 ┌──┴──┐   ┌──┴──┐┌──┴──┐┌──┴──┐┌──┴──┐┌──┴──┐
+                 │F'₁=8│   │F'₂=7││F'₃=6││F'₄=5││F'₅=4││F'₆=3│
+                 └─────┘   └─────┘└─────┘└─────┘└─────┘└─────┘</code></pre>
+
+                <div class="section-label purple">Cálculo manual do custo TOTAL</div>
+                <div class="insight-box">
+                    <strong>Fórmula:</strong> <code>custo(T) = Σ F<sub>j</sub>·(prof(j)+1) + Σ F'<sub>i</sub>·prof(folha<sub>i</sub>)</code>
+                </div>
+
+                <table class="complexity-table">
+                    <tr><th>Nó</th><th>Tipo</th><th>Prof.</th><th>Frequência</th><th>Contribuição</th></tr>
+                    <tr><td><strong>3</strong></td><td>interno (raiz)</td><td>0</td><td>F<sub>3</sub> = 6</td><td>6 · (0+1) = <strong>6</strong></td></tr>
+                    <tr><td><strong>1</strong></td><td>interno</td><td>1</td><td>F<sub>1</sub> = 4</td><td>4 · 2 = <strong>8</strong></td></tr>
+                    <tr><td><strong>5</strong></td><td>interno</td><td>1</td><td>F<sub>5</sub> = 8</td><td>8 · 2 = <strong>16</strong></td></tr>
+                    <tr><td><strong>2</strong></td><td>interno</td><td>2</td><td>F<sub>2</sub> = 5</td><td>5 · 3 = <strong>15</strong></td></tr>
+                    <tr><td><strong>4</strong></td><td>interno</td><td>2</td><td>F<sub>4</sub> = 7</td><td>7 · 3 = <strong>21</strong></td></tr>
+                    <tr><td><strong>6</strong></td><td>interno</td><td>2</td><td>F<sub>6</sub> = 9</td><td>9 · 3 = <strong>27</strong></td></tr>
+                    <tr><td>F'<sub>0</sub></td><td>folha</td><td>2</td><td>9</td><td>9 · 2 = <strong>18</strong></td></tr>
+                    <tr><td>F'<sub>1</sub></td><td>folha</td><td>3</td><td>8</td><td>8 · 3 = <strong>24</strong></td></tr>
+                    <tr><td>F'<sub>2</sub></td><td>folha</td><td>3</td><td>7</td><td>7 · 3 = <strong>21</strong></td></tr>
+                    <tr><td>F'<sub>3</sub></td><td>folha</td><td>3</td><td>6</td><td>6 · 3 = <strong>18</strong></td></tr>
+                    <tr><td>F'<sub>4</sub></td><td>folha</td><td>3</td><td>5</td><td>5 · 3 = <strong>15</strong></td></tr>
+                    <tr><td>F'<sub>5</sub></td><td>folha</td><td>3</td><td>4</td><td>4 · 3 = <strong>12</strong></td></tr>
+                    <tr><td>F'<sub>6</sub></td><td>folha</td><td>3</td><td>3</td><td>3 · 3 = <strong>9</strong></td></tr>
+                    <tr style="background:rgba(39,174,96,0.10)"><td colspan="4"><strong>Soma internos + folhas</strong></td><td style="color:var(--accent3);font-weight:800;font-size:16px">93 + 117 = 210 ✓</td></tr>
+                </table>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">✅</span>
+                    <span><strong>Custo total = 210 = C[0][6]</strong>. Bate com a matriz C — a resposta está consistente.</span>
+                </div>
+
+                <div class="callout purple">
+                    <span class="callout-icon" style="color:var(--accent5)">📌</span>
+                    <span><strong>Como usar na sua prova real:</strong> substitua os dígitos do DRE de exemplo (123456789) pelos <em>seus</em> dígitos e refaça as frequências, as matrizes, a reconstrução, o desenho e o custo total. Toda a estrutura da resposta permanece — a modelagem, a recorrência e a análise Θ(n³) da seção anterior podem ser copiadas literalmente.</span>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════
                      ÁRVORE GRADUADA (AVL) — Rotações
                 ═══════════════════════════════════════════════ -->
                 <div class="section-label purple">Árvore Graduada (AVL) — Rotações</div>
@@ -992,6 +1263,109 @@ Cota inferior Ω(n): precisamos olhar todos os nós para saber se a árvore inte
                 <div class="callout green">
                     <span class="callout-icon" style="color:var(--accent3)">🎯</span>
                     <span><strong>Como aplicar na prova:</strong> ao "esquematizar todas as rotações", percorra a árvore em pós-ordem e, para cada subárvore que ficar com |FB| &gt; 1 logo após o balanceio dos filhos, <em>desenhe a árvore antes</em>, identifique o caso (EE/DD/ED/DE), <em>desenhe a árvore depois</em>. O Prof. Strauss conta esses passos como pontos de detalhamento.</span>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════
+                     AVL — CERTIFICAÇÃO (antes de transformar)
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Certificar se uma BST já é AVL (antes de transformar)</div>
+                <div class="enunciado">
+                    <strong>Variante clássica de P2:</strong> <em>"Descreva um algoritmo capaz de CERTIFICAR se a árvore binária de busca é dita AVL/GRADUADA. Em caso negativo, o algoritmo deverá transformar a árvore em uma árvore AVL/GRADUADA."</em> — a questão pede <strong>duas coisas</strong>: quem só escreve a transformação perde a metade da nota. A certificação (retorna bool) vem antes e é um algoritmo próprio.
+                </div>
+
+                <pre><code><span class="kw">def</span> <span class="fn">certificar</span>(no):
+    <span class="cm">"""Retorna (é_AVL, altura). Percorre em pós-ordem."""</span>
+    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">return</span> (<span class="kw">True</span>, -<span class="num">1</span>)                <span class="cm"># AVL vazia; altura convencional -1</span>
+    ok_e, h_e = <span class="fn">certificar</span>(no.esq)         <span class="cm"># 1. subárvore esq</span>
+    ok_d, h_d = <span class="fn">certificar</span>(no.dir)         <span class="cm"># 2. subárvore dir</span>
+    <span class="kw">if not</span> ok_e <span class="kw">or not</span> ok_d:
+        <span class="kw">return</span> (<span class="kw">False</span>, <span class="num">0</span>)               <span class="cm"># já falhou lá embaixo</span>
+    fb = h_e - h_d
+    <span class="kw">if</span> <span class="fn">abs</span>(fb) &gt; <span class="num">1</span>:
+        <span class="kw">return</span> (<span class="kw">False</span>, <span class="num">0</span>)               <span class="cm"># fere a invariante AVL</span>
+    <span class="kw">return</span> (<span class="kw">True</span>, <span class="num">1</span> + <span class="fn">max</span>(h_e, h_d))
+
+<span class="kw">def</span> <span class="fn">eh_avl</span>(raiz):
+    ok, _ = <span class="fn">certificar</span>(raiz)
+    <span class="kw">return</span> ok</code></pre>
+
+                <div class="insight-box">
+                    <strong>Análise:</strong> cada nó é visitado uma vez com trabalho O(1) → <code>T(n) = Θ(n)</code>. Cota inferior Ω(n) (é preciso examinar todos os nós para garantir a invariante na árvore inteira) → <strong>ÓTIMO ✓</strong>. A transformação usa a mesma recorrência (pós-ordem + <code>balanceia</code> O(1) por nó) e também é Θ(n), ótima.
+                </div>
+
+                <!-- ═══════════════════════════════════════════════
+                     AVL — EXEMPLO RESOLVIDO DE PROVA
+                ═══════════════════════════════════════════════ -->
+                <div class="section-label purple">Exemplo Resolvido de Prova — Certificar e Transformar em AVL</div>
+                <div class="enunciado">
+                    <strong>Enunciado (P2 do Strauss):</strong> <em>"Aplique o algoritmo proposto na árvore obtida na 1ª questão e esquematize a sequência de rotações ativadas para transformá-la em uma árvore AVL/GRADUADA."</em> A 1ª questão dessa P2 usa F = [_, 10, 20, 30, 40, 50, 60] e F' = [5]×7 (uniforme); a árvore ótima resultante tem <strong>K[0][6] = 5</strong>:
+                    <pre style="margin-top:10px;margin-bottom:0"><code>              5
+             / \
+            3   6
+           / \
+          2   4
+         /
+        1        (apenas nós internos — folhas de insucesso omitidas para clareza)</code></pre>
+                </div>
+
+                <div class="section-label purple">Certificação passo a passo (pós-ordem)</div>
+                <table class="complexity-table">
+                    <tr><th>Nó</th><th>h(esq)</th><th>h(dir)</th><th>FB</th><th>Certifica?</th><th>h retorna</th></tr>
+                    <tr><td><strong>1</strong> (folha)</td><td>−1</td><td>−1</td><td>0</td><td>✓</td><td>0</td></tr>
+                    <tr><td><strong>4</strong> (folha)</td><td>−1</td><td>−1</td><td>0</td><td>✓</td><td>0</td></tr>
+                    <tr><td><strong>6</strong> (folha)</td><td>−1</td><td>−1</td><td>0</td><td>✓</td><td>0</td></tr>
+                    <tr><td><strong>2</strong></td><td>0 (do 1)</td><td>−1</td><td>+1</td><td>✓</td><td>1</td></tr>
+                    <tr><td><strong>3</strong></td><td>1 (do 2)</td><td>0 (do 4)</td><td>+1</td><td>✓</td><td>2</td></tr>
+                    <tr style="background:rgba(231,76,60,0.10)"><td><strong>5 (raiz)</strong></td><td>2 (do 3)</td><td>0 (do 6)</td><td><strong>+2</strong></td><td style="color:var(--danger);font-weight:700">✗ NÃO É AVL</td><td>—</td></tr>
+                </table>
+
+                <div class="callout">
+                    <span class="callout-icon">⚠</span>
+                    <span>A raiz 5 tem FB = +2 e o filho 3 tem FB = +1. <strong>Caso EE (esquerda-esquerda)</strong> → 1 rotação simples à direita resolve.</span>
+                </div>
+
+                <div class="section-label purple">Rotação simples à direita no nó 5</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+                    <div>
+                        <div class="section-label" style="color:var(--danger);font-size:12px">ANTES</div>
+                        <pre style="margin:0"><code>          5  (FB=+2)
+         / \
+        3   6
+       / \
+      2   4
+     /
+    1</code></pre>
+                    </div>
+                    <div>
+                        <div class="section-label" style="color:var(--accent3);font-size:12px">DEPOIS</div>
+                        <pre style="margin:0"><code>          3
+         / \
+        2   5
+       /   / \
+      1   4   6</code></pre>
+                    </div>
+                </div>
+
+                <div class="section-label purple">Re-certificar após a rotação</div>
+                <table class="complexity-table">
+                    <tr><th>Nó</th><th>h(esq)</th><th>h(dir)</th><th>FB</th><th>OK?</th></tr>
+                    <tr><td>1</td><td>−1</td><td>−1</td><td>0</td><td>✓</td></tr>
+                    <tr><td>4</td><td>−1</td><td>−1</td><td>0</td><td>✓</td></tr>
+                    <tr><td>6</td><td>−1</td><td>−1</td><td>0</td><td>✓</td></tr>
+                    <tr><td>2</td><td>0</td><td>−1</td><td>+1</td><td>✓</td></tr>
+                    <tr><td>5</td><td>0</td><td>0</td><td>0</td><td>✓</td></tr>
+                    <tr style="background:rgba(39,174,96,0.10)"><td><strong>3 (nova raiz)</strong></td><td>1</td><td>1</td><td><strong>0</strong></td><td style="color:var(--accent3);font-weight:700">✓ ÁRVORE É AVL</td></tr>
+                </table>
+
+                <div class="callout green">
+                    <span class="callout-icon" style="color:var(--accent3)">✅</span>
+                    <span><strong>Uma única rotação (EE em 5)</strong> transformou a árvore em AVL/Graduada. Escreva na prova <em>literalmente</em>: "Sequência de rotações: 1 rotação simples à direita, aplicada ao nó 5 (raiz), motivada por FB(5) = +2 com FB(filho esq) = +1 → caso EE."</span>
+                </div>
+
+                <div class="callout purple">
+                    <span class="callout-icon" style="color:var(--accent5)">📌</span>
+                    <span><strong>Padrão de resposta ótima:</strong> (1) descreva <em>certificar</em> primeiro, (2) descreva <em>transformar</em> depois, (3) mostre que <code>transformar</code> chama <code>balanceia</code> que faz apenas O(1) trabalho por nó, (4) certifique a árvore de entrada apontando exatamente qual FB fere a regra, (5) desenhe ANTES e DEPOIS de <em>cada</em> rotação (aqui é só 1). Cada omissão custa 0,5 pt.</span>
                 </div>
 
             </section>
@@ -2294,194 +2668,6 @@ Como [atinge / não atinge] a cota, o algoritmo <em>É / NÃO É ÓTIMO</em>.</d
     ═══════════════════════════════════════════════ -->
     <div class="mod-panel" id="panel-prova2">
 
-        <!-- ═══════════ P2: ÁRVORE ÓTIMA RESOLVIDA ═══════════ -->
-        <div class="content-panel" id="panel-pr2-arvore">
-            <section class="problem">
-                <div class="problem-header">
-                    <div class="problem-number" style="color:#ec7063">P2</div>
-                    <div class="problem-title-block">
-                        <h2>Árvore Ótima Resolvida (P2-2020.02 Q1 · valor 5,0)</h2>
-                        <div class="badges">
-                            <span class="badge badge-theory">100% das P2's coletadas</span>
-                            <span class="badge badge-struct">Programação Dinâmica · Θ(n³)</span>
-                            <span class="badge badge-time">DRE = 123456789</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="enunciado">
-                    <strong>Enunciado (transcrição literal):</strong> <em>"Descreva a árvore ótima, usando o algoritmo baseado na programação dinâmica para a geração da árvores ótimas, a partir das frequências diferenciadas apresentadas na tabela abaixo, onde os valores encontram-se baseados no DRE do aluno. Usando o mapa descrito pela matriz K do algoritmo, esquematize o árvore (não esqueça dos nós referentes aos insucessos de busca), e calcule o custo TOTAL da árvore proposta, comparando-o com o custo apresentado na matriz C."</em>
-                </div>
-
-                <div class="section-label purple">Passo 1 — Modelagem</div>
-                <div class="insight-box">
-                    <strong>Objetivo:</strong> construir a BST que minimiza <code>Σ F<sub>j</sub>·(prof+1) + Σ F'<sub>j</sub>·prof</code>, dadas frequências de busca com sucesso (F) e insucesso (F').
-                    <br><strong>ED:</strong> três matrizes <code>(n+1)×(n+1)</code>:
-                    <ul style="margin:10px 0 10px 22px;list-style:disc;">
-                        <li><code>C[i][j]</code>: custo mínimo da subárvore ótima sobre (i, j].</li>
-                        <li><code>P[i][j]</code>: peso total do intervalo (útil para acumular).</li>
-                        <li><code>K[i][j]</code>: raiz da subárvore ótima do intervalo (o mapa).</li>
-                    </ul>
-                </div>
-
-                <div class="section-label purple">Passo 2 — Frequências para DRE = 123456789</div>
-                <div class="insight-box">
-                    O enunciado mapeia os dígitos do DRE por <em>ordem</em>: n = ordem 1 (unidade) = <strong>9</strong>, n−1 = ordem 2 (dezena) = <strong>8</strong>, …, n−6 = <strong>3</strong>.
-                </div>
-
-                <table class="complexity-table">
-                    <tr><th>nós j</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
-                    <tr><td><strong>F<sub>j</sub></strong> (sucesso)</td><td>—</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
-                    <tr><td><strong>F'<sub>j</sub></strong> (insucesso)</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td></tr>
-                </table>
-
-                <div class="section-label purple">Passo 3 — Algoritmo (recorrência)</div>
-                <pre><code><span class="cm"># Caso base: intervalos de tamanho 0 (só folha de insucesso)</span>
-C[i][i] = 0
-P[i][i] = F'[i]
-
-<span class="cm"># Preenchimento por diagonais (d = 1, 2, …, n)</span>
-<span class="kw">for</span> d <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, n+<span class="num">1</span>):
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, n-d+<span class="num">1</span>):
-        j = i + d
-        P[i][j] = P[i][j-<span class="num">1</span>] + F[j] + F'[j]
-        C[i][j] = P[i][j] + <span class="fn">min</span>(C[i][k-<span class="num">1</span>] + C[k][j] <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(i+<span class="num">1</span>, j+<span class="num">1</span>))
-        K[i][j] = <span class="cm"># o k que atingiu o mínimo</span></code></pre>
-
-                <div class="section-label purple">Passo 4 — Matrizes C e K preenchidas (n = 6)</div>
-                <div class="insight-box">
-                    Preenchimento diagonal por diagonal. Só os valores acima da diagonal principal são calculados (é uma matriz triangular). Abaixo, a matriz C final:
-                </div>
-
-                <table class="complexity-table" style="text-align:center">
-                    <tr><th style="text-align:center">C</th><th>j=0</th><th>j=1</th><th>j=2</th><th>j=3</th><th>j=4</th><th>j=5</th><th>j=6</th></tr>
-                    <tr><td><strong>i=0</strong></td><td>0</td><td>21</td><td>53</td><td>85</td><td>127</td><td>169</td><td style="background:rgba(231,76,60,0.15);color:#ec7063;font-weight:700">210</td></tr>
-                    <tr><td><strong>i=1</strong></td><td>—</td><td>0</td><td>20</td><td>51</td><td>82</td><td>123</td><td>164</td></tr>
-                    <tr><td><strong>i=2</strong></td><td>—</td><td>—</td><td>0</td><td>19</td><td>49</td><td>79</td><td>119</td></tr>
-                    <tr><td><strong>i=3</strong></td><td>—</td><td>—</td><td>—</td><td>0</td><td>18</td><td>47</td><td>76</td></tr>
-                    <tr><td><strong>i=4</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>17</td><td>45</td></tr>
-                    <tr><td><strong>i=5</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>16</td></tr>
-                    <tr><td><strong>i=6</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td></tr>
-                </table>
-
-                <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
-                    <span class="callout-icon" style="color:#ec7063">✓</span>
-                    <span><strong>C[0][6] = 210</strong> — o custo mínimo da árvore ótima. Este é o valor que a matriz C "apresenta" e que o enunciado pede para comparar com o cálculo manual do custo total.</span>
-                </div>
-
-                <table class="complexity-table" style="text-align:center">
-                    <tr><th style="text-align:center">K</th><th>j=1</th><th>j=2</th><th>j=3</th><th>j=4</th><th>j=5</th><th>j=6</th></tr>
-                    <tr><td><strong>i=0</strong></td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td style="background:rgba(231,76,60,0.15);color:#ec7063;font-weight:700">3</td></tr>
-                    <tr><td><strong>i=1</strong></td><td>—</td><td>2</td><td>2</td><td>3</td><td>3</td><td>3</td></tr>
-                    <tr><td><strong>i=2</strong></td><td>—</td><td>—</td><td>3</td><td>3</td><td>4</td><td>4</td></tr>
-                    <tr><td><strong>i=3</strong></td><td>—</td><td>—</td><td>—</td><td>4</td><td>4</td><td>5</td></tr>
-                    <tr><td><strong>i=4</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td><td>5</td></tr>
-                    <tr><td><strong>i=5</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>6</td></tr>
-                </table>
-
-                <div class="section-label purple">Passo 5 — Amostra de contas (para conferir)</div>
-                <div class="insight-box">
-                    <pre style="margin-top:0"><code><strong>d=1 (subárvores de 1 chave):</strong>
-  P[0][1] = P[0][0] + F[1] + F'[1] = 9 + 4 + 8 = 21
-  C[0][1] = 21 + (C[0][0]+C[1][1]) = 21 + 0 = 21     K[0][1] = 1
-
-<strong>d=2, célula C[0][2]:</strong>
-  P[0][2] = P[0][1] + F[2] + F'[2] = 21 + 5 + 7 = 33
-  k=1: C[0][0]+C[1][2] = 0+20 = <strong>20</strong>  ← vence
-  k=2: C[0][1]+C[2][2] = 21+0 = 21
-  C[0][2] = 33 + 20 = <strong>53</strong>     K[0][2] = 1
-
-<strong>d=6, célula final C[0][6]:</strong>
-  P[0][6] = P[0][5] + F[6] + F'[6] = 69 + 9 + 3 = 81
-  k=1: 0+164 = 164        k=2: 21+119 = 140
-  k=3: 53+76  = <strong>129</strong> ← vence
-  k=4: 85+45  = 130       k=5: 127+16 = 143      k=6: 169+0 = 169
-  C[0][6] = 81 + 129 = <strong>210</strong>     K[0][6] = <strong>3</strong></code></pre>
-                </div>
-
-                <div class="section-label purple">Passo 6 — Reconstrução da árvore a partir de K</div>
-                <div class="insight-box">
-                    Chame <code>reconstroi(K, 0, 6)</code>. Quando <code>i = j</code>, o "nó" é uma <strong>folha de insucesso rotulada F'<sub>i</sub></strong>.
-                    <pre style="margin-top:10px;margin-bottom:0"><code>reconstroi(K, 0, 6) → raiz = K[0][6] = <strong>3</strong>
-  ├── esq: reconstroi(K, 0, 2) → raiz = K[0][2] = <strong>1</strong>
-  │        ├── esq: reconstroi(K, 0, 0) → folha <strong>F'<sub>0</sub></strong>
-  │        └── dir: reconstroi(K, 1, 2) → raiz = K[1][2] = <strong>2</strong>
-  │                 ├── esq: folha <strong>F'<sub>1</sub></strong>
-  │                 └── dir: folha <strong>F'<sub>2</sub></strong>
-  └── dir: reconstroi(K, 3, 6) → raiz = K[3][6] = <strong>5</strong>
-           ├── esq: reconstroi(K, 3, 4) → raiz = K[3][4] = <strong>4</strong>
-           │        ├── esq: folha <strong>F'<sub>3</sub></strong>
-           │        └── dir: folha <strong>F'<sub>4</sub></strong>
-           └── dir: reconstroi(K, 5, 6) → raiz = K[5][6] = <strong>6</strong>
-                    ├── esq: folha <strong>F'<sub>5</sub></strong>
-                    └── dir: folha <strong>F'<sub>6</sub></strong></code></pre>
-                </div>
-
-                <div class="section-label purple">Passo 7 — Esquema da árvore ótima (desenho)</div>
-                <pre><code>                              ┌─────┐
-                              │  3  │ ← raiz
-                              └──┬──┘
-                     ┌───────────┴───────────┐
-                  ┌──┴──┐                 ┌──┴──┐
-                  │  1  │                 │  5  │
-                  └──┬──┘                 └──┬──┘
-              ┌─────┴────┐              ┌────┴─────┐
-           ┌──┴───┐   ┌──┴──┐        ┌──┴──┐    ┌──┴──┐
-           │ F'₀=9│   │  2  │        │  4  │    │  6  │
-           └──────┘   └──┬──┘        └──┬──┘    └──┬──┘
-                    ┌────┴────┐    ┌────┴────┐  ┌──┴──────┐
-                 ┌──┴──┐   ┌──┴──┐┌──┴──┐┌──┴──┐┌──┴──┐┌──┴──┐
-                 │F'₁=8│   │F'₂=7││F'₃=6││F'₄=5││F'₅=4││F'₆=3│
-                 └─────┘   └─────┘└─────┘└─────┘└─────┘└─────┘</code></pre>
-
-                <div class="section-label purple">Passo 8 — Cálculo manual do custo TOTAL</div>
-                <div class="insight-box">
-                    <strong>Fórmula:</strong> <code>custo(T) = Σ F<sub>j</sub>·(prof(j)+1) + Σ F'<sub>i</sub>·prof(folha<sub>i</sub>)</code>
-                </div>
-
-                <table class="complexity-table">
-                    <tr><th>Nó</th><th>Tipo</th><th>Prof.</th><th>Frequência</th><th>Contribuição</th></tr>
-                    <tr><td><strong>3</strong></td><td>interno (raiz)</td><td>0</td><td>F<sub>3</sub> = 6</td><td>6 · (0+1) = <strong>6</strong></td></tr>
-                    <tr><td><strong>1</strong></td><td>interno</td><td>1</td><td>F<sub>1</sub> = 4</td><td>4 · 2 = <strong>8</strong></td></tr>
-                    <tr><td><strong>5</strong></td><td>interno</td><td>1</td><td>F<sub>5</sub> = 8</td><td>8 · 2 = <strong>16</strong></td></tr>
-                    <tr><td><strong>2</strong></td><td>interno</td><td>2</td><td>F<sub>2</sub> = 5</td><td>5 · 3 = <strong>15</strong></td></tr>
-                    <tr><td><strong>4</strong></td><td>interno</td><td>2</td><td>F<sub>4</sub> = 7</td><td>7 · 3 = <strong>21</strong></td></tr>
-                    <tr><td><strong>6</strong></td><td>interno</td><td>2</td><td>F<sub>6</sub> = 9</td><td>9 · 3 = <strong>27</strong></td></tr>
-                    <tr><td>F'<sub>0</sub></td><td>folha</td><td>2</td><td>9</td><td>9 · 2 = <strong>18</strong></td></tr>
-                    <tr><td>F'<sub>1</sub></td><td>folha</td><td>3</td><td>8</td><td>8 · 3 = <strong>24</strong></td></tr>
-                    <tr><td>F'<sub>2</sub></td><td>folha</td><td>3</td><td>7</td><td>7 · 3 = <strong>21</strong></td></tr>
-                    <tr><td>F'<sub>3</sub></td><td>folha</td><td>3</td><td>6</td><td>6 · 3 = <strong>18</strong></td></tr>
-                    <tr><td>F'<sub>4</sub></td><td>folha</td><td>3</td><td>5</td><td>5 · 3 = <strong>15</strong></td></tr>
-                    <tr><td>F'<sub>5</sub></td><td>folha</td><td>3</td><td>4</td><td>4 · 3 = <strong>12</strong></td></tr>
-                    <tr><td>F'<sub>6</sub></td><td>folha</td><td>3</td><td>3</td><td>3 · 3 = <strong>9</strong></td></tr>
-                    <tr style="background:rgba(231,76,60,0.10)"><td colspan="4"><strong>Soma internos + folhas</strong></td><td style="color:#ec7063;font-weight:800;font-size:16px">93 + 117 = 210 ✓</td></tr>
-                </table>
-
-                <div class="callout" style="border-color:rgba(39,174,96,0.3);background:rgba(39,174,96,0.06)">
-                    <span class="callout-icon" style="color:var(--accent3)">✅</span>
-                    <span><strong>Custo total = 210 = C[0][6]</strong>. Bate com a matriz C — a resposta está consistente.</span>
-                </div>
-
-                <div class="section-label purple">Passo 9 — Função tempo, cota inferior, otimalidade</div>
-                <div class="insight-box">
-                    <pre style="margin-top:0"><code>T(n) = Σ<sub>d=1..n</sub> Σ<sub>i=0..n-d</sub> Σ<sub>k=i+1..i+d</sub> O(1)
-     = <strong>Θ(n³)</strong>
-
-Ω do problema: Knuth (1971) provou Ω(n²) por análise da monotonicidade de K.
-    (com Knuth's speedup a implementação vira O(n²), mas é fora do escopo P2)
-
-Comparação: T(n) = Θ(n³) &gt; Ω(n²) → o algoritmo <strong>NÃO É</strong> polinomialmente ótimo
-    no sentido estrito, mas é <em>ótimo dentro da família da PD clássica</em>,
-    que é a esperada pelo enunciado.</code></pre>
-                </div>
-
-                <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
-                    <span class="callout-icon" style="color:#ec7063">📌</span>
-                    <span><strong>Como escrever isso na sua prova real:</strong> substitua os dígitos do DRE de exemplo (123456789) pelos <em>seus</em> dígitos, refaça os passos 2, 4, 5, 6, 7 e 8. Toda a estrutura do gabarito permanece. Os passos 1, 3 e 9 são texto que você pode literalmente copiar.</span>
-                </div>
-            </section>
-        </div>
-
         <!-- ═══════════ P1: ANATOMIA DA RESPOSTA NA P2 ═══════════ -->
         <div class="content-panel active" id="panel-pr2-anatomia">
             <section class="problem">
@@ -2569,340 +2755,11 @@ Comparação: T(n) = Θ(n³) &gt; Ω(n²) → o algoritmo <strong>NÃO É</stron
 
                 <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
                     <span class="callout-icon" style="color:#ec7063">🎯</span>
-                    <span><strong>Regra de bolso da P2:</strong> se você chegar na prova sabendo <em>fluentemente</em> (1) preencher matriz C/K para árvore ótima, (2) balancear uma BST em AVL e (3) fazer as 3 operações de heap — você garante 8 a 10 pontos. Os cartões P2, P3 e P4 deste módulo são exatamente essas três questões resolvidas por completo.</span>
+                    <span><strong>Regra de bolso da P2:</strong> se você chegar na prova sabendo <em>fluentemente</em> (1) preencher matriz C/K para árvore ótima, (2) balancear uma BST em AVL e (3) fazer as 3 operações de heap — você garante 8 a 10 pontos. As três questões estão <em>resolvidas por completo</em> no módulo teórico: árvore ótima e AVL em <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-arvores'),50)">§1.5 — Árvores Binárias</a> (seções "Exemplo Resolvido de Prova") e heap em <a class="pr-link" onclick="switchMod('m1');setTimeout(()=>switchPanel('m1','m1-estruturas'),50)">§1.3 — Estruturas de Dados</a> (seção "Heap — Fila de Prioridade").</span>
                 </div>
             </section>
         </div>
 
-        <!-- ═══════════ P3: AVL — CERTIFICAR + TRANSFORMAR ═══════════ -->
-        <div class="content-panel" id="panel-pr2-avl">
-            <section class="problem">
-                <div class="problem-header">
-                    <div class="problem-number" style="color:#ec7063">P3</div>
-                    <div class="problem-title-block">
-                        <h2>AVL — Certificar e Transformar</h2>
-                        <div class="badges">
-                            <span class="badge badge-theory">100% das P2's coletadas</span>
-                            <span class="badge badge-struct">Recursão · pós-ordem</span>
-                            <span class="badge badge-time">Θ(n) — ÓTIMO</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="enunciado">
-                    <strong>Enunciado (variante do P2 de 3 questões):</strong> <em>"Descreva um algoritmo capaz de CERTIFICAR se a árvore binária de busca é dita AVL/GRADUADA. Em caso negativo, o algoritmo deverá transformar a árvore em uma árvore AVL/GRADUADA. Analise a complexidade e diga se é ótimo. Aplique o algoritmo proposto na árvore obtida na 1ª questão e esquematize a sequência de rotações."</em>
-                </div>
-
-                <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
-                    <span class="callout-icon" style="color:#ec7063">⚠</span>
-                    <span><strong>Pegadinha:</strong> o enunciado pede DUAS COISAS. Se você só escrever o algoritmo de transformação (§1.5), perde a metade da nota. A certificação (retorna bool) tem que vir antes e ser um algoritmo próprio.</span>
-                </div>
-
-                <div class="section-label purple">Passo 1 — Modelagem</div>
-                <div class="insight-box">
-                    <strong>AVL/Graduada</strong> = BST em que, para todo nó, <code>|FB| ≤ 1</code>, onde <code>FB = h(esq) − h(dir)</code>.
-                    <br><strong>ED:</strong> nó com <code>valor, esq, dir, altura</code>. Guardar altura no nó permite FB em O(1).
-                </div>
-
-                <div class="section-label purple">Passo 2 — Algoritmo de CERTIFICAÇÃO (retorna bool)</div>
-                <pre><code><span class="kw">def</span> <span class="fn">certificar</span>(no):
-    <span class="cm">"""Retorna (é_AVL, altura). Percorre em pós-ordem."""</span>
-    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>:
-        <span class="kw">return</span> (<span class="kw">True</span>, -<span class="num">1</span>)                <span class="cm"># AVL vazia; altura convencional -1</span>
-    ok_e, h_e = <span class="fn">certificar</span>(no.esq)         <span class="cm"># 1. subárvore esq</span>
-    ok_d, h_d = <span class="fn">certificar</span>(no.dir)         <span class="cm"># 2. subárvore dir</span>
-    <span class="kw">if not</span> ok_e <span class="kw">or not</span> ok_d:
-        <span class="kw">return</span> (<span class="kw">False</span>, <span class="num">0</span>)               <span class="cm"># já falhou lá embaixo</span>
-    fb = h_e - h_d
-    <span class="kw">if</span> <span class="fn">abs</span>(fb) &gt; <span class="num">1</span>:
-        <span class="kw">return</span> (<span class="kw">False</span>, <span class="num">0</span>)               <span class="cm"># fere a invariante AVL</span>
-    <span class="kw">return</span> (<span class="kw">True</span>, <span class="num">1</span> + <span class="fn">max</span>(h_e, h_d))
-
-<span class="kw">def</span> <span class="fn">eh_avl</span>(raiz):
-    ok, _ = <span class="fn">certificar</span>(raiz)
-    <span class="kw">return</span> ok</code></pre>
-
-                <div class="section-label purple">Passo 3 — Algoritmo de TRANSFORMAÇÃO (se não for AVL)</div>
-                <pre><code><span class="kw">def</span> <span class="fn">transformar</span>(no):
-    <span class="cm">"""Percorre em pós-ordem, balanceando de baixo para cima."""</span>
-    <span class="kw">if</span> no <span class="kw">is</span> <span class="kw">None</span>: <span class="kw">return</span> <span class="kw">None</span>
-    no.esq = <span class="fn">transformar</span>(no.esq)          <span class="cm"># filhos já balanceados quando</span>
-    no.dir = <span class="fn">transformar</span>(no.dir)          <span class="cm"># chegamos aqui</span>
-    <span class="fn">atualiza_altura</span>(no)
-    <span class="kw">return</span> <span class="fn">balanceia</span>(no)                <span class="cm"># pode trocar a raiz local</span>
-
-<span class="kw">def</span> <span class="fn">balanceia</span>(p):
-    fb = <span class="fn">FB</span>(p)
-    <span class="kw">if</span> fb &gt; <span class="num">1</span>:                              <span class="cm"># esquerda pesada</span>
-        <span class="kw">if</span> <span class="fn">FB</span>(p.esq) &lt; <span class="num">0</span>:                    <span class="cm"># caso ED (dupla)</span>
-            p.esq = <span class="fn">rot_esquerda</span>(p.esq)
-        <span class="kw">return</span> <span class="fn">rot_direita</span>(p)                <span class="cm"># caso EE (simples)</span>
-    <span class="kw">if</span> fb &lt; -<span class="num">1</span>:                             <span class="cm"># direita pesada</span>
-        <span class="kw">if</span> <span class="fn">FB</span>(p.dir) &gt; <span class="num">0</span>:                    <span class="cm"># caso DE</span>
-            p.dir = <span class="fn">rot_direita</span>(p.dir)
-        <span class="kw">return</span> <span class="fn">rot_esquerda</span>(p)              <span class="cm"># caso DD</span>
-    <span class="kw">return</span> p</code></pre>
-
-                <div class="section-label purple">Passo 4 — Aplicação na árvore da Q1</div>
-                <div class="insight-box">
-                    A Q1 do "P2 de 3 questões" tem F = [_, 10, 20, 30, 40, 50, 60] e F' = [5]×7 (uniforme). O algoritmo de árvore ótima produz <strong>K[0][6] = 5</strong> e a seguinte estrutura (apenas nós internos — folhas de insucesso omitidas para clareza):
-                    <pre style="margin-top:10px;margin-bottom:0"><code>              5
-             / \
-            3   6
-           / \
-          2   4
-         /
-        1</code></pre>
-                </div>
-
-                <div class="section-label purple">Passo 5 — Certificação passo a passo (pós-ordem)</div>
-                <table class="complexity-table">
-                    <tr><th>Nó</th><th>h(esq)</th><th>h(dir)</th><th>FB</th><th>Certifica?</th><th>h retorna</th></tr>
-                    <tr><td><strong>1</strong> (folha)</td><td>−1</td><td>−1</td><td>0</td><td>✓</td><td>0</td></tr>
-                    <tr><td><strong>4</strong> (folha)</td><td>−1</td><td>−1</td><td>0</td><td>✓</td><td>0</td></tr>
-                    <tr><td><strong>6</strong> (folha)</td><td>−1</td><td>−1</td><td>0</td><td>✓</td><td>0</td></tr>
-                    <tr><td><strong>2</strong></td><td>0 (do 1)</td><td>−1</td><td>+1</td><td>✓</td><td>1</td></tr>
-                    <tr><td><strong>3</strong></td><td>1 (do 2)</td><td>0 (do 4)</td><td>+1</td><td>✓</td><td>2</td></tr>
-                    <tr style="background:rgba(231,76,60,0.10)"><td><strong>5 (raiz)</strong></td><td>2 (do 3)</td><td>0 (do 6)</td><td><strong>+2</strong></td><td style="color:#ec7063;font-weight:700">✗ NÃO É AVL</td><td>—</td></tr>
-                </table>
-
-                <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
-                    <span class="callout-icon" style="color:#ec7063">⚠</span>
-                    <span>A raiz 5 tem FB = +2 e o filho 3 tem FB = +1. <strong>Caso EE (esquerda-esquerda)</strong> → 1 rotação simples à direita resolve.</span>
-                </div>
-
-                <div class="section-label purple">Passo 6 — Rotação simples à direita no nó 5</div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
-                    <div>
-                        <div class="section-label" style="color:#ec7063;font-size:12px">ANTES</div>
-                        <pre style="margin:0"><code>          5  (FB=+2)
-         / \
-        3   6
-       / \
-      2   4
-     /
-    1</code></pre>
-                    </div>
-                    <div>
-                        <div class="section-label" style="color:var(--accent3);font-size:12px">DEPOIS</div>
-                        <pre style="margin:0"><code>          3
-         / \
-        2   5
-       /   / \
-      1   4   6</code></pre>
-                    </div>
-                </div>
-
-                <div class="section-label purple">Passo 7 — Re-certificar após rotação</div>
-                <table class="complexity-table">
-                    <tr><th>Nó</th><th>h(esq)</th><th>h(dir)</th><th>FB</th><th>OK?</th></tr>
-                    <tr><td>1</td><td>−1</td><td>−1</td><td>0</td><td>✓</td></tr>
-                    <tr><td>4</td><td>−1</td><td>−1</td><td>0</td><td>✓</td></tr>
-                    <tr><td>6</td><td>−1</td><td>−1</td><td>0</td><td>✓</td></tr>
-                    <tr><td>2</td><td>0</td><td>−1</td><td>+1</td><td>✓</td></tr>
-                    <tr><td>5</td><td>0</td><td>0</td><td>0</td><td>✓</td></tr>
-                    <tr style="background:rgba(39,174,96,0.10)"><td><strong>3 (nova raiz)</strong></td><td>1</td><td>1</td><td><strong>0</strong></td><td style="color:var(--accent3);font-weight:700">✓ ÁRVORE É AVL</td></tr>
-                </table>
-
-                <div class="callout" style="border-color:rgba(39,174,96,0.3);background:rgba(39,174,96,0.06)">
-                    <span class="callout-icon" style="color:var(--accent3)">✅</span>
-                    <span><strong>Uma única rotação (EE em 5)</strong> transformou a árvore da Q1 em AVL/Graduada. Escreva na prova <em>literalmente</em>: "Sequência de rotações: 1 rotação simples à direita, aplicada ao nó 5 (raiz), motivada por FB(5) = +2 com FB(filho esq) = +1 → caso EE."</span>
-                </div>
-
-                <div class="section-label purple">Passo 8 — Análise de complexidade</div>
-                <div class="insight-box">
-                    <pre style="margin-top:0"><code><strong>Certificação:</strong>
-T(n) = T(n_esq) + T(n_dir) + O(1)      <span class="cm"># 1 chamada por subárvore</span>
-Cada nó visitado 1 vez  →  <strong>T(n) = Θ(n)</strong>
-
-<strong>Transformação:</strong>
-Mesma recorrência; rotação é O(1) por nó problemático
-Cada nó visitado 1 vez  →  <strong>T(n) = Θ(n)</strong>
-
-<strong>Cota inferior Ω(n):</strong> qualquer algoritmo precisa examinar todos os nós
-para garantir que a árvore inteira satisfaz a invariante AVL.
-
-<strong>Conclusão: T(n) = Θ(n) = Ω(n) → AMBOS OS ALGORITMOS SÃO ÓTIMOS ✓</strong></code></pre>
-                </div>
-
-                <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
-                    <span class="callout-icon" style="color:#ec7063">📌</span>
-                    <span><strong>Padrão de resposta ótima:</strong> (1) descreva <em>certificar</em> primeiro, (2) descreva <em>transformar</em> depois, (3) mostre que <code>transformar</code> chama <code>balanceia</code> que faz apenas O(1) trabalho por nó, (4) certifique a árvore de entrada apontando exatamente qual FB fere a regra, (5) desenhe ANTES e DEPOIS de <em>cada</em> rotação (aqui é só 1). Cada omissão custa 0,5 pt.</span>
-                </div>
-            </section>
-        </div>
-
-        <!-- ═══════════ P4: HEAP PARA PRIORIZAÇÃO DE CRAs ═══════════ -->
-        <div class="content-panel" id="panel-pr2-heap">
-            <section class="problem">
-                <div class="problem-header">
-                    <div class="problem-number" style="color:#ec7063">P4</div>
-                    <div class="problem-title-block">
-                        <h2>Heap para Priorização de CRAs</h2>
-                        <div class="badges">
-                            <span class="badge badge-theory">50% das P2's (Q3 do 3-questões)</span>
-                            <span class="badge badge-struct">Max-Heap + HashMap</span>
-                            <span class="badge badge-time">Θ(log n) por operação</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="enunciado">
-                    <strong>Enunciado (P2 de 3 questões · Q3):</strong> <em>"Descreva uma estrutura de dados e um algoritmo que seja capaz de organizar um grupo de n alunos orientado à priorização dos CRAs mais altos. A partir desta estrutura de dados, descreva os seguintes algoritmos:
-                    (a) Que retorne os alunos com maior CRA;
-                    (b) Inserir um novo aluno com seu CRA;
-                    (c) Alterar o valor do CRA de um aluno de x para o novo valor k."</em>
-                </div>
-
-                <div class="section-label purple">Passo 1 — Modelagem: por que Heap?</div>
-                <div class="insight-box">
-                    "Priorização dos CRAs mais altos" = <strong>max-heap</strong> (pai ≥ filhos). Vetor é preferível a árvore balanceada pois:
-                    <ul style="margin:12px 0 12px 22px;list-style:disc;">
-                        <li>armazenamento em array com pai/filho por índice — sem ponteiros;</li>
-                        <li>árvore <em>completa</em> por construção → altura sempre <code>⌊log₂ n⌋</code>;</li>
-                        <li>as três operações pedidas custam <strong>O(1)</strong> ou <strong>O(log n)</strong>.</li>
-                    </ul>
-                    <strong>ED escolhida:</strong> vetor <code>H</code> (posições 0..n−1) + <code>HashMap M: aluno → índice em H</code> (para a operação (c) achar o aluno em O(1)).
-                </div>
-
-                <div class="section-label purple">Índices e propriedade de heap</div>
-                <table class="complexity-table">
-                    <tr><th>Elemento</th><th>Índice</th><th>Propriedade</th></tr>
-                    <tr><td>pai de H[i]</td><td><code>(i−1) // 2</code></td><td rowspan="3">Para max-heap:<br><code>H[pai(i)].CRA ≥ H[i].CRA</code></td></tr>
-                    <tr><td>filho esq de H[i]</td><td><code>2i + 1</code></td></tr>
-                    <tr><td>filho dir de H[i]</td><td><code>2i + 2</code></td></tr>
-                </table>
-
-                <div class="section-label purple">Passo 2 — Rotinas auxiliares</div>
-                <pre><code><span class="kw">def</span> <span class="fn">troca</span>(H, M, i, j):
-    H[i], H[j] = H[j], H[i]
-    M[H[i].aluno] = i                       <span class="cm"># mantém HashMap coerente</span>
-    M[H[j].aluno] = j
-
-<span class="kw">def</span> <span class="fn">sobe</span>(H, M, i):                         <span class="cm"># heapify-up (bubble up)</span>
-    <span class="kw">while</span> i &gt; <span class="num">0</span>:
-        pai = (i - <span class="num">1</span>) // <span class="num">2</span>
-        <span class="kw">if</span> H[i].CRA &gt; H[pai].CRA:
-            <span class="fn">troca</span>(H, M, i, pai)
-            i = pai
-        <span class="kw">else</span>:
-            <span class="kw">break</span>
-
-<span class="kw">def</span> <span class="fn">desce</span>(H, M, i):                        <span class="cm"># heapify-down (bubble down)</span>
-    n = <span class="fn">len</span>(H)
-    <span class="kw">while</span> <span class="kw">True</span>:
-        e, d = <span class="num">2</span>*i + <span class="num">1</span>, <span class="num">2</span>*i + <span class="num">2</span>
-        maior = i
-        <span class="kw">if</span> e &lt; n <span class="kw">and</span> H[e].CRA &gt; H[maior].CRA: maior = e
-        <span class="kw">if</span> d &lt; n <span class="kw">and</span> H[d].CRA &gt; H[maior].CRA: maior = d
-        <span class="kw">if</span> maior == i: <span class="kw">break</span>
-        <span class="fn">troca</span>(H, M, i, maior)
-        i = maior</code></pre>
-
-                <div class="section-label purple">Algoritmo (a) — retornar o aluno com maior CRA</div>
-                <pre><code><span class="kw">def</span> <span class="fn">maior_CRA</span>(H):
-    <span class="kw">if not</span> H: <span class="kw">return</span> <span class="kw">None</span>            <span class="cm"># caso base: heap vazia</span>
-    <span class="kw">return</span> H[<span class="num">0</span>]                        <span class="cm"># raiz é sempre o maior</span>
-
-<span class="cm"># Se quiser retirar da estrutura:</span>
-<span class="kw">def</span> <span class="fn">extrair_maior</span>(H, M):
-    <span class="kw">if not</span> H: <span class="kw">return</span> <span class="kw">None</span>
-    top = H[<span class="num">0</span>]
-    ultimo = H.pop()                       <span class="cm"># remove último em O(1)</span>
-    <span class="kw">del</span> M[top.aluno]
-    <span class="kw">if</span> H:
-        H[<span class="num">0</span>] = ultimo
-        M[ultimo.aluno] = <span class="num">0</span>
-        <span class="fn">desce</span>(H, M, <span class="num">0</span>)                  <span class="cm"># restaura a propriedade</span>
-    <span class="kw">return</span> top</code></pre>
-
-                <div class="insight-box">
-                    <strong>Complexidade (a):</strong>
-                    <ul style="margin:10px 0 10px 22px;list-style:disc">
-                        <li><code>maior_CRA</code> (só consulta): <strong>Θ(1)</strong></li>
-                        <li><code>extrair_maior</code>: <strong>Θ(log n)</strong> por causa de <code>desce</code></li>
-                    </ul>
-                    <strong>Ω do problema:</strong> Ω(1) para consulta pura, Ω(log n) para extração (a árvore precisa ser reorganizada).<br>
-                    → <strong>ambas ÓTIMAS.</strong>
-                </div>
-
-                <div class="section-label purple">Algoritmo (b) — inserir novo aluno com seu CRA</div>
-                <pre><code><span class="kw">def</span> <span class="fn">inserir</span>(H, M, aluno, cra):
-    H.append(<span class="fn">No</span>(aluno, cra))               <span class="cm"># adiciona no fim → O(1)</span>
-    i = <span class="fn">len</span>(H) - <span class="num">1</span>
-    M[aluno] = i
-    <span class="fn">sobe</span>(H, M, i)                          <span class="cm"># restaura invariante em O(log n)</span></code></pre>
-
-                <div class="insight-box">
-                    <strong>Complexidade (b):</strong> <code>append</code> é Θ(1); <code>sobe</code> percorre no máximo <code>log₂ n</code> níveis → <strong>T(n) = Θ(log n)</strong>.<br>
-                    <strong>Ω(log n)</strong> — qualquer estrutura precisa reconhecer a nova posição do elemento entre os <code>log n</code> níveis de comparação.<br>
-                    → <strong>ÓTIMO ✓</strong>
-                </div>
-
-                <div class="section-label purple">Algoritmo (c) — alterar CRA do aluno de x para k</div>
-                <pre><code><span class="kw">def</span> <span class="fn">alterar</span>(H, M, aluno, novo_cra):
-    <span class="kw">if</span> aluno <span class="kw">not in</span> M: <span class="kw">return</span> <span class="kw">False</span>       <span class="cm"># aluno não existe</span>
-    i = M[aluno]                             <span class="cm"># busca posição em O(1) pelo HashMap</span>
-    antigo = H[i].CRA
-    H[i].CRA = novo_cra
-    <span class="kw">if</span> novo_cra &gt; antigo:
-        <span class="fn">sobe</span>(H, M, i)                       <span class="cm"># CRA subiu → pode violar pai</span>
-    <span class="kw">else</span>:
-        <span class="fn">desce</span>(H, M, i)                      <span class="cm"># CRA desceu → pode violar filhos</span>
-    <span class="kw">return</span> <span class="kw">True</span></code></pre>
-
-                <div class="insight-box">
-                    <strong>Por que HashMap?</strong> Sem ele, achar o aluno na heap custaria Θ(n) (varredura linear). Com HashMap, a busca vira <strong>Θ(1)</strong> e a operação (c) fica <strong>Θ(log n)</strong> (dominada por sobe/desce).<br>
-                    <strong>Cota Ω(log n)</strong> — mesmo raciocínio do inserir. <strong>ÓTIMO ✓</strong>
-                </div>
-
-                <div class="section-label purple">Passo 3 — Resumo das complexidades</div>
-                <table class="complexity-table">
-                    <tr><th>Operação</th><th>T(n)</th><th>Ω do problema</th><th>Ótimo?</th></tr>
-                    <tr><td>(a) Maior CRA (consulta)</td><td>Θ(1)</td><td>Ω(1)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
-                    <tr><td>(a') Extrair maior CRA</td><td>Θ(log n)</td><td>Ω(log n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
-                    <tr><td>(b) Inserir aluno</td><td>Θ(log n)</td><td>Ω(log n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
-                    <tr><td>(c) Alterar CRA (com HashMap)</td><td>Θ(log n)</td><td>Ω(log n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
-                    <tr><td>Construir heap com n alunos</td><td>Θ(n)</td><td>Ω(n)</td><td style="color:var(--accent3);font-weight:700">SIM ✓</td></tr>
-                </table>
-
-                <div class="section-label purple">Passo 4 — Exemplo pequeno (n = 5)</div>
-                <div class="insight-box">
-                    Alunos e CRAs iniciais: <code>Ana=9.2, Bia=7.5, Caio=8.8, Duda=6.0, Eva=8.5</code>. Inserção sucessiva (aplicando <code>sobe</code>):
-                    <pre style="margin-top:10px;margin-bottom:0"><code>Inicial:  Ana(9.2)                          M = {Ana:0}
-+Bia:     Ana(9.2) → Bia(7.5) fica em [1]   M = {Ana:0, Bia:1}
-+Caio:    Caio(8.8) em [2] (não sobe: 8.8 &lt; 9.2)   M = {..., Caio:2}
-+Duda:    Duda(6.0) em [3]  (6.0 &lt; 7.5, não sobe)
-+Eva:     Eva(8.5) em [4]  (8.5 &gt; 7.5, sobe: troca com Bia)
-
-Heap final (max-heap):
-                        Ana (9.2)
-                       /        \
-                    Eva (8.5)  Caio (8.8)
-                    /    \
-                Duda (6.0)  Bia (7.5)
-
-Consulta maior CRA → H[0] = Ana (9.2)                                 (a)
-
-Alterar Duda de 6.0 para 9.5:
-   i = M[Duda] = 3, novo=9.5 &gt; antigo=6.0 → sobe
-   troca H[3]↔H[1]: Duda vira filho esq de Ana
-   troca H[1]↔H[0]: Duda vira raiz                                    (c)
-
-Heap:      Duda (9.5)
-          /          \
-        Ana (9.2)   Caio (8.8)
-        /     \
-     Eva (8.5) Bia (7.5)</code></pre>
-                </div>
-
-                <div class="callout" style="border-color:rgba(231,76,60,0.25);background:rgba(231,76,60,0.06)">
-                    <span class="callout-icon" style="color:#ec7063">📌</span>
-                    <span><strong>Coisas que o Strauss provavelmente vai pedir para você mostrar:</strong> (1) <em>desenho da heap</em> antes/depois de cada operação; (2) sequência de índices trocados no <code>sobe</code> ou <code>desce</code>; (3) explicitar que <code>sobe</code> ou <code>desce</code> escolhem-se baseado em <code>novo_cra &gt; antigo</code>; (4) mostrar que <em>sem HashMap</em> a operação (c) seria Θ(n), justificando por que ele é <em>essencial</em> para atingir ótimo.</span>
-                </div>
-            </section>
-        </div>
 
     </div>
 
